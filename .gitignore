@@ -1,0 +1,15 @@
+# Variables de entorno y secretos
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+credentials.json
+
+# Dependencias y temporales
+node_modules/
+dist/
+build/
+*.log
+.DS_Store
+Thumbs.db

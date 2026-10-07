@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es-VE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Masa Fácil · El Maracucho | Pastelitos, Paninis y Café en San Diego, Carabobo</title>
+  <meta name="description" content="Pastelitos calientes, tequeños, paninis gourmet, café de especialidad y masas crudas para preparar en casa. Delivery a toda San Diego, Carabobo. +58 424-4099610">
+  <meta name="theme-color" content="#40201a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">
+        <img src="assets/img/logo_masafacil.png" alt="Masa Fácil · El Maracucho">
+      </div>
+      <div class="nav-actions">
+        <span class="status-chip" id="status-chip">● Abierto ahora</span>
+        <button class="cart-btn" data-cart-toggle>
+          Mi Pedido
+          <span class="cart-badge" style="display:none;">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <h1>Pastelitos, paninis y café, siempre calientes</h1>
+        <p>El sabor artesanal del Maracucho en San Diego, Carabobo. Masa crujiente, ingredientes seleccionados y ese aroma que te hace volver.</p>
+        <div class="hero-cta">
+          <a href="#menu" class="btn-primary">
+            Ver Menú
+          </a>
+          <button class="btn-ghost" data-cart-toggle>Pedir ahora</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="assets/img/hero_spread.webp" alt="Surtido de pastelitos, tequeños y café en Masa Fácil">
+        <div class="floating-badge">
+          Pastelitos Tradicionales • 2 x $1,00
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="marquee-inner">
+      <span>PASTELITOS · MASAS CASERAS · TEQUEÑOS · PANINIS GOURMET · CAFÉ DE ESPECIALIDAD · COMBOS DE PASAPALOS ·</span>
+      <span>PASTELITOS · MASAS CASERAS · TEQUEÑOS · PANINIS GOURMET · CAFÉ DE ESPECIALIDAD · COMBOS DE PASAPALOS ·</span>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <section class="section" id="menu">
+    <div class="section-header">
+      <h2>Nuestro Menú</h2>
+      <p>Pastelitos calientes recién salidos, siempre frescos y crujientes</p>
+    </div>
+    <div class="tabs"></div>
+    <div class="products-grid" id="products-container"></div>
+  </section>
+
+  <!-- How to order -->
+  <section class="section" id="delivery" style="background: linear-gradient(180deg, transparent 0%, rgba(233,215,181,0.3) 100%);">
+    <div class="section-header">
+      <h2>¿Cómo pedir?</h2>
+      <p>En 3 pasos rápidos y directos a WhatsApp</p>
+    </div>
+    <div class="steps">
+      <article class="step-card">
+        <div class="step-number">1</div>
+        <h3>Elige tus antojos</h3>
+        <p>Explora nuestro menú y agrega todos tus favoritos al carrito con un solo toque.</p>
+      </article>
+      <article class="step-card">
+        <div class="step-number">2</div>
+        <h3>Elige Delivery o Pick Up</h3>
+        <p>Retira gratis en nuestro local en La Esmeralda, o recibe a domicilio con tarifa según tu zona ($1/km).</p>
+      </article>
+      <article class="step-card">
+        <div class="step-number">3</div>
+        <h3>Envía tu pedido a WhatsApp</h3>
+        <p>Te contactaremos para confirmar tu pedido y coordinamos el tiempo de entrega al instante.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Galería de Fotos</h2>
+      <p>Un vistazo a nuestra cocina, mostrador caliente y ambiente acogedor</p>
+    </div>
+    <div class="gallery">
+      <img src="assets/img/mostrador_caliente.webp" alt="Mostrador caliente de pastelitos" class="gallery-item" loading="lazy">
+      <img src="assets/img/fachada_local.webp" alt="Fachada del local Masa Fácil" class="gallery-item" loading="lazy">
+      <img src="assets/img/interior_local.webp" alt="Interior acogedor de Masa Fácil" class="gallery-item" loading="lazy">
+      <img src="assets/img/surtido_fritos.webp" alt="Surtido de frituras calientes" class="gallery-item" loading="lazy">
+      <img src="assets/img/mini_pastelitos.webp" alt="Mini pastelitos dorados y crujientes" class="gallery-item" loading="lazy">
+      <img src="assets/img/tequenos_dorados.webp" alt="Tequeños dorados recién fritos" class="gallery-item" loading="lazy">
+      <img src="assets/img/panini_italiano.webp" alt="Panini Italiano con Burrata" class="gallery-item" loading="lazy">
+      <img src="assets/img/latte_art.webp" alt="Café Latte con arte latte" class="gallery-item" loading="lazy">
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section class="section" id="opiniones">
+    <div class="section-header">
+      <h2>Lo que dicen nuestros clientes</h2>
+      <p>Reseñas reales de vecinos de San Diego, Carabobo</p>
+    </div>
+    <div class="google-rating">
+      <div class="rating-badge">
+        <span class="stars">★★★★★</span>
+        <span class="rating-number">4.4</span>
+        <span>de 5 • Google Maps</span>
+      </div>
+    </div>
+    <div class="reviews-grid" id="reviews-grid"></div>
+    <div style="text-align: center; margin-top: 32px;">
+      <a href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" class="btn-ghost">Dejar una reseña en Google Maps</a>
+    </div>
+  </section>
+
+  <!-- Info -->
+  <section class="section">
+    <div class="info-grid">
+      <article class="info-card">
+        <h3>⏰ Horario de Atención</h3>
+        <ul>
+          <li><strong>Lunes a Domingo:</strong> 6:30 AM – 10:00 PM</li>
+          <li>¡Siempre tenemos pastelitos calientes saliendo del mostrador!</li>
+        </ul>
+      </article>
+      <article class="info-card">
+        <h3>💳 Métodos de Pago</h3>
+        <ul>
+          <li>📱 <strong>Pago Móvil</strong> – Bolívares a tasa oficial BCV</li>
+          <li>💵 <strong>Efectivo USD</strong> – Dólares americanos</li>
+          <li>🏦 <strong>Zelle</strong> – Para pedidos grandes</li>
+          <li>💳 <strong>Punto de Venta</strong> – Tarjetas en nuestro local</li>
+        </ul>
+      </article>
+      <article class="info-card" style="grid-column: 1 / -1;">
+        <h3>📍 Dónde estamos</h3>
+        <p>La Esmeralda, Manzana F2, Local 01, Calle 162, San Diego, Carabobo, Venezuela</p>
+        <iframe class="map" src="https://www.google.com/maps?q=10.2294,-67.9709&hl=es&z=16&output=embed" allowfullscreen loading="lazy"></iframe>
+      </article>
+    </div>
+  </section>
+
+  <!-- Club -->
+  <section class="section club">
+    <div class="container">
+      <div class="club-card">
+        <h2>Club Masafácil ☎️</h2>
+        <p>¡Únete y recibe <strong>10% OFF</strong> en tu primer pedido digital! Además, disfruta de promociones relámpago exclusivas para que nunca te quedes sin tus pastelitos favoritos.</p>
+        <button class="btn-primary" onclick="window.open('https://wa.me/584244099610?text='+encodeURIComponent('Hola Masafácil, quiero unirme al Club Masafácil para recibir mi 10% de descuento en mi primer pedido y promociones exclusivas. Mi nombre es:'), '_blank')">
+          Unirme al Club Masafácil
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Masa Fácil · El Maracucho</h4>
+          <p>Pastelería artesanal, cafetería y fábrica de masas. El sabor auténtico del Maracucho en San Diego, Carabobo.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <ul>
+            <li>📞 +58 424-4099610</li>
+            <li>📍 La Esmeralda, San Diego, Carabobo</li>
+            <li>📸 <a href="https://www.instagram.com/masafacil_ve" target="_blank">@masafacil_ve</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#menu">Nuestro Menú</a></li>
+            <li><a href="#delivery">Cómo Pedir</a></li>
+            <li><a href="#opiniones">Opiniones</a></li>
+            <li><a href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank">Google Maps</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Masa Fácil · El Maracucho. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div class="overlay" id="overlay" data-cart-toggle></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="cart-header">
+      <h3>Mi Pedido</h3>
+      <button class="close-btn" style="background:rgba(64,32,26,0.1); color:var(--color-espresso);" data-cart-toggle>×</button>
+    </div>
+    <div class="cart-content">
+      <div class="empty-cart" id="empty-cart">
+        <p>Tu carrito está vacío</p>
+        <p style="font-size:0.95rem; margin-top:8px;">Agrega productos deliciosos para comenzar tu pedido</p>
+      </div>
+      <div id="cart-items"></div>
+      
+      <!-- Delivery options -->
+      <div class="form-group">
+        <label>Modalidad de Entrega</label>
+        <div class="segmented">
+          <button class="segment active" data-delivery-type="delivery">🛵 Delivery a domicilio</button>
+          <button class="segment" data-delivery-type="pickup">🥡 Retiro en Local (Pick Up)</button>
+        </div>
+      </div>
+      
+      <div class="form-group" id="zone-group">
+        <label>Selecciona tu Zona (San Diego)</label>
+        <select id="zone-select"></select>
+      </div>
+      
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" id="customer-name" placeholder="¿Cómo te llamamos?">
+      </div>
+      
+      <div class="form-group" id="address-group">
+        <label>Dirección exacta</label>
+        <input type="text" id="customer-address" placeholder="Calle, casa, apartamento, referencia...">
+      </div>
+      
+      <div class="form-group">
+        <label>Método de Pago</label>
+        <div style="display:flex; flex-direction:column; gap:8px; padding:12px; background:white; border-radius:var(--radius-md);">
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="radio" name="payment" value="pago-movil" checked>
+            <span>Pago Móvil (Bolívares)</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="radio" name="payment" value="efectivo">
+            <span>Efectivo $ USD</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="radio" name="payment" value="zelle">
+            <span>Zelle</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <input type="radio" name="payment" value="punto">
+            <span>Punto de Venta / Tarjetas</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Notas para la cocina</label>
+        <textarea id="customer-notes" placeholder="Ej: Sin cebolla, con salsas extra, para llevar..."></textarea>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="summary">
+        <div class="summary-row">
+          <span>Subtotal productos</span>
+          <span id="subtotal">$0,00</span>
+        </div>
+        <div class="summary-row">
+          <span>Costo de Delivery</span>
+          <span id="delivery-fee">$0,00</span>
+        </div>
+        <div class="summary-row total">
+          <span>TOTAL A PAGAR</span>
+          <span id="total">$0,00</span>
+        </div>
+      </div>
+      <button class="btn-whatsapp" id="send-whatsapp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+        Enviar Pedido a WhatsApp
+      </button>
+    </div>
+  </aside>
+
+  <!-- Assistant -->
+  <div class="assistant-modal" id="assistant-modal">
+    <div class="assistant-box">
+      <div class="assistant-header">
+        <div>
+          <h3 style="color:white;">Asistente Virtual</h3>
+          <p style="color:rgba(255,255,255,0.8); font-size:0.95rem;">Masa Fácil · El Maracucho</p>
+        </div>
+        <button class="close-btn" id="assistant-close">×</button>
+      </div>
+      <div class="assistant-body">
+        <div id="assistant-messages"></div>
+        <div class="assistant-chips">
+          <button class="chip">¿Cuánto cuesta el delivery?</button>
+          <button class="chip">¿Cómo preparo las masas en casa?</button>
+          <button class="chip">¿Qué combos tienen para fiestas?</button>
+          <button class="chip">¿Cuáles son los métodos de pago?</button>
+          <button class="chip">¿Dónde están ubicados?</button>
+        </div>
+      </div>
+      <div class="assistant-input">
+        <input type="text" id="assistant-input" placeholder="Escribe tu pregunta aquí...">
+        <button class="btn-primary" id="assistant-send" style="padding:12px 20px;">Enviar</button>
+      </div>
+      <div style="padding:12px 24px 16px; border-top:1px solid rgba(64,32,26,0.08); background:rgba(255,255,255,0.8);">
+        <button class="btn-ghost" id="assistant-human" style="width:100%; padding:10px;">Hablar con una persona por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Dock -->
+  <div class="bottom-dock hidden" id="bottom-dock">
+    <button class="dock-btn" id="assistant-btn">
+      💬 Asistente Virtual
+    </button>
+    <button class="dock-btn cart-dock" data-cart-toggle id="dock-cart">
+      Mi Pedido • $0,00
+    </button>
+    <button class="dock-btn primary" onclick="window.open('https://wa.me/584244099610', '_blank')">
+      🟢 WhatsApp Pedidos
+    </button>
+  </div>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+:root {
+  /* ==================== PALETA PRINCIPAL ==================== */
+  --color-espresso: #40201a;
+  --color-espresso-dark: #2c140f;
+  --color-espresso-soft: rgba(64, 32, 26, 0.85);
+
+  /* Dorado / Miel Artesanal (Acentos, insignias, botones secundarios) */
+  --color-gold: #c9a577;
+  --color-gold-light: #dfc299;
+  --color-gold-hover: #b89362;
+  --color-amber-crust: #e5a93c;
+
+  /* Terracota / Tostado Pastelero (Botones primarios de acción, tags destacados) */
+  --color-terracotta: #6f3826;
+  --color-terracotta-hover: #824430;
+
+  /* Fondos Cálidos (Pergamino, crema pastelera y superficie clara) */
+  --color-bg-base: #f5ebd4;
+  --color-bg-card: #fdfaf3;
+  --color-bg-alt: #ecdcbb;
+  --color-bg-card-hover: #ffffff;
+
+  /* ==================== ESTADOS Y ALERTAS ==================== */
+  --color-status-open-bg: #e6f4ea;
+  --color-status-open-text: #137333;
+  --color-status-open-border: #a8dab5;
+
+  --color-status-closed-bg: #fce8e6;
+  --color-status-closed-text: #c5221f;
+  --color-status-closed-border: #f5c2c7;
+
+  /* Éxito / Carrito */
+  --color-success: #2e7d32;
+  --color-whatsapp: #25d366;
+
+  /* ==================== EFECTOS, VIDRIO Y SOMBRAS ==================== */
+  --glass-nav: rgba(64, 32, 26, 0.78);
+  --glass-drawer: rgba(253, 250, 243, 0.94);
+  --glass-border: rgba(255, 255, 255, 0.25);
+  
+  --shadow-sm: 0 2px 8px rgba(64, 32, 26, 0.08);
+  --shadow-md: 0 8px 24px rgba(64, 32, 26, 0.12);
+  --shadow-lg: 0 16px 40px rgba(64, 32, 26, 0.18);
+  --shadow-drawer: -12px 0 45px rgba(64, 32, 26, 0.25);
+
+  /* Curvas de Aceleración y Resortes */
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-fast: 160ms var(--ease-spring);
+  --transition-normal: 280ms var(--ease-spring);
+  --transition-slow: 400ms var(--ease-spring);
+
+  /* Radios de Bordes */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+}
