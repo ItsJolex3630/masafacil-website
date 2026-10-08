@@ -103,12 +103,36 @@ html.lock{overflow:hidden}
 #sh #cli{flex:1;overflow:auto;overscroll-behavior:contain;padding:6px 18px}#sh #cft{padding:14px 18px 18px;border-top:2px solid var(--tan)}
 #cbar{font-size:1rem}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){#sh{background:#faf3e4;backdrop-filter:none;-webkit-backdrop-filter:none}nav::after{display:none}}
-@media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms}.faq details::details-content{transition:none}}</style></head>
+@media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms}.faq details::details-content{transition:none}}</style><style id="plate">
+.mn-left{position:relative;width:100%}
+.plate-stage{display:none}
+@media(min-width:800px){
+.mn.is-pastelitos #mi{display:none!important}
+.mn.is-pastelitos .plate-stage{display:flex;position:relative;width:100%;min-height:480px;height:100%;overflow:hidden;border-radius:26px;background:radial-gradient(circle at 10% 50%,rgba(240,230,210,.45) 0%,rgba(250,243,228,.2) 70%);box-shadow:inset 0 0 40px rgba(64,32,26,.05)}
+.plate-viewport{position:absolute;top:50%;left:-240px;transform:translateY(-50%);width:580px;height:580px;pointer-events:auto}
+.plate-wheel{position:relative;width:100%;height:100%;border-radius:50%;transition:transform 650ms var(--ea);will-change:transform;transform-origin:center center}
+.plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 24px rgba(64,32,26,.22));user-select:none;pointer-events:none}
+.plate-slots{position:absolute;inset:0}
+.plate-item{position:absolute;top:50%;left:50%;width:130px;height:130px;margin:-65px 0 0 -65px;cursor:pointer;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform 650ms var(--ea),filter 300ms ease,opacity 300ms ease;z-index:2}
+.plate-stage .plate-item img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 14px rgba(40,20,14,.28));transition:transform 450ms var(--ea)}
+.plate-stage .plate-item:hover img{transform:scale(1.1)}
+.plate-item.is-active{z-index:10}
+.plate-item.is-active img{transform:scale(1.22);filter:drop-shadow(0 14px 22px rgba(40,20,14,.38))}
+.plate-badge{position:absolute;right:18px;bottom:22px;background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.8);border-radius:20px;padding:14px 18px;box-shadow:0 10px 30px rgba(64,32,26,.15);min-width:170px;z-index:20;transition:transform 300ms var(--ea),opacity 200ms ease}
+.badge-sub{display:block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
+#plate-badge-title{margin:2px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
+.badge-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badge-price{font:600 1.15rem var(--h);background:var(--k);padding:2px 12px;border-radius:99px}
+#mg .rw.plate-focus{background:rgba(201,165,119,.18);border-radius:12px;padding-left:8px;padding-right:8px}
+}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.plate-wheel,.plate-item{transition:none}}
+</style></head>
 <body>
 <nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
-<section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div><div class="mn"><img id="mi" alt="Categoría menú"><div id="mg"></div></div></div></section>
+<section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div><div class="mn"><div class="mn-left"><img id="mi" alt="Categoría menú"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg"></div></div></div></section>
 
 <section id="como-pedir"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Cómo pedir</h2><div class="info"><div class="card step"><b>1</b><h3>Elige</h3><p>Mira el menú y toca <b>+</b> en los pastelitos, masas, paninis o combos que quieras.</p></div><div class="card step"><b>2</b><h3>Revisa tu pedido</h3><p>Selecciona Pick Up o tu zona de Delivery ($1/km) y agrega notas especiales.</p></div><div class="card step"><b>3</b><h3>Envíalo por WhatsApp</h3><p>Tu lista llega formateada con el total al WhatsApp oficial de Masafácil.</p></div></div></div></section>
 
@@ -482,8 +506,108 @@ function LB(sel) {
   show = function(k) {
     o(k);
     E();
+    syncPlate(k);
   };
   E();
+
+  const mnEl = document.querySelector('.mn');
+  const PASTELITOS_DATA = {
+    'Tradicionales': [
+      { id: '1_queso', n: 'Queso', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/1_queso.webp' },
+      { id: '2_jamon_y_queso', n: 'Jamón & Queso', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/2_jamon_y_queso.webp' },
+      { id: '3_tocineta', n: 'Tocineta', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/3_tocineta.webp' },
+      { id: '4_pepperoni', n: 'Pepperoni', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/4_pepperoni.webp' },
+      { id: '5_mortadela', n: 'Mortadela', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/5_mortadela.webp' }
+    ],
+    'Especiales': [
+      { id: '6_pollo', n: 'Pollo', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/6_pollo.webp' },
+      { id: '7_carne_molida', n: 'Molida', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/7_carne_molida.webp' },
+      { id: '8_salchicha', n: 'Salchicha', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/8_salchicha.webp' },
+      { id: '9_papa_con_queso', n: 'Papa con queso', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/9_papa_con_queso.webp' },
+      { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
+      { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
+      { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
+      { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
+    ]
+  };
+  let currentPlateCategory = 'Tradicionales';
+  let currentPlateIndex = 0;
+  const PLATE_RADIUS = 195, PLATE_STEP = 38;
+
+  function initPlateSlots(categoryKey) {
+    currentPlateCategory = PASTELITOS_DATA[categoryKey] ? categoryKey : 'Tradicionales';
+    const items = PASTELITOS_DATA[currentPlateCategory];
+    const box = document.getElementById('plate-slots');
+    if (!box) return;
+    box.innerHTML = items.map((it, i) => '<div class="plate-item" data-idx="' + i + '" data-angle="' + (i * PLATE_STEP) + '"><img src="' + it.img + '" alt="Pastelito de ' + it.n + '"></div>').join('');
+    box.querySelectorAll('.plate-item').forEach(el => el.addEventListener('click', () => selectPastelito(parseInt(el.dataset.idx, 10))));
+    selectPastelito(0);
+  }
+
+  function selectPastelito(idx) {
+    const items = PASTELITOS_DATA[currentPlateCategory];
+    if (!items || !items[idx]) return;
+    currentPlateIndex = idx;
+    const targetAngle = idx * PLATE_STEP;
+    const wheel = document.getElementById('plate-wheel');
+    if (wheel) wheel.style.transform = 'rotate(' + (-targetAngle) + 'deg)';
+    document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
+      const itemAngle = parseFloat(el.dataset.angle);
+      el.style.transform = 'rotate(' + itemAngle + 'deg) translate(' + PLATE_RADIUS + 'px) rotate(' + -(itemAngle - targetAngle) + 'deg)';
+      const dist = Math.abs(i - idx);
+      el.classList.toggle('is-active', i === idx);
+      el.style.opacity = dist <= 1 ? '1' : (dist === 2 ? '0.35' : '0');
+      el.style.pointerEvents = dist <= 1 ? 'auto' : 'none';
+    });
+    const cur = items[idx];
+    const bT = document.getElementById('plate-badge-title'), bP = document.getElementById('plate-badge-price'), bA = document.getElementById('plate-add-btn');
+    if (bT) bT.textContent = cur.n;
+    if (bP) bP.textContent = cur.p;
+    if (bA) {
+      bA.dataset.k = 'Pastelito ' + cur.n;
+      bA.dataset.u = cur.u;
+      bA.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
+    }
+    document.querySelectorAll('#mg .rw').forEach(rw => {
+      const nEl = rw.querySelector('.n');
+      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
+    });
+  }
+
+  function hookMenuRowsToPlate() {
+    document.querySelectorAll('#mg .rw').forEach(rw => {
+      const nEl = rw.querySelector('.n');
+      if (!nEl) return;
+      const name = nEl.textContent.trim().toLowerCase();
+      const iT = PASTELITOS_DATA['Tradicionales'].findIndex(x => x.n.toLowerCase() === name);
+      const iE = PASTELITOS_DATA['Especiales'].findIndex(x => x.n.toLowerCase() === name);
+      const go = (cat, i) => {
+        if (currentPlateCategory !== cat) initPlateSlots(cat);
+        selectPastelito(i);
+      };
+      if (iT !== -1) {
+        rw.addEventListener('mouseenter', () => go('Tradicionales', iT));
+        rw.addEventListener('click', e => { if (e.target.closest('.pl')) return; go('Tradicionales', iT); });
+      } else if (iE !== -1) {
+        rw.addEventListener('mouseenter', () => go('Especiales', iE));
+        rw.addEventListener('click', e => { if (e.target.closest('.pl')) return; go('Especiales', iE); });
+      }
+    });
+  }
+
+  function syncPlate(k) {
+    if (!mnEl) return;
+    if (k === 'Pastelitos') {
+      mnEl.classList.add('is-pastelitos');
+      initPlateSlots(PASTELITOS_DATA[currentPlateCategory] ? currentPlateCategory : 'Tradicionales');
+      hookMenuRowsToPlate();
+    } else {
+      mnEl.classList.remove('is-pastelitos');
+    }
+  }
+
+  const initTab = document.querySelector('#tb [aria-pressed=true]');
+  syncPlate(initTab ? initTab.textContent : '');
 
   /* ---- hoja del pedido: resorte, interrumpible, con velocidad ---- */
   const sh = $('sh'), sc = $('sc');
