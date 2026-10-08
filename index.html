@@ -110,10 +110,9 @@ html.lock{overflow:hidden}
 .plate-stage{display:none}
 #menu{position:relative;overflow-x:clip}
 @media(min-width:800px){
-.mn.is-pastelitos{position:relative!important;display:block!important;min-height:880px!important}
-.mn.is-pastelitos #mi{display:none!important}
-.mn.is-pastelitos .mn-left{position:absolute!important;left:0;top:0;bottom:0;width:0;height:100%;pointer-events:none;z-index:5}
-.mn.is-pastelitos .plate-stage{display:flex;position:absolute;top:0;bottom:0;left:calc(-1 * ((100vw - min(1040px, 100vw)) / 2 + 18px));width:calc((100vw - min(1040px, 100vw)) / 2 + 18px + 430px);max-width:620px;height:100%;min-height:850px;overflow:visible;pointer-events:none;z-index:5;background:none;border:none;box-shadow:none}
+.mn.is-pastelitos,.mn.is-bebidas{position:relative!important;display:block!important;min-height:880px!important}
+.mn.is-pastelitos .mn-left,.mn.is-bebidas .mn-left{position:absolute!important;left:0;top:0;bottom:0;width:0;height:100%;pointer-events:none;z-index:5}
+.mn.is-pastelitos .plate-stage,.mn.is-bebidas .plate-stage{display:flex;position:absolute;top:0;bottom:0;left:calc(-1 * ((100vw - min(1040px, 100vw)) / 2 + 18px));width:calc((100vw - min(1040px, 100vw)) / 2 + 18px + 430px);max-width:620px;height:100%;min-height:850px;overflow:visible;pointer-events:none;z-index:5;background:none;border:none;box-shadow:none}
 .plate-viewport{position:absolute;inset:0;overflow:hidden;pointer-events:auto}
 .plate-wheel{position:absolute;top:50%;left:0;height:min(840px,94%);aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;transform-origin:center center;transition:transform 700ms var(--ea)}
 .plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 28px rgba(64,32,26,.22));user-select:none;pointer-events:none;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges}
@@ -123,28 +122,83 @@ html.lock{overflow:hidden}
 .plate-stage .plate-item:hover img{transform:scale(1.12)}
 .plate-item.is-active{z-index:10}
 .plate-item.is-active img{transform:scale(1.26);filter:drop-shadow(0 16px 26px rgba(40,20,14,.42))}
-.plate-badge{position:absolute;left:190px;right:auto;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1.5px solid rgba(201,165,119,.5);border-radius:22px;padding:14px 20px;box-shadow:0 12px 36px rgba(64,32,26,.18);min-width:210px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
+.plate-badge{position:absolute;left:160px;right:auto;top:50%;transform:translate(-50%,-50%);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1.5px solid rgba(201,165,119,.5);border-radius:20px;padding:12px 16px;box-shadow:0 10px 30px rgba(64,32,26,.22);min-width:180px;max-width:210px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
 .badge-sub{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
 .badge-promo-tag{background:var(--sage);color:#fff;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.02em;box-shadow:0 2px 6px rgba(56,102,65,.3)}
 #plate-badge-title{margin:3px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
 .badge-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .badge-price{font:600 1.15rem var(--h);background:var(--k);padding:2px 12px;border-radius:99px}
-.mn.is-pastelitos #mg{position:relative;z-index:6;width:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0 24px;background:none!important;border:none!important;box-shadow:none!important}
-.mn.is-pastelitos #mg .nt{max-width:580px;margin-left:auto;margin-bottom:14px}
-.mn.is-pastelitos #mg .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left}
-.mn.is-pastelitos #mg .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left,transform;cursor:pointer}
-.mn.is-pastelitos #mg .rw:hover{transform:translateX(6px)}
-.mn.is-pastelitos #mg .rw.plate-focus{transform:translateX(8px)}
-.mn.is-pastelitos #mg .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
+.menu-list-curved{position:relative;z-index:6;width:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0 24px;background:none!important;border:none!important;box-shadow:none!important}
+.menu-list-curved .nt{max-width:580px;margin-left:auto;margin-bottom:14px}
+.menu-list-curved .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left}
+.menu-list-curved .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left,transform;cursor:pointer}
+.menu-list-curved .rw:hover{transform:translateX(6px)}
+.menu-list-curved .rw.plate-focus{transform:translateX(8px)}
+.menu-list-curved .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
 @media(prefers-reduced-motion:reduce){.plate-wheel,.plate-item{transition:none}}
+</style><style id="carousel">
+.menu-carousel-viewport{width:100%;overflow:hidden;position:relative;touch-action:pan-y pinch-zoom}
+.menu-carousel-track{display:flex;align-items:stretch;transition:transform 600ms cubic-bezier(.32,.72,0,1);will-change:transform}
+.menu-slide{flex:0 0 100%;width:100%;min-height:400px;box-sizing:border-box;position:relative}
+@media(min-width:900px){.menu-slide{flex:0 0 calc(100% - 96px);width:calc(100% - 96px);margin-right:40px}}
+.carousel-loop-spoiler{position:absolute;right:-30px;top:50%;transform:translateY(-50%);width:130px;height:260px;overflow:hidden;opacity:.55;cursor:pointer;transition:opacity 300ms ease,transform 300ms ease;z-index:8}
+.carousel-loop-spoiler:hover{opacity:1;transform:translateY(-50%) scale(1.05)}
+.loop-plate-img{width:260px;height:260px;transform:translateX(-50%)}
+.layout-zigzag{display:flex;flex-direction:column;gap:36px;padding:20px 0}
+.zigzag-row{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
+@media(min-width:800px){.zigzag-row{grid-template-columns:4fr 6fr}.zigzag-row.reverse{grid-template-columns:6fr 4fr}}
+.arch-img{width:100%;max-height:380px;object-fit:cover;border-radius:999px 999px 28px 28px;box-shadow:14px 14px 0 var(--tan);border:4px solid var(--bg);display:block}
+.zigzag-content .items-group{margin-top:4px}
+.front-plates-section{height:100%}
+.front-plates-row{display:flex;justify-content:space-around;align-items:flex-end;gap:16px;padding:30px 10px 40px;margin-bottom:24px}
+.front-plate-item{flex:1;max-width:240px;display:flex;justify-content:center;cursor:pointer;transition:transform 450ms cubic-bezier(.32,.72,0,1),filter 300ms ease}
+.plate-saucer{width:100%;aspect-ratio:16/10;border-radius:50%;background:radial-gradient(circle at 50% 40%,#ffffff 0%,#ede3cc 70%,#d8caa7 100%);box-shadow:0 16px 30px rgba(64,32,26,.22),inset 0 2px 4px rgba(255,255,255,.8);padding:10px;display:flex;align-items:center;justify-content:center}
+.plate-saucer img{width:90%;height:90%;object-fit:contain;filter:drop-shadow(0 10px 16px rgba(40,20,14,.35));transition:transform 300ms ease}
+.front-plate-item.is-active{transform:translateY(18px) scale(1.18);z-index:5}
+.front-plate-item.is-active .plate-saucer{box-shadow:0 22px 40px rgba(64,32,26,.35),0 0 0 3px var(--tan)}
+@media(max-width:799px){.front-plates-row{flex-wrap:wrap;gap:20px}.front-plate-item{flex:1 1 40%;max-width:none}}
+.front-cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.front-card{background:rgba(255,253,248,.75);border:1.5px solid var(--tan);border-radius:20px;padding:14px 18px;transition:transform 250ms ease,border-color 250ms ease,box-shadow 250ms ease;cursor:pointer}
+.front-card .rw{padding:2px 0!important}
+.front-card.is-active{border-color:var(--md);box-shadow:0 8px 24px rgba(64,32,26,.15);transform:translateY(-4px)}
+.layout-entradas{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;min-height:700px}
+@media(min-width:800px){.layout-entradas{grid-template-columns:5fr 6fr}}
+.entradas-orbital-stage{position:relative;width:min(480px,95vw);aspect-ratio:1/1;margin:0 auto}
+.orbital-wheel{position:absolute;inset:0;border-radius:50%;border:2px dashed rgba(201,165,119,.45);transition:transform 700ms var(--ea)}
+.orbital-item{position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;cursor:pointer;transition:transform 400ms var(--ea)}
+.orbital-item[data-idx="0"]{top:15%;left:50%}
+.orbital-item[data-idx="1"]{top:50%;left:85%}
+.orbital-item[data-idx="2"]{top:85%;left:50%}
+.orbital-item[data-idx="3"]{top:50%;left:15%}
+.plate-top-img{width:100%;height:100%;border-radius:50%;object-fit:cover;box-shadow:0 10px 24px rgba(64,32,26,.25);border:4px solid var(--cream);transition:transform 300ms ease}
+.orbital-item.is-active .plate-top-img{transform:scale(1.12);box-shadow:0 14px 30px rgba(64,32,26,.35)}
+.orbital-center-focus{position:absolute;top:50%;left:50%;width:190px;height:190px;margin:-95px 0 0 -95px;border-radius:50%;background:var(--cream);padding:8px;box-shadow:0 16px 36px rgba(64,32,26,.32);display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:3}
+.orbital-center-focus img{width:100%;height:100%;border-radius:50%;object-fit:cover;transition:transform 300ms ease}
+.entradas-list-col .items-group{margin-top:4px}
+.entradas-list-col .rw.plate-focus{transform:translateX(6px)}
+.entradas-list-col .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
+.drink-item{position:absolute;top:50%;left:50%;width:120px;height:120px;margin:-60px 0 0 -60px;cursor:pointer;transition:transform 450ms var(--ea);z-index:2}
+.drink-item img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:radial-gradient(circle at 50% 35%,#fff,#f0e6cf 75%,#dccba8);box-shadow:0 10px 20px rgba(40,20,14,.28);border:3px solid #fff;transition:transform 300ms ease}
+.drink-item:hover img{transform:scale(1.1)}
+.drink-item.is-active{z-index:10}
+.drink-item.is-active img{transform:scale(1.16);box-shadow:0 16px 28px rgba(40,20,14,.4)}
+@media(prefers-reduced-motion:reduce){.menu-carousel-track,.front-plate-item,.orbital-item,.drink-item{transition:none}}
 </style></head>
 <body>
 <nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
-<section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div><div class="mn"><div class="mn-left"><img id="mi" alt="Categoría menú"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg"></div></div></div></section>
+<section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
+<div class="menu-slide" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide" data-cat="Masas y Congelados" id="slide-masas"><div class="w"><div class="layout-zigzag" id="content-masas"></div></div></div>
+<div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
+<div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
+<div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div class="layout-front-plates" id="content-sandwiches"></div></div></div>
+<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><span class="badge-sub">Bebida</span><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide" data-cat="Combos Eventos" id="slide-combos"><div class="w"><div class="layout-zigzag" id="content-combos"></div></div><div class="carousel-loop-spoiler" title="Volver a Pastelitos"><img src="assets/img/plato_artesanal.webp" alt="Mitad del plato" class="loop-plate-img"></div></div>
+</div></div></section>
 
 <section id="como-pedir"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Cómo pedir</h2><div class="info"><div class="card step"><b>1</b><h3>Elige</h3><p>Mira el menú y toca <b>+</b> en los pastelitos, masas, paninis o combos que quieras.</p></div><div class="card step"><b>2</b><h3>Revisa tu pedido</h3><p>Selecciona Pick Up o tu zona de Delivery ($1/km) y agrega notas especiales.</p></div><div class="card step"><b>3</b><h3>Envíalo por WhatsApp</h3><p>Tu lista llega formateada con el total al WhatsApp oficial de Masafácil (con promo 2x$1 calculada).</p></div></div></div></section>
 
@@ -326,18 +380,77 @@ const M = {
 
 const $ = i => document.getElementById(i), ks = Object.keys(M);
 
-function show(k) {
-  let n = 0;
-  $('tb').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.textContent === k));
-  const s = M[k];
-  $('mi').src = IM[s.im];
-  $('mi').alt = k;
-  $('mg').innerHTML = (s.nt ? '<div class="nt">' + s.nt + '</div>' : '') + s.g.map(g => '<div><span class="gt">' + g.t + '</span>' + g.r.map(r => '<div style="animation-delay:' + Math.min(n++ * 35, 300) + 'ms" class="rw' + (r.a ? ' ag' : '') + '"><div><span class="n">' + r.n + '</span>' + (r.t ? '<span class="tg">' + r.t + '</span>' : '') + (r.d ? '<i>' + r.d + '</i>' : '') + '</div><span class="dt"></span><span class="p">' + r.p + '</span></div>').join('') + '</div>').join('');
+const IMGS = {
+  masas: ['assets/img/combopasapalos.webp', 'assets/img/tequenos.webp'],
+  combos: ['assets/img/combopasapalos.webp', 'assets/img/surtido_fritos.webp'],
+  paninis: ['assets/img/paninis/panini_pollo.png', 'assets/img/paninis/panini_capresa.png', 'assets/img/paninis/panini_roastbeef.png', 'assets/img/paninis/panini_italiano.png'],
+  sandwiches: ['assets/img/sandwiches/sandwich_criollo.png', 'assets/img/sandwiches/sandwich_diet.png', 'assets/img/sandwiches/burger_crispy.png'],
+  entradas: ['assets/img/entradas/mini_pastelitos.png', 'assets/img/entradas/tequenos.png', 'assets/img/entradas/tequenos_chocolate.png', 'assets/img/entradas/nuggets_papas.png']
+};
+
+const SLIDES_CATS = ['Pastelitos', 'Masas y Congelados', 'Entradas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
+let currentSlideIndex = 0;
+
+function rowHTML(r, n, cat) {
+  return '<div style="animation-delay:' + Math.min(n * 35, 300) + 'ms" data-cat="' + cat + '" class="rw' + (r.a ? ' ag' : '') + '"><div><span class="n">' + r.n + '</span>' + (r.t ? '<span class="tg">' + r.t + '</span>' : '') + (r.d ? '<i>' + r.d + '</i>' : '') + '</div><span class="dt"></span><span class="p">' + r.p + '</span></div>';
+}
+function groupsHTML(cat) {
+  const s = M[cat]; let n = 0;
+  return (s.nt ? '<div class="nt">' + s.nt + '</div>' : '') + s.g.map(g => '<div><span class="gt">' + g.t + '</span><div class="items-group">' + g.r.map(r => rowHTML(r, n++, cat)).join('') + '</div></div>').join('');
+}
+function zigzagHTML(cat, imgs) {
+  return M[cat].g.map((g, i) => {
+    const reverse = i % 2 === 1;
+    const img = '<div class="zigzag-img-wrap"><img src="' + imgs[i % imgs.length] + '" alt="' + g.t + '" class="arch-img"></div>';
+    const content = '<div class="zigzag-content"><span class="gt">' + g.t + '</span><div class="items-group">' + g.r.map((r, j) => rowHTML(r, j, cat)).join('') + '</div></div>';
+    return '<div class="zigzag-row' + (reverse ? ' reverse' : '') + '">' + (reverse ? content + img : img + content) + '</div>';
+  }).join('');
+}
+function frontHTML(cat, imgs) {
+  const rows = M[cat].g[0].r;
+  const plates = rows.map((r, i) => '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '"><div class="plate-saucer"><img src="' + imgs[i] + '" alt="' + r.n + '"></div></div>').join('');
+  const cards = rows.map((r, i) => '<div class="front-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' + rowHTML(r, 0, cat) + '</div>').join('');
+  return '<div class="front-plates-section"><div class="front-plates-row">' + plates + '</div><div class="front-cards-row">' + cards + '</div></div>';
+}
+function orbitalHTML(cat, imgs) {
+  const rows = M[cat].g[0].r;
+  const items = rows.map((r, i) => '<div class="orbital-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '"><img src="' + imgs[i] + '" alt="' + r.n + '" class="plate-top-img"></div>').join('');
+  return '<div class="entradas-orbital-stage"><div class="orbital-wheel" id="entradas-orbital-wheel">' + items + '</div><div class="orbital-center-focus" id="entradas-center-focus"><img src="' + imgs[0] + '" alt="Entrada"></div></div><div class="entradas-list-col"><span class="gt">' + M[cat].g[0].t + '</span><div class="items-group">' + rows.map((r, i) => rowHTML(r, i, cat)).join('') + '</div></div>';
 }
 
+function buildMenu() {
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  set('mg-pastelitos', groupsHTML('Pastelitos'));
+  set('mg-bebidas', groupsHTML('Bebidas'));
+  set('content-masas', zigzagHTML('Masas y Congelados', IMGS.masas));
+  set('content-combos', zigzagHTML('Combos Eventos', IMGS.combos));
+  set('content-entradas', orbitalHTML('Entradas', IMGS.entradas));
+  set('content-paninis', frontHTML('Paninis', IMGS.paninis));
+  set('content-sandwiches', frontHTML('Sándwich y Burger', IMGS.sandwiches));
+}
+buildMenu();
+
+function menuGap() { return matchMedia('(min-width:900px)').matches ? 40 : 0; }
+function positionMenuTrack(index) {
+  const track = document.getElementById('menu-track');
+  const slide = document.querySelector('.menu-slide');
+  if (!track || !slide) return;
+  track.style.transform = 'translateX(-' + (index * (slide.offsetWidth + menuGap())) + 'px)';
+}
+function goToMenuSlide(index) {
+  if (index < 0 || index >= SLIDES_CATS.length) return;
+  currentSlideIndex = index;
+  positionMenuTrack(index);
+  document.querySelectorAll('#tb button').forEach(b => b.setAttribute('aria-pressed', b.textContent === SLIDES_CATS[index]));
+}
+function show(k) { goToMenuSlide(SLIDES_CATS.indexOf(k)); }
+
 $('tb').innerHTML = ks.map(k => '<button>' + k + '</button>').join('');
-$('tb').onclick = e => e.target.tagName == 'BUTTON' && show(e.target.textContent);
+$('tb').onclick = e => { if (e.target.tagName == 'BUTTON') show(e.target.textContent); };
 show(ks[0]);
+
+const loopSpoiler = document.querySelector('.carousel-loop-spoiler');
+if (loopSpoiler) loopSpoiler.onclick = () => show('Pastelitos');
 
 const QA = [
   ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
@@ -484,11 +597,11 @@ function LB(sel) {
   initZonas();
 
   function E() {
-    const tab = document.querySelector('#tb [aria-pressed=true]'), tn = tab ? tab.textContent : '';
-    document.querySelectorAll('#mg .rw').forEach(r => {
+    document.querySelectorAll('#menu .rw').forEach(r => {
       if (r.querySelector('.pl') || r.classList.contains('ag')) return;
       const n = r.querySelector('.n').textContent, p = r.querySelector('.p').textContent;
-      let u = null, k = (tn == 'Pastelitos' ? 'Pastelito ' : '') + n;
+      const cat = r.dataset.cat || '';
+      let u = null, k = (cat === 'Pastelitos' ? 'Pastelito ' : '') + n;
       const q = p.match(/(\d+)\s*x\s*\$([\d,]+)/);
       if (q) {
         u = parseFloat(q[2].replace(',', '.'));
@@ -514,7 +627,6 @@ function LB(sel) {
   };
   E();
 
-  const mnEl = document.querySelector('.mn');
   const PASTELITOS_LIST = [
     { id: '1_queso', n: 'Queso', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/1_queso.webp' },
     { id: '2_jamon_y_queso', n: 'Jamón & Queso', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/2_jamon_y_queso.webp' },
@@ -548,46 +660,54 @@ function LB(sel) {
     selectPastelito(0);
   }
 
-  function updateCurvedOffsets() {
-    if (!mnEl || !mnEl.classList.contains('is-pastelitos') || !matchMedia('(min-width:800px)').matches) {
-      document.querySelectorAll('#mg .rw, #mg .gt').forEach(el => {
-        el.style.removeProperty('margin-left');
-        el.style.removeProperty('max-width');
-      });
-      return;
-    }
-    const wheel = document.getElementById('plate-wheel');
-    const mgEl = document.getElementById('mg');
-    if (!wheel || !mgEl) return;
-
-    const wheelRect = wheel.getBoundingClientRect();
-    const mgRect = mgEl.getBoundingClientRect();
+  function applyCurve(listEl, wheelEl) {
+    if (!listEl || !wheelEl) return;
+    const wheelRect = wheelEl.getBoundingClientRect();
+    const listRect = listEl.getBoundingClientRect();
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const radius = wheel.offsetWidth / 2;
-
-    // Alinear al arco circular tanto las categorías (.gt) como las filas (.rw)
-    document.querySelectorAll('#mg .rw, #mg .gt').forEach(el => {
-      const elRect = el.getBoundingClientRect();
-      const elY = elRect.top + elRect.height / 2;
-      const dy = elY - centerY;
-
+    const radius = wheelEl.offsetWidth / 2;
+    listEl.querySelectorAll('.rw, .gt').forEach(el => {
+      const r = el.getBoundingClientRect();
+      const dy = r.top + r.height / 2 - centerY;
       let targetLeft = 0;
       if (Math.abs(dy) < radius) {
-        // Ecuación de la circunferencia: x = centerX + sqrt(R^2 - dy^2)
-        const xCircleEdge = centerX + Math.sqrt(radius * radius - dy * dy);
-        // Distancia relativa al contenedor de la lista más 32px de margen visual
-        const offsetInMg = xCircleEdge - mgRect.left + 32;
-        targetLeft = Math.max(0, offsetInMg);
-      } else {
-        targetLeft = 0;
+        // x = centerX + sqrt(R^2 - dy^2), con 32px de margen visual al borde del plato
+        targetLeft = Math.max(0, centerX + Math.sqrt(radius * radius - dy * dy) - listRect.left + 32);
       }
+      const rl = Math.round(targetLeft);
+      el.style.marginLeft = rl + 'px';
+      if (el.classList.contains('rw')) el.style.maxWidth = 'calc(100% - ' + rl + 'px)';
+    });
+  }
+  function resetCurve(listEl) {
+    if (!listEl) return;
+    listEl.querySelectorAll('.rw, .gt').forEach(el => {
+      el.style.removeProperty('margin-left');
+      el.style.removeProperty('max-width');
+    });
+  }
+  function updateCurvedOffsets() {
+    const desktop = matchMedia('(min-width:800px)').matches;
+    const cat = SLIDES_CATS[currentSlideIndex];
+    const p = document.getElementById('mg-pastelitos');
+    const d = document.getElementById('mg-bebidas');
+    if (p) { desktop && cat === 'Pastelitos' ? applyCurve(p, document.getElementById('plate-wheel')) : resetCurve(p); }
+    if (d) { desktop && cat === 'Bebidas' ? applyCurve(d, document.getElementById('drinks-wheel')) : resetCurve(d); }
+  }
 
-      const roundedLeft = Math.round(targetLeft);
-      el.style.marginLeft = roundedLeft + 'px';
-      if (el.classList.contains('rw')) {
-        el.style.maxWidth = 'calc(100% - ' + roundedLeft + 'px)';
-      }
+  // Ajusta la posición del plato/bandeja al borde físico izquierdo del viewport
+  function layoutStages() {
+    const slide = document.querySelector('.menu-slide');
+    if (!slide) return;
+    const slideW = slide.offsetWidth;
+    const mnLeft = (slideW - Math.min(1040, slideW)) / 2 + 18;
+    const active = SLIDES_CATS[currentSlideIndex];
+    [['plate-stage', 'Pastelitos'], ['drinks-stage', 'Bebidas']].forEach(([id, cat]) => {
+      const s = document.getElementById(id);
+      if (!s) return;
+      if (cat === active) { s.style.left = (-mnLeft) + 'px'; s.style.width = (mnLeft + 560) + 'px'; }
+      else { s.style.removeProperty('left'); s.style.removeProperty('width'); }
     });
   }
 
@@ -624,7 +744,7 @@ function LB(sel) {
       bA.dataset.u = cur.u;
       bA.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
     }
-    document.querySelectorAll('#mg .rw').forEach(rw => {
+    document.querySelectorAll('#mg-pastelitos .rw').forEach(rw => {
       const nEl = rw.querySelector('.n');
       rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
     });
@@ -632,7 +752,7 @@ function LB(sel) {
   }
 
   function hookMenuRowsToPlate() {
-    document.querySelectorAll('#mg .rw').forEach(rw => {
+    document.querySelectorAll('#mg-pastelitos .rw').forEach(rw => {
       const nEl = rw.querySelector('.n');
       if (!nEl) return;
       const name = nEl.textContent.trim().toLowerCase();
@@ -647,39 +767,108 @@ function LB(sel) {
     });
   }
 
-  function layoutPlate() {
-    if (!mnEl) return;
-    const wheel = document.getElementById('plate-wheel');
-    mnEl.style.removeProperty('grid-template-columns');
-    if (wheel) wheel.style.removeProperty('height');
+  const DRINKS = [
+    { n: 'Latte', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/cafe_latte.png' },
+    { n: 'Jugos Naturales', p: '$3,10', u: 3.10, img: 'assets/img/bebidas/jugo_parchita.png' },
+    { n: 'Nestea', p: '$1,20', u: 1.20, img: 'assets/img/bebidas/nestea_limon.png' },
+    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/refresco.png' }
+  ];
+  let currentDrinkIndex = 0;
+
+  function initDrinkSlots() {
+    const box = document.getElementById('drinks-slots');
+    if (!box) return;
+    const angles = [-68, -23, 23, 68];
+    box.innerHTML = DRINKS.map((d, i) => {
+      const a = angles[i] * Math.PI / 180;
+      const left = (50 + 36 * Math.cos(a)).toFixed(2), top = (50 + 36 * Math.sin(a)).toFixed(2);
+      return '<div class="drink-item" data-idx="' + i + '" style="left:' + left + '%;top:' + top + '%"><img src="' + d.img + '" alt="' + d.n + '"></div>';
+    }).join('');
+    box.querySelectorAll('.drink-item').forEach(el => el.addEventListener('click', () => selectDrink(parseInt(el.dataset.idx, 10))));
+    selectDrink(0);
+  }
+
+  function selectDrink(idx) {
+    if (idx < 0 || idx >= DRINKS.length) return;
+    currentDrinkIndex = idx;
+    const cur = DRINKS[idx];
+    document.querySelectorAll('#drinks-slots .drink-item').forEach((el, i) => el.classList.toggle('is-active', i === idx));
+    const bT = document.getElementById('drinks-badge-title'), bP = document.getElementById('drinks-badge-price'), bA = document.getElementById('drinks-add-btn');
+    if (bT) bT.textContent = cur.n;
+    if (bP) bP.textContent = cur.p;
+    if (bA) { bA.dataset.k = cur.n; bA.dataset.u = cur.u; bA.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido'); }
+    document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
+      const nEl = rw.querySelector('.n');
+      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
+    });
     updateCurvedOffsets();
   }
 
+  function hookDrinkRows() {
+    document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
+      const nEl = rw.querySelector('.n');
+      if (!nEl) return;
+      const idx = DRINKS.findIndex(x => x.n.toLowerCase() === nEl.textContent.trim().toLowerCase());
+      if (idx !== -1) {
+        rw.addEventListener('mouseenter', () => selectDrink(idx));
+        rw.addEventListener('click', e => { if (e.target.closest('.pl')) return; selectDrink(idx); });
+      }
+    });
+  }
+
+  function initFrontPlates(id) {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const plates = [...c.querySelectorAll('.front-plate-item')];
+    const cards = [...c.querySelectorAll('.front-card')];
+    const pick = i => { plates.forEach((p, j) => p.classList.toggle('is-active', j === i)); cards.forEach((k, j) => k.classList.toggle('is-active', j === i)); };
+    plates.forEach((p, i) => p.addEventListener('click', () => pick(i)));
+    cards.forEach((k, i) => k.addEventListener('click', e => { if (e.target.closest('.pl')) return; pick(i); }));
+  }
+
+  function initOrbital(id) {
+    const c = document.getElementById(id);
+    if (!c) return;
+    const items = [...c.querySelectorAll('.orbital-item')];
+    const rows = [...c.querySelectorAll('.entradas-list-col .rw')];
+    const focus = c.querySelector('.orbital-center-focus img');
+    const pick = i => {
+      items.forEach((p, j) => p.classList.toggle('is-active', j === i));
+      rows.forEach((r, j) => r.classList.toggle('plate-focus', j === i));
+      if (focus && items[i]) focus.src = items[i].querySelector('img').src;
+    };
+    items.forEach((p, i) => p.addEventListener('click', () => pick(i)));
+    rows.forEach((r, i) => {
+      r.addEventListener('mouseenter', () => pick(i));
+      r.addEventListener('click', e => { if (e.target.closest('.pl')) return; pick(i); });
+    });
+  }
+
+  let plateBuilt = false, drinksBuilt = false;
   function syncPlate(k) {
-    if (!mnEl) return;
     if (k === 'Pastelitos') {
-      mnEl.classList.add('is-pastelitos');
-      layoutPlate();
-      initPlateSlots();
-      hookMenuRowsToPlate();
-      requestAnimationFrame(updateCurvedOffsets);
-    } else {
-      mnEl.classList.remove('is-pastelitos');
-      layoutPlate();
+      if (!plateBuilt) { initPlateSlots(); hookMenuRowsToPlate(); plateBuilt = true; }
+      else selectPastelito(currentPlateIndex);
     }
+    if (k === 'Bebidas') {
+      if (!drinksBuilt) { initDrinkSlots(); hookDrinkRows(); drinksBuilt = true; }
+      else selectDrink(currentDrinkIndex);
+    }
+    layoutStages();
+    requestAnimationFrame(updateCurvedOffsets);
   }
 
   window.addEventListener('resize', () => {
-    if (mnEl && mnEl.classList.contains('is-pastelitos')) {
-      layoutPlate();
-      selectPastelito(currentPlateIndex);
-    }
+    layoutStages();
+    if (SLIDES_CATS[currentSlideIndex] === 'Pastelitos') selectPastelito(currentPlateIndex);
+    if (SLIDES_CATS[currentSlideIndex] === 'Bebidas') selectDrink(currentDrinkIndex);
+    updateCurvedOffsets();
   });
-  window.addEventListener('scroll', () => {
-    if (mnEl && mnEl.classList.contains('is-pastelitos') && matchMedia('(min-width:800px)').matches) {
-      updateCurvedOffsets();
-    }
-  }, { passive: true });
+  window.addEventListener('scroll', () => { updateCurvedOffsets(); }, { passive: true });
+
+  initFrontPlates('content-paninis');
+  initFrontPlates('content-sandwiches');
+  initOrbital('content-entradas');
 
   const initTab = document.querySelector('#tb [aria-pressed=true]');
   syncPlate(initTab ? initTab.textContent : '');
