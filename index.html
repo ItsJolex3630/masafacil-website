@@ -148,18 +148,28 @@ html.lock{overflow:hidden}
 @media(min-width:800px){.zigzag-row{grid-template-columns:4fr 6fr}.zigzag-row.reverse{grid-template-columns:6fr 4fr}}
 .arch-img{width:100%;max-height:380px;object-fit:cover;border-radius:999px 999px 28px 28px;box-shadow:14px 14px 0 var(--tan);border:4px solid var(--bg);display:block}
 .zigzag-content .items-group{margin-top:4px}
-.front-plates-section{height:100%}
-.front-plates-row{display:flex;justify-content:space-around;align-items:flex-end;gap:16px;padding:30px 10px 40px;margin-bottom:24px}
-.front-plate-item{flex:1;max-width:240px;display:flex;justify-content:center;cursor:pointer;transition:transform 450ms cubic-bezier(.32,.72,0,1),filter 300ms ease}
-.plate-saucer{width:100%;aspect-ratio:16/10;border-radius:50%;background:radial-gradient(circle at 50% 40%,#ffffff 0%,#ede3cc 70%,#d8caa7 100%);box-shadow:0 16px 30px rgba(64,32,26,.22),inset 0 2px 4px rgba(255,255,255,.8);padding:10px;display:flex;align-items:center;justify-content:center}
-.plate-saucer img{width:90%;height:90%;object-fit:contain;filter:drop-shadow(0 10px 16px rgba(40,20,14,.35));transition:transform 300ms ease}
-.front-plate-item.is-active{transform:translateY(18px) scale(1.18);z-index:5}
-.front-plate-item.is-active .plate-saucer{box-shadow:0 22px 40px rgba(64,32,26,.35),0 0 0 3px var(--tan)}
-@media(max-width:799px){.front-plates-row{flex-wrap:wrap;gap:20px}.front-plate-item{flex:1 1 40%;max-width:none}}
-.front-cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.front-card{background:rgba(255,253,248,.75);border:1.5px solid var(--tan);border-radius:20px;padding:14px 18px;transition:transform 250ms ease,border-color 250ms ease,box-shadow 250ms ease;cursor:pointer}
-.front-card .rw{padding:2px 0!important}
-.front-card.is-active{border-color:var(--md);box-shadow:0 8px 24px rgba(64,32,26,.15);transform:translateY(-4px)}
+.front-plates-section{height:100%;display:flex;flex-direction:column;gap:18px}
+.front-plates-row{display:flex;justify-content:space-around;align-items:flex-end;gap:20px;padding:20px 10px 32px;margin-bottom:12px}
+.front-plate-item{flex:1;max-width:250px;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:transform 450ms cubic-bezier(.32,.72,0,1),filter 300ms ease;user-select:none}
+.front-plate-img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 12px 20px rgba(64,32,26,.22));transition:transform 400ms cubic-bezier(.32,.72,0,1),filter 350ms ease;pointer-events:none}
+.front-plate-item:hover .front-plate-img{transform:translateY(-6px) scale(1.05);filter:drop-shadow(0 16px 26px rgba(64,32,26,.32))}
+.front-plate-item.is-active{z-index:5}
+.front-plate-item.is-active .front-plate-img{transform:translateY(10px) scale(1.16);filter:drop-shadow(0 20px 32px rgba(64,32,26,.38))}
+@media(max-width:799px){.front-plates-row{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:10px 5px 20px}.front-plate-item{max-width:none}}
+
+/* Tarjetas Rediseñadas para Paninis y Sandwiches */
+.front-cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.front-card{display:flex;flex-direction:column;background:rgba(255,253,248,.85);backdrop-filter:blur(10px);border:1.5px solid rgba(201,165,119,.45);border-radius:20px;padding:16px 18px;min-height:148px;box-sizing:border-box;transition:transform 250ms ease,border-color 250ms ease,box-shadow 250ms ease,background-color 250ms ease;cursor:pointer}
+.front-card:hover{transform:translateY(-3px);border-color:var(--md);box-shadow:0 8px 20px rgba(64,32,26,.12);background:rgba(255,255,255,.95)}
+.front-card.is-active{border-color:var(--md);box-shadow:0 10px 28px rgba(64,32,26,.18);transform:translateY(-4px);background:#fff}
+.fc-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.fc-title-box{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.fc-name{margin:0;font:600 1.15rem var(--h);color:var(--dk);line-height:1.2}
+.fc-price{font:600 1.12rem var(--h);color:var(--dk);background:var(--k);padding:2px 10px;border-radius:99px;white-space:nowrap}
+.fc-desc{font-size:.82rem;line-height:1.35;color:#6a5750;margin:0 0 14px;flex:1}
+.fc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;border-top:1px dashed rgba(201,165,119,.35)}
+.fc-indicator{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tan);transition:color 250ms ease}
+.front-card.is-active .fc-indicator{color:var(--md)}
 .layout-entradas{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;min-height:720px}
 @media(min-width:800px){.layout-entradas{grid-template-columns:1fr 1fr;gap:40px}}
 .entradas-diamond-stage{position:relative;width:min(530px,94vw);aspect-ratio:1/1;margin:0 auto;display:flex;align-items:center;justify-content:center}
@@ -393,9 +403,34 @@ function zigzagHTML(cat, imgs) {
 }
 function frontHTML(cat, imgs) {
   const rows = M[cat].g[0].r;
-  const plates = rows.map((r, i) => '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '"><div class="plate-saucer"><img src="' + imgs[i] + '" alt="' + r.n + '"></div></div>').join('');
-  const cards = rows.map((r, i) => '<div class="front-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' + rowHTML(r, 0, cat) + '</div>').join('');
-  return '<div class="front-plates-section"><div class="front-plates-row">' + plates + '</div><div class="front-cards-row">' + cards + '</div></div>';
+  const plates = rows.map((r, i) => 
+    '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
+      '<img src="' + imgs[i] + '" alt="' + r.n + '" class="front-plate-img">' +
+    '</div>'
+  ).join('');
+
+  const prefix = cat === 'Paninis' ? 'Panini ' : '';
+  const cards = rows.map((r, i) => {
+    const u = parseFloat(r.p.replace(/[^\d,]/g, '').replace(',', '.'));
+    const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
+    const desc = r.d ? '<p class="fc-desc">' + r.d + '</p>' : '';
+    return '<div class="front-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
+      '<div class="fc-head">' +
+        '<div class="fc-title-box"><h4 class="fc-name">' + r.n + '</h4>' + tag + '</div>' +
+        '<span class="fc-price">' + r.p + '</span>' +
+      '</div>' +
+      desc +
+      '<div class="fc-foot">' +
+        '<span class="fc-indicator">' + (i === 0 ? '● Seleccionado' : 'Ver plato') + '</span>' +
+        '<button class="pl" data-k="' + prefix + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '" aria-label="Agregar ' + r.n + ' al pedido">+</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="front-plates-section">' +
+    '<div class="front-plates-row">' + plates + '</div>' +
+    '<div class="front-cards-row">' + cards + '</div>' +
+  '</div>';
 }
 function diamondHTML(cat, imgs) {
   const rows = M[cat].g[0].r;
@@ -845,7 +880,15 @@ function LB(sel) {
     if (!c) return;
     const plates = [...c.querySelectorAll('.front-plate-item')];
     const cards = [...c.querySelectorAll('.front-card')];
-    const pick = i => { plates.forEach((p, j) => p.classList.toggle('is-active', j === i)); cards.forEach((k, j) => k.classList.toggle('is-active', j === i)); };
+    const pick = i => {
+      plates.forEach((p, j) => p.classList.toggle('is-active', j === i));
+      cards.forEach((k, j) => {
+        const active = j === i;
+        k.classList.toggle('is-active', active);
+        const ind = k.querySelector('.fc-indicator');
+        if (ind) ind.textContent = active ? '● Seleccionado' : 'Ver plato';
+      });
+    };
     plates.forEach((p, i) => p.addEventListener('click', () => pick(i)));
     cards.forEach((k, i) => k.addEventListener('click', e => { if (e.target.closest('.pl')) return; pick(i); }));
   }
