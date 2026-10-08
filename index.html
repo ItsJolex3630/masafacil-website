@@ -107,18 +107,20 @@ html.lock{overflow:hidden}
 .mn-left{position:relative;width:100%}
 .plate-stage{display:none}
 @media(min-width:800px){
+.mn.is-pastelitos{grid-template-columns:minmax(380px,460px) 1fr!important;align-items:stretch!important}
 .mn.is-pastelitos #mi{display:none!important}
-.mn.is-pastelitos .plate-stage{display:flex;position:relative;width:100%;min-height:480px;height:100%;overflow:hidden;border-radius:26px;background:radial-gradient(circle at 10% 50%,rgba(240,230,210,.45) 0%,rgba(250,243,228,.2) 70%);box-shadow:inset 0 0 40px rgba(64,32,26,.05)}
-.plate-viewport{position:absolute;top:50%;left:-240px;transform:translateY(-50%);width:580px;height:580px;pointer-events:auto}
-.plate-wheel{position:relative;width:100%;height:100%;border-radius:50%;transition:transform 650ms var(--ea);will-change:transform;transform-origin:center center}
-.plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 24px rgba(64,32,26,.22));user-select:none;pointer-events:none}
+.mn.is-pastelitos .mn-left{height:100%;min-height:750px;display:flex;align-items:stretch}
+.mn.is-pastelitos .plate-stage{display:flex;position:relative;width:100%;height:100%;min-height:750px;border-radius:0;background:none;box-shadow:none;overflow:visible}
+.plate-viewport{position:absolute;top:10px;bottom:10px;left:0;width:100%;height:calc(100% - 20px);overflow:hidden;pointer-events:auto}
+.plate-wheel{position:absolute;top:50%;left:0;height:100%;aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;transform-origin:center center;transition:transform 700ms var(--ea)}
+.plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(18px 24px 32px rgba(64,32,26,.25));user-select:none;pointer-events:none}
 .plate-slots{position:absolute;inset:0}
-.plate-item{position:absolute;top:50%;left:50%;width:130px;height:130px;margin:-65px 0 0 -65px;cursor:pointer;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform 650ms var(--ea),filter 300ms ease,opacity 300ms ease;z-index:2}
-.plate-stage .plate-item img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:0;box-shadow:none;filter:drop-shadow(0 8px 14px rgba(40,20,14,.28));transition:transform 450ms var(--ea)}
-.plate-stage .plate-item:hover img{transform:scale(1.1)}
+.plate-item{position:absolute;top:50%;left:50%;width:150px;height:150px;margin:-75px 0 0 -75px;cursor:pointer;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform 700ms var(--ea),filter 300ms ease,opacity 350ms ease;z-index:2}
+.plate-stage .plate-item img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:0;box-shadow:none;filter:drop-shadow(0 10px 18px rgba(40,20,14,.32));transition:transform 450ms var(--ea)}
+.plate-stage .plate-item:hover img{transform:scale(1.12)}
 .plate-item.is-active{z-index:10}
-.plate-item.is-active img{transform:scale(1.22);filter:drop-shadow(0 14px 22px rgba(40,20,14,.38))}
-.plate-badge{position:absolute;right:18px;bottom:22px;background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.8);border-radius:20px;padding:14px 18px;box-shadow:0 10px 30px rgba(64,32,26,.15);min-width:170px;z-index:20;transition:transform 300ms var(--ea),opacity 200ms ease}
+.plate-item.is-active img{transform:scale(1.26);filter:drop-shadow(0 16px 26px rgba(40,20,14,.42))}
+.plate-badge{position:absolute;right:12px;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.85);border-radius:20px;padding:12px 18px;box-shadow:0 10px 30px rgba(64,32,26,.16);min-width:180px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
 .badge-sub{display:block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
 #plate-badge-title{margin:2px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
 .badge-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -532,7 +534,14 @@ function LB(sel) {
   };
   let currentPlateCategory = 'Tradicionales';
   let currentPlateIndex = 0;
-  const PLATE_RADIUS = 195, PLATE_STEP = 38;
+  const PLATE_STEP = 32;
+
+  function getDynamicRadius() {
+    const wheel = document.getElementById('plate-wheel');
+    if (!wheel) return 270;
+    const currentWheelRadius = wheel.offsetHeight / 2;
+    return Math.max(220, currentWheelRadius * 0.68);
+  }
 
   function initPlateSlots(categoryKey) {
     currentPlateCategory = PASTELITOS_DATA[categoryKey] ? categoryKey : 'Tradicionales';
@@ -548,16 +557,22 @@ function LB(sel) {
     const items = PASTELITOS_DATA[currentPlateCategory];
     if (!items || !items[idx]) return;
     currentPlateIndex = idx;
+    const N = items.length;
     const targetAngle = idx * PLATE_STEP;
     const wheel = document.getElementById('plate-wheel');
-    if (wheel) wheel.style.transform = 'rotate(' + (-targetAngle) + 'deg)';
+    if (wheel) wheel.style.transform = 'translate(-50%, -50%) rotate(' + (-targetAngle) + 'deg)';
+    const wheelAngle = -targetAngle;
+    const radius = getDynamicRadius();
     document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
-      const itemAngle = parseFloat(el.dataset.angle);
-      el.style.transform = 'rotate(' + itemAngle + 'deg) translate(' + PLATE_RADIUS + 'px) rotate(' + -(itemAngle - targetAngle) + 'deg)';
-      const dist = Math.abs(i - idx);
+      let off = (i - idx) % N;
+      if (off > N / 2) off -= N;
+      if (off < -N / 2) off += N;
+      const absAngle = off * PLATE_STEP;
+      el.style.transform = 'rotate(' + (absAngle - wheelAngle) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
+      const dist = Math.abs(off);
       el.classList.toggle('is-active', i === idx);
-      el.style.opacity = dist <= 1 ? '1' : (dist === 2 ? '0.35' : '0');
-      el.style.pointerEvents = dist <= 1 ? 'auto' : 'none';
+      el.style.opacity = dist === 0 ? '1' : (dist === 1 ? '0.85' : (dist === 2 ? '0.45' : '0'));
+      el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
     });
     const cur = items[idx];
     const bT = document.getElementById('plate-badge-title'), bP = document.getElementById('plate-badge-price'), bA = document.getElementById('plate-add-btn');
@@ -595,16 +610,49 @@ function LB(sel) {
     });
   }
 
+  function layoutPlate() {
+    if (!mnEl) return;
+    const wheel = document.getElementById('plate-wheel');
+    const mg = document.getElementById('mg');
+    if (!mnEl.classList.contains('is-pastelitos') || !matchMedia('(min-width:800px)').matches) {
+      mnEl.style.removeProperty('grid-template-columns');
+      if (wheel) wheel.style.height = '';
+      return;
+    }
+    const avail = mnEl.clientWidth;
+    mnEl.style.setProperty('grid-template-columns', '380px 1fr', 'important');
+    if (mg) void mg.offsetHeight;
+    const Hbase = Math.max(mg ? mg.offsetHeight : 750, 750);
+    let left = Math.round(Hbase / 2 + 14);
+    left = Math.min(Math.max(380, left), Math.round(avail * 0.62));
+    mnEl.style.setProperty('grid-template-columns', left + 'px 1fr', 'important');
+    if (mg) void mg.offsetHeight;
+    const H = Math.max(mg ? mg.offsetHeight : 750, 750);
+    if (wheel) {
+      const maxByWidth = Math.floor(left * 2.15);
+      wheel.style.height = Math.min(H - 20, maxByWidth) + 'px';
+    }
+  }
+
   function syncPlate(k) {
     if (!mnEl) return;
     if (k === 'Pastelitos') {
       mnEl.classList.add('is-pastelitos');
+      layoutPlate();
       initPlateSlots(PASTELITOS_DATA[currentPlateCategory] ? currentPlateCategory : 'Tradicionales');
       hookMenuRowsToPlate();
     } else {
       mnEl.classList.remove('is-pastelitos');
+      layoutPlate();
     }
   }
+
+  window.addEventListener('resize', () => {
+    if (mnEl && mnEl.classList.contains('is-pastelitos')) {
+      layoutPlate();
+      selectPastelito(currentPlateIndex);
+    }
+  });
 
   const initTab = document.querySelector('#tb [aria-pressed=true]');
   syncPlate(initTab ? initTab.textContent : '');
