@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--h:'Fredoka',sans-serif}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;--bg:#f5ebd4;--k:#e6d4b0;--dk:#2b1510;--md:#b84628;--tan:#d9822b;--ink:#2b1510;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif}
 html{scroll-padding-top:calc(70px + env(safe-area-inset-top,0px));scroll-behavior:smooth}*,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,sans-serif}
 a{color:inherit}a:focus-visible,button:focus-visible{outline:3px solid var(--md);outline-offset:3px}
@@ -17,12 +17,13 @@ nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(-
 .est{align-self:flex-start;background:var(--dk);color:var(--bg);font:600 0.9375rem var(--h);padding:6px 14px 10px;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%)}
 h1{font:600 clamp(34px,6vw,56px)/1.05 var(--h);margin:0}.lead{font-size:1.188rem;margin:0;max-width:44ch}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips span{background:var(--bg);border:2px solid var(--tan);border-radius:99px;padding:4px 14px;font-weight:700;font-size:0.875rem}
-.bar{background:var(--dk);color:var(--bg);font:600 clamp(26px,5vw,40px) var(--h);padding:10px 0;margin:0 0 26px;text-shadow:-1px -1px 0 #0003}
+.bar{background:var(--dk);color:var(--bg);font:600 clamp(26px,5vw,40px) var(--h);padding:10px 0;margin:0 0 16px;text-shadow:-1px -1px 0 #0003}
+.sec-sub{font-size:1.05rem;color:var(--md);font-weight:600;margin:-6px 0 24px;letter-spacing:-.01em}
 .kr{background:var(--k)}section{padding:46px 0}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}.tabs button{border:2px solid var(--dk);background:none;color:var(--dk);border-radius:99px;padding:9px 18px;font:600 1rem var(--h);cursor:pointer}.tabs button[aria-pressed=true]{background:var(--dk);color:var(--bg)}
 .mn{display:grid;gap:26px}@media(min-width:800px){.mn{grid-template-columns:5fr 7fr;align-items:start}}.mn img{width:100%;border-radius:18px;display:block}
 .gt{display:inline-block;background:var(--md);color:var(--bg);font:600 1.375rem var(--h);padding:6px 22px;margin:0 0 12px;border-radius:0 12px 12px 0}
-.rw{display:flex;align-items:baseline;gap:8px;padding:7px 0}.rw::before{content:"◗";color:var(--tan);align-self:center}.rw .n{font-weight:700}.rw i{display:block;font-weight:400;font-size:0.9375rem;opacity:.85}.rw .dt{flex:1;border-bottom:2px dotted #6f382666;transform:translateY(-4px);min-width:16px}.rw .p{font:600 1.125rem var(--h);white-space:nowrap}.rw.ag{opacity:.55}.rw .tg{background:var(--tan);color:var(--dk);font:600 0.75rem var(--h);border-radius:99px;padding:1px 10px;margin-left:6px}
+.rw{display:flex;align-items:baseline;gap:8px;padding:7px 0}.rw::before{content:"◗";color:var(--tan);align-self:center}.rw .n{font-weight:700}.rw i{display:block;font-weight:400;font-size:0.9375rem;opacity:.85}.rw .dt{flex:1;border-bottom:2px dotted #6f382666;transform:translateY(-4px);min-width:16px}.rw .p{font:600 1.125rem var(--h);white-space:nowrap}.rw.ag{opacity:.55}.rw .tg{background:var(--sage);color:#fff;font:600 0.72rem var(--h);border-radius:99px;padding:2px 10px;margin-left:6px;box-shadow:0 2px 6px rgba(56,102,65,.25)}
 .nt{background:var(--k);border-radius:14px;padding:12px 16px;font-weight:700;margin:0 0 14px}
 .info{display:grid;gap:16px}@media(min-width:800px){.info{grid-template-columns:1fr 1fr 1fr}}.card{background:var(--bg);border:2px solid var(--tan);border-radius:18px;padding:22px}.card h3{font:600 1.375rem var(--h);margin:0 0 8px}.card p{margin:0 0 4px}
 .map{border-radius:18px;min-height:240px;background:repeating-linear-gradient(45deg,#ecdcbb 0 14px,#f5ebd4 14px 28px);border:2px solid var(--tan);display:grid;place-items:center;text-align:center;padding:16px;margin-top:16px;overflow:hidden}
@@ -87,8 +88,28 @@ nav{background:rgba(64,32,26,.74);backdrop-filter:blur(20px) saturate(180%);bord
 #cft .btn{display:block;text-align:center}
 #cbar{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translate(-50%,24px);opacity:0;pointer-events:none;z-index:14;background:var(--dk);color:var(--bg);border:0;border-radius:99px;padding:13px 24px;font:600 1rem var(--h);cursor:pointer;box-shadow:0 10px 30px rgba(64,32,26,.4);transition:transform 400ms var(--ea),opacity 200ms ease}#cbar.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}#cbar:active{transform:translate(-50%,0) scale(.97)}
 @media(prefers-reduced-transparency:reduce){#cdr{background:#faf3e4;backdrop-filter:none}}@media(prefers-reduced-motion:reduce){#cdr,#cbar{transition:opacity 200ms}.bump{animation:none}}</style><meta name="description" content="Pastelitos maracuchos, masas crudas y congeladas, tequeños, paninis, sándwiches y café en La Esmeralda, San Diego. Mira el menú, arma tu pedido y envíalo por WhatsApp."><meta property="og:title" content="Masafácil · El Maracucho | Pastelitos, paninis y café en San Diego, Carabobo"><meta property="og:description" content="Pastelitos, tequeños, masas y café en La Esmeralda, San Diego. Mira el menú, arma tu pedido y envíalo por WhatsApp."><meta property="og:type" content="website"><meta property="og:locale" content="es_VE"><meta name="theme-color" content="#40201a"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "CafeOrCoffeeShop", "name": "Masafácil · El Maracucho", "telephone": "+584244099610", "address": {"@type": "PostalAddress", "streetAddress": "La Esmeralda", "addressLocality": "San Diego", "addressRegion": "Carabobo", "addressCountry": "VE"}, "sameAs": ["https://www.instagram.com/masafacil_ve"], "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "06:30", "closes": "22:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "06:30", "closes": "14:30"}]}</script><style id="v3">mark.ph{background:#fff3b0;color:#5a3e00;padding:0 5px;border-radius:4px;font-weight:700;font-style:normal}dialog#lb{border:0;padding:0;background:transparent;max-width:min(92vw,900px)}dialog#lb::backdrop{background:rgba(10,10,10,.82);backdrop-filter:blur(6px)}#lb img{width:100%;max-height:86vh;object-fit:contain;display:block;border-radius:18px}.faq details{background:var(--fb,#fff);border:2px solid var(--fl,#c8d2e0);border-radius:18px;padding:0 20px;margin-bottom:10px}.faq summary{cursor:pointer;font:600 1.188rem var(--h);padding:16px 0;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary::after{content:"+";float:right;transition:transform 300ms cubic-bezier(.32,.72,0,1)}.faq details[open] summary::after{transform:rotate(45deg)}.faq details p{margin:0 0 16px}.faq{--fb:var(--bg);--fl:var(--tan)}.open{display:inline-block;border-radius:99px;padding:4px 14px;font-weight:700;font-size:0.875rem;background:#e4f3e4;color:#1f5a1f;border:2px solid #9ccc9c}.open.off{background:#f6e0dc;color:#7a2418;border-color:#e0a89f}
-.gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}.gal button{border:0;padding:0;background:none;border-radius:22px;overflow:hidden;cursor:zoom-in;aspect-ratio:1;position:relative}.gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 300ms var(--ea)}@media(hover:hover) and (pointer:fine){.gal button:hover img{transform:scale(1.05)}}.gal span{position:absolute;left:10px;bottom:10px;background:var(--dk);color:var(--bg);font:600 0.8125rem var(--h);padding:3px 12px;border-radius:99px}
-.step b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--md);color:#fff;font:600 1.25rem var(--h);margin-bottom:10px}.slot{background:var(--bg);border:2px solid var(--tan);border-radius:22px;padding:22px}.slot .star{color:#e0931d;font-size:1.1rem;margin-bottom:8px}.slot b{display:block;margin-top:10px;color:var(--dk);font-size:0.95rem}.go{display:inline-block;margin-top:12px}</style><style id="v4">body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-optical-sizing:auto;line-height:1.5}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}.gal button{border:0;padding:0;background:none;border-radius:24px;overflow:hidden;cursor:zoom-in;aspect-ratio:1;position:relative;box-shadow:0 6px 20px rgba(43,21,16,.08);transition:transform 400ms var(--ea),box-shadow 400ms var(--ea)}.gal button:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 34px rgba(43,21,16,.18)}.gal img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 600ms var(--ea),filter 400ms ease}.gal button:hover img{transform:scale(1.08);filter:brightness(1.04)}.gal span{position:absolute;left:12px;bottom:12px;background:rgba(43,21,16,.88);backdrop-filter:blur(10px);color:#fff;font:600 0.82rem var(--h);padding:4px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.25);box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.step-grid{display:grid;gap:20px;position:relative}@media(min-width:800px){.step-grid{grid-template-columns:repeat(3,1fr)}.step-grid::before{content:"";position:absolute;top:45px;left:15%;right:15%;height:3px;border-top:3px dashed rgba(217,130,43,.45);z-index:0;pointer-events:none}}
+.step-card{background:var(--cream,#fffdf8);border:2px solid rgba(217,130,43,.35);border-radius:24px;padding:26px 22px;position:relative;z-index:1;box-shadow:0 8px 24px rgba(43,21,16,.05);transition:transform 350ms var(--ea),box-shadow 350ms var(--ea),border-color 300ms ease;display:flex;flex-direction:column}
+.step-card:hover{transform:translateY(-6px);box-shadow:0 16px 36px rgba(43,21,16,.12);border-color:var(--md)}
+.step-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.step-num{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--md),var(--tan));color:#fff;font:700 1.35rem var(--h);box-shadow:0 4px 14px rgba(184,70,40,.35)}
+.step-icon{font-size:1.8rem;background:rgba(217,130,43,.12);width:44px;height:44px;border-radius:50%;display:grid;place-items:center}
+.step-card h3{font:600 1.35rem var(--h);margin:0 0 10px;color:var(--dk)}
+.step-card p{margin:0;font-size:0.95rem;line-height:1.55;color:rgba(43,21,16,.85)}
+.reviews-trust{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:12px;background:var(--cream,#fffdf8);border:2px solid rgba(217,130,43,.3);border-radius:99px;padding:10px 24px;margin:0 auto 28px;max-width:max-content;box-shadow:0 4px 16px rgba(43,21,16,.06)}
+.reviews-trust .stars{color:#e0931d;font-size:1.15rem;letter-spacing:2px}
+.reviews-trust b{font:700 1.15rem var(--h);color:var(--dk)}
+.reviews-trust span{font-size:0.9rem;opacity:.85}
+.review-card{background:var(--cream,#fffdf8);border:2px solid rgba(217,130,43,.3);border-radius:24px;padding:26px 22px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 24px rgba(43,21,16,.05);transition:transform 350ms var(--ea),box-shadow 350ms var(--ea)}
+.review-card:hover{transform:translateY(-5px);box-shadow:0 14px 32px rgba(43,21,16,.1)}
+.review-quote{font-size:2rem;line-height:1;color:var(--tan);margin-bottom:6px;font-family:serif;font-weight:bold}
+.review-card p{margin:0 0 16px;font-size:0.95rem;line-height:1.55;color:rgba(43,21,16,.9)}
+.review-author{display:flex;align-items:center;gap:12px;border-top:1px dashed rgba(217,130,43,.3);padding-top:14px}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--md),var(--dk));color:#fff;display:grid;place-items:center;font:700 0.95rem var(--h);box-shadow:0 2px 8px rgba(184,70,40,.25)}
+.review-author-info b{display:block;font-size:0.95rem;color:var(--dk)}
+.review-author-info small{color:var(--sage);font-weight:700;font-size:0.8rem}
+.faq-q{display:flex;align-items:center;gap:12px}.faq-icon{font-size:1.2rem;width:34px;height:34px;border-radius:50%;background:rgba(217,130,43,.14);display:grid;place-items:center}.go{display:inline-block;margin-top:12px}</style><style id="v4">body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-optical-sizing:auto;line-height:1.5}
 h1{letter-spacing:-.025em!important;line-height:1.03!important}h2,.bar{letter-spacing:-.02em!important;line-height:1.06}h3{letter-spacing:-.01em}.chips span,.tabs button,.gt,.step b{letter-spacing:.01em}
 nav{border-bottom:0!important}nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:linear-gradient(rgba(64,32,26,.28),transparent);opacity:0;transition:opacity 200ms ease;pointer-events:none}nav.sc::after{opacity:1}nav.sc{box-shadow:none!important}
 .pl{position:relative;width:2.5rem;height:2.5rem}.pl::after{content:"";position:absolute;inset:-6px}.cl .q button{width:2.5rem!important;height:2.5rem!important}
@@ -120,12 +141,17 @@ html.lock{overflow:hidden}
 .plate-stage .plate-item:hover img{transform:scale(1.12)}
 .plate-item.is-active{z-index:10}
 .plate-item.is-active img{transform:scale(1.26);filter:drop-shadow(0 16px 26px rgba(40,20,14,.42))}
-.plate-badge{position:absolute;right:12px;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.85);border-radius:20px;padding:12px 18px;box-shadow:0 10px 30px rgba(64,32,26,.16);min-width:180px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
-.badge-sub{display:block;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
-#plate-badge-title{margin:2px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
+.plate-badge{position:absolute;right:14px;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1.5px solid rgba(217,130,43,.35);border-radius:22px;padding:14px 20px;box-shadow:0 12px 36px rgba(43,21,16,.18);min-width:210px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
+.badge-sub{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
+.badge-promo-tag{background:var(--sage);color:#fff;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.02em;box-shadow:0 2px 6px rgba(56,102,65,.3)}
+#plate-badge-title{margin:3px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
 .badge-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .badge-price{font:600 1.15rem var(--h);background:var(--k);padding:2px 12px;border-radius:99px}
-#mg .rw.plate-focus{background:rgba(201,165,119,.18);border-radius:12px;padding-left:8px;padding-right:8px}
+.mn.is-pastelitos #mg{display:flex;flex-direction:column;justify-content:center;padding:10px 0}
+.mn.is-pastelitos #mg .rw{transition:margin-left 350ms var(--ea),transform 250ms var(--ea),background-color 200ms ease,box-shadow 200ms ease,border-color 200ms ease;border-radius:16px;padding:8px 16px;margin-bottom:7px;background:rgba(255,253,248,.68);border:1.5px solid rgba(217,130,43,.22);box-shadow:0 2px 10px rgba(43,21,16,.03);cursor:pointer}
+.mn.is-pastelitos #mg .rw:hover{background:rgba(255,253,248,.96);border-color:var(--tan);box-shadow:0 6px 18px rgba(43,21,16,.08);transform:translateX(4px)}
+.mn.is-pastelitos #mg .rw.plate-focus{background:#fffdf9;border-color:var(--md);box-shadow:0 8px 24px rgba(184,70,40,.18);transform:translateX(8px)}
+.mn.is-pastelitos #mg .rw.plate-focus .n{color:var(--md)}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
 @media(prefers-reduced-motion:reduce){.plate-wheel,.plate-item{transition:none}}
@@ -136,26 +162,13 @@ html.lock{overflow:hidden}
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div><div class="mn"><div class="mn-left"><img id="mi" alt="Categoría menú"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg"></div></div></div></section>
 
-<section id="como-pedir"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Cómo pedir</h2><div class="info"><div class="card step"><b>1</b><h3>Elige</h3><p>Mira el menú y toca <b>+</b> en los pastelitos, masas, paninis o combos que quieras.</p></div><div class="card step"><b>2</b><h3>Revisa tu pedido</h3><p>Selecciona Pick Up o tu zona de Delivery ($1/km) y agrega notas especiales.</p></div><div class="card step"><b>3</b><h3>Envíalo por WhatsApp</h3><p>Tu lista llega formateada con el total al WhatsApp oficial de Masafácil.</p></div></div></div></section>
+<section id="como-pedir"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Cómo pedir</h2><p class="sec-sub">Tu pedido recién hecho en 3 simples pasos desde tu teléfono o computadora</p><div class="step-grid"><div class="step-card"><div class="step-top"><div class="step-num">1</div><div class="step-icon">🥟</div></div><h3>Elige tu antojo</h3><p>Mira el menú digital, gira el plato interactivo y toca <b>+</b> en los pastelitos, masas, paninis o combos que quieras disfrutar.</p></div><div class="step-card"><div class="step-top"><div class="step-num">2</div><div class="step-icon">🛵</div></div><h3>Revisa tu pedido</h3><p>Selecciona <b>Pick Up</b> en el local o delivery por zonas ($1/km). Agrega notas especiales con tu dirección exacta o bebidas.</p></div><div class="step-card"><div class="step-top"><div class="step-num">3</div><div class="step-icon">💬</div></div><h3>Envíalo por WhatsApp</h3><p>Tu lista llega formateada con el total al WhatsApp oficial de Masafácil con tu <b>promo 2x$1 calculada al instante</b>.</p></div></div></div></section>
 
-<section class="kr" id="galeria"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Lo que sale de la cocina</h2><div class="gal" id="gal"></div></div></section>
+<section class="kr" id="galeria"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Lo que sale de la cocina</h2><p class="sec-sub">Recién fritos, crujientes y con el auténtico sabor tradicional maracucho</p><div class="gal" id="gal"></div></div></section>
 
-<section id="opiniones"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Opiniones de clientes</h2><div class="info">
-<div class="slot"><div class="star">★★★★★</div><p>“Los mejores pastelitos maracuchos de San Diego. La masa es crujiente, no absorbe grasa y el relleno es abundante. Los tequeños son insuperables.”</p><b>— María G. · Reseña Google</b></div>
-<div class="slot"><div class="star">★★★★★</div><p>“Excelente atención, café de primera y los paninis con burrata son una locura. Súper recomendado para desayunar en familia en La Esmeralda.”</p><b>— Carlos R. · Reseña Google</b></div>
-<div class="slot"><div class="star">★★★★★</div><p>“Compro los paquetes de masas congeladas de 24 y 50 discos para tener en casa. Quedan perfectas en la freidora de aire y salvan cualquier cena.”</p><b>— Patricia V. · Reseña Google</b></div>
-</div>
-<div style="text-align:center;margin-top:20px"><a class="btn o" href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" rel="noopener">Ver más opiniones en Google Maps</a></div>
-</div></section>
+<section id="opiniones"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Opiniones de clientes</h2><p class="sec-sub">La calificación de quienes ya disfrutan el auténtico sabor maracucho en San Diego</p><div class="reviews-trust"><span style="font-size:1.3rem">★</span><b>4.9 en Google Maps</b><span class="stars">★★★★★</span><span>(+250 reseñas de clientes felices)</span></div><div class="info"><div class="review-card"><div><div class="review-quote">“</div><p>Los mejores pastelitos maracuchos de San Diego. La masa es crujiente, no absorbe grasa y el relleno es súper abundante. Los tequeños son insuperables.</p></div><div class="review-author"><div class="review-avatar">MG</div><div class="review-author-info"><b>María G.</b><small>✓ Reseña verificada en Google</small></div></div></div><div class="review-card"><div><div class="review-quote">“</div><p>Excelente atención, café de especialidad de primera y los paninis con burrata son una locura. El mejor sitio para desayunar en familia en La Esmeralda.</p></div><div class="review-author"><div class="review-avatar">CR</div><div class="review-author-info"><b>Carlos R.</b><small>✓ Reseña verificada en Google</small></div></div></div><div class="review-card"><div><div class="review-quote">“</div><p>Compro los paquetes de masas congeladas de 24 y 50 discos para tener en casa. Quedan perfectas en la freidora de aire y salvan cualquier cena o merienda.</p></div><div class="review-author"><div class="review-avatar">PV</div><div class="review-author-info"><b>Patricia V.</b><small>✓ Reseña verificada en Google</small></div></div></div></div><div style="text-align:center;margin-top:26px"><a class="btn o" href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" rel="noopener">Ver más opiniones en Google Maps</a></div></div></section>
 
-<section class="kr faq"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Preguntas frecuentes</h2>
-<details><summary>¿Cuál es el horario de atención?</summary><p>Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm ininterrumpido.</p></details>
-<details><summary>¿Cómo funciona el delivery y cuánto cuesta?</summary><p>El delivery está tarifado según la distancia ($1/km desde La Esmeralda). Ejemplos: La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. También puedes retirar en el local (Pick Up) sin costo.</p></details>
-<details><summary>¿Cuánto cuestan los pastelitos y masas?</summary><p>Pastelitos tradicionales: $0,65 c/u. Especiales: $1,10. Gourmet: $1,99. Paquetes de masa para freír en casa desde $1,50 (12 discos), $2,80 (24 discos) y $5,50 (50 discos).</p></details>
-<details><summary>¿Qué métodos de pago aceptan?</summary><p>Aceptamos Efectivo en Divisas ($), Pago Móvil (a tasa oficial BCV del día), Transferencias bancarias nacionales, Zelle y Punto de Venta en el local.</p></details>
-<details><summary>¿Cómo cocinar las masas y tequeños congelados en casa?</summary><p>En freidora tradicional o sartén: calentar abundante aceite a 180°C y freír sin descongelar durante 3 a 4 minutos hasta dorar. En freidora de aire (Air Fryer): precalentar a 190°C, pincelar ligeramente con aceite y cocinar 8 minutos volteando a la mitad.</p></details>
-<details><summary>¿Hacen pedidos para fiestas y eventos?</summary><p>¡Sí! Tenemos combos de pasapalos para eventos de 30, 60 y 100 piezas (mini pastelitos y tequeños) listos para freír o fritos calientes. Recomendamos encargar con 24 horas de anticipación por WhatsApp.</p></details>
-</div></section>
+<section class="kr faq"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Preguntas frecuentes</h2><p class="sec-sub">Todo lo que necesitas saber sobre entregas, promociones y preparación en casa</p><details><summary><span class="faq-q"><span class="faq-icon">⏰</span><span>¿Cuál es el horario de atención?</span></span></summary><p>Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm ininterrumpido en nuestro local de La Esmeralda, San Diego.</p></details><details><summary><span class="faq-q"><span class="faq-icon">🛵</span><span>¿Cómo funciona el delivery y cuánto cuesta?</span></span></summary><p>El delivery está tarifado según la distancia ($1 por kilómetro desde La Esmeralda). Ejemplos: La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. También puedes retirar en el local (Pick Up) sin costo.</p></details><details><summary><span class="faq-q"><span class="faq-icon">🥟</span><span>¿Cuánto cuestan los pastelitos y qué promos tienen?</span></span></summary><p><b>¡Aprovecha nuestra promo estrella: 2 Pastelitos Tradicionales por $1,00</b> (ahorro de ~23% sobre el precio individual de $0,65 c/u). Pastelitos Especiales caseros: $1,10. Especiales Gourmet (Camarón y Champiñón): $1,99. Paquetes de masa para freír en casa desde $1,50 (12 discos), $2,80 (24 discos) y $5,50 (50 discos).</p></details><details><summary><span class="faq-q"><span class="faq-icon">💳</span><span>¿Qué métodos de pago aceptan?</span></span></summary><p>Aceptamos Efectivo en Divisas ($), Pago Móvil (a tasa oficial BCV del día), Transferencias bancarias nacionales, Zelle y Punto de Venta en el local.</p></details><details><summary><span class="faq-q"><span class="faq-icon">🍳</span><span>¿Cómo cocinar las masas y tequeños congelados en casa?</span></span></summary><p><b>En sartén tradicional:</b> calentar abundante aceite a 180°C y freír sin descongelar durante 3 a 4 minutos hasta dorar.<br><b>En Air Fryer:</b> precalentar a 190°C, pincelar con una pizca de aceite y cocinar 8 minutos volteando a la mitad.</p></details><details><summary><span class="faq-q"><span class="faq-icon">🎉</span><span>¿Hacen pedidos para fiestas y eventos corporativos?</span></span></summary><p>¡Sí! Tenemos combos de pasapalos para eventos de 30, 60 y 100 piezas (mini pastelitos y tequeños) listos para freír o calientes fritos al momento. Recomendamos encargar con 24 horas de anticipación vía WhatsApp.</p></details></div></section>
 
 <section class="kr" id="info"><div class="w"><div class="info"><div class="card"><h3>Horario</h3><p><b>Lunes a sábados</b><br>6:30 am – 10:00 pm</p><p><b>Domingos</b><br>6:30 am – 2:30 pm</p></div><div class="card"><h3>Delivery y Contacto</h3><p><b>WhatsApp</b><br>+58 424-4099610</p><p><b>Instagram</b><br><a href="https://www.instagram.com/masafacil_ve" target="_blank" rel="noopener">@masafacil_ve</a></p></div><div class="card"><h3>Dónde estamos</h3><p>La Esmeralda, Municipio San Diego, Estado Carabobo, Venezuela.</p></div></div><div class="map"><div><span style="font-size:36px;display:block">📍</span><b>Masafácil · El Maracucho</b><br>La Esmeralda, San Diego, Carabobo<iframe src="https://www.google.com/maps?q=10.2294,-67.9709&hl=es&z=16&output=embed" allowfullscreen loading="lazy" title="Ubicación Google Maps"></iframe><br><a class="btn go" href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" rel="noopener">Abrir en Google Maps</a></div></div></div></section>
 
@@ -194,19 +207,22 @@ const R = (n, d, p, t, a) => ({ n, d, p, t, a });
 const M = {
   'Pastelitos': {
     im: 'past',
-    nt: 'Pastelitos fritos al momento, dorados y súper crujientes con masa tradicional maracucha.',
+    nt: 'Pastelitos fritos al momento, dorados y crujientes con masa tradicional maracucha. ¡PROMO: 2 Tradicionales por $1,00!',
     g: [
       {
-        t: 'Tradicionales',
-        r: ['Queso', 'Jamón & Queso', 'Tocineta', 'Pepperoni', 'Mortadela'].map(x => R(x, 'Masa maracucha crujiente con relleno generoso', '$0,65'))
+        t: 'Tradicionales (Promo 2 x $1,00)',
+        r: ['Queso', 'Jamón & Queso', 'Tocineta', 'Pepperoni', 'Mortadela'].map(x => R(x, 'Masa maracucha crujiente con relleno generoso', '$0,65', '2x$1'))
       },
       {
-        t: 'Especiales',
+        t: 'Especiales Caseros',
         r: ['Pollo', 'Molida', 'Salchicha', 'Papa con queso', 'Andino', 'Dos Quesos'].map(x => R(x, 'Guiso casero tradicional bien sazonado', '$1,10'))
-          .concat([
-            R('Camarón al ajillo con queso crema', 'Camarones seleccionados con toque de ajo y queso crema', '$1,99', 'Gourmet'),
-            R('Champiñón con queso crema y tocineta', 'Champiñones salteados, tocineta crocante y queso crema', '$1,99', 'Gourmet')
-          ])
+      },
+      {
+        t: 'Especiales Gourmet',
+        r: [
+          R('Camarón al ajillo con queso crema', 'Camarones seleccionados con toque de ajo y queso crema', '$1,99', 'Gourmet'),
+          R('Champiñón con queso crema y tocineta', 'Champiñones salteados, tocineta crocante y queso crema', '$1,99', 'Gourmet')
+        ]
       }
     ]
   },
@@ -340,7 +356,7 @@ show(ks[0]);
 const QA = [
   ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
   ['¿Hacen delivery y cuánto cuesta?', 'Sí, delivery activo por zonas ($1 por km): La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. Retiro en local (Pick Up) gratis.'],
-  ['¿Cuánto cuestan los pastelitos?', 'Los tradicionales cuestan $0,65 c/u, los especiales $1,10 y los gourmet (camarón y champiñón) $1,99.'],
+  ['¿Cuánto cuestan los pastelitos y qué promos hay?', 'Los tradicionales cuestan $0,65 c/u con PROMO especial de 2 por $1,00 (ahorras 23%). Los especiales caseros cuestan $1,10 y los gourmet (camarón y champiñón) $1,99.'],
   ['¿Venden masas crudas y congelados?', '¡Sí! Vendemos paquetes de 12, 24 y 50 discos de masa fácil, bandejas de 25 y 50 tequeños congelados y kilo de masa lista para preparar en casa.'],
   ['¿Cómo freír las masas congeladas?', 'En abundante aceite a 180°C durante 3 a 4 minutos hasta dorar. En freidora de aire a 190°C por 8 minutos con una pizca de aceite.'],
   ['¿Qué métodos de pago aceptan?', 'Efectivo en dólares ($), Pago Móvil (a tasa oficial BCV), Zelle y Punto de Venta en el local.'],
@@ -467,7 +483,7 @@ function LB(sel) {
   document.body.insertAdjacentHTML('beforeend', '<button id="cbar" aria-live="polite"></button><div id="sc"></div><aside id="sh" role="dialog" aria-modal="true" aria-label="Mi pedido"><div class="grab" aria-hidden="true"></div><header><span>Mi pedido</span><button id="ccx" aria-label="Cerrar pedido">×</button></header><div id="und"></div><div id="cli"></div><div id="cft"><div class="sel-box"><label for="czona">Método de entrega:</label><select id="czona"></select></div><textarea id="cnt" rows="2" placeholder="Notas: dirección exacta, punto de referencia, sabor del jugo..."></textarea><div id="ctt"></div><a class="btn" id="cwa" href="#">Enviar pedido por WhatsApp</a></div></aside>');
 
   const hero = document.querySelector('.hero .ph');
-  if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/logo_masafacil.png" alt="Masa Fácil"></div><div class="tg1">Pastelitos<br><b>$0,65 c/u</b></div>');
+  if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/logo_masafacil.png" alt="Masa Fácil"></div><div class="tg1">Promo Tradicionales<br><b>2 x $1,00</b><br><small style="font-size:0.75rem;opacity:.9;display:block;margin-top:2px">(o $0,65 c/u)</small></div>');
 
   document.getElementById('menu').insertAdjacentHTML('beforebegin', '<div class="band" aria-hidden="true"><div>' + '★ PASTELITOS CRUJIENTES ★ TEQUEÑOS DORADOS ★ MASAS PARA LLEVAR ★ PANINIS ARTESANALES ★ CAFÉ DE ESPECIALIDAD ★ LA ESMERALDA, SAN DIEGO ★ '.repeat(6) + '</div></div>');
 
@@ -513,28 +529,23 @@ function LB(sel) {
   E();
 
   const mnEl = document.querySelector('.mn');
-  const PASTELITOS_DATA = {
-    'Tradicionales': [
-      { id: '1_queso', n: 'Queso', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/1_queso.webp' },
-      { id: '2_jamon_y_queso', n: 'Jamón & Queso', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/2_jamon_y_queso.webp' },
-      { id: '3_tocineta', n: 'Tocineta', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/3_tocineta.webp' },
-      { id: '4_pepperoni', n: 'Pepperoni', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/4_pepperoni.webp' },
-      { id: '5_mortadela', n: 'Mortadela', p: '$0,65', u: 0.65, img: 'assets/img/pastelitos/tradicionales/5_mortadela.webp' }
-    ],
-    'Especiales': [
-      { id: '6_pollo', n: 'Pollo', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/6_pollo.webp' },
-      { id: '7_carne_molida', n: 'Molida', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/7_carne_molida.webp' },
-      { id: '8_salchicha', n: 'Salchicha', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/8_salchicha.webp' },
-      { id: '9_papa_con_queso', n: 'Papa con queso', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/9_papa_con_queso.webp' },
-      { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
-      { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
-      { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
-      { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
-    ]
-  };
-  let currentPlateCategory = 'Tradicionales';
+  const PASTELITOS_LIST = [
+    { id: '1_queso', n: 'Queso', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/1_queso.webp' },
+    { id: '2_jamon_y_queso', n: 'Jamón & Queso', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/2_jamon_y_queso.webp' },
+    { id: '3_tocineta', n: 'Tocineta', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/3_tocineta.webp' },
+    { id: '4_pepperoni', n: 'Pepperoni', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/4_pepperoni.webp' },
+    { id: '5_mortadela', n: 'Mortadela', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/5_mortadela.webp' },
+    { id: '6_pollo', n: 'Pollo', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/6_pollo.webp' },
+    { id: '7_carne_molida', n: 'Molida', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/7_carne_molida.webp' },
+    { id: '8_salchicha', n: 'Salchicha', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/8_salchicha.webp' },
+    { id: '9_papa_con_queso', n: 'Papa con queso', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/9_papa_con_queso.webp' },
+    { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
+    { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
+    { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, cat: 'Gourmet', promo: false, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
+    { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Gourmet', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
+  ];
   let currentPlateIndex = 0;
-  const PLATE_STEP = 32;
+  const PLATE_STEP = 360 / PASTELITOS_LIST.length;
 
   function getDynamicRadius() {
     const wheel = document.getElementById('plate-wheel');
@@ -543,21 +554,37 @@ function LB(sel) {
     return Math.max(220, currentWheelRadius * 0.68);
   }
 
-  function initPlateSlots(categoryKey) {
-    currentPlateCategory = PASTELITOS_DATA[categoryKey] ? categoryKey : 'Tradicionales';
-    const items = PASTELITOS_DATA[currentPlateCategory];
+  function initPlateSlots() {
     const box = document.getElementById('plate-slots');
     if (!box) return;
-    box.innerHTML = items.map((it, i) => '<div class="plate-item" data-idx="' + i + '" data-angle="' + (i * PLATE_STEP) + '"><img src="' + it.img + '" alt="Pastelito de ' + it.n + '"></div>').join('');
+    box.innerHTML = PASTELITOS_LIST.map((it, i) => '<div class="plate-item" data-idx="' + i + '" data-angle="' + (i * PLATE_STEP) + '"><img src="' + it.img + '" alt="Pastelito de ' + it.n + '"></div>').join('');
     box.querySelectorAll('.plate-item').forEach(el => el.addEventListener('click', () => selectPastelito(parseInt(el.dataset.idx, 10))));
     selectPastelito(0);
   }
 
+  function updateCurvedOffsets() {
+    if (!mnEl || !mnEl.classList.contains('is-pastelitos') || !matchMedia('(min-width:800px)').matches) {
+      document.querySelectorAll('#mg .rw').forEach(r => r.style.removeProperty('margin-left'));
+      return;
+    }
+    const stage = document.getElementById('plate-stage');
+    if (!stage) return;
+    const stageRect = stage.getBoundingClientRect();
+    const centerY = stageRect.top + stageRect.height / 2;
+    const halfH = stageRect.height / 2 || 375;
+    document.querySelectorAll('#mg .rw').forEach(r => {
+      const rRect = r.getBoundingClientRect();
+      const rY = rRect.top + rRect.height / 2;
+      const normDist = Math.min(1, Math.max(-1, (rY - centerY) / halfH));
+      const curveOffset = Math.round(52 * Math.cos(normDist * (Math.PI / 2.2)));
+      r.style.marginLeft = Math.max(0, curveOffset) + 'px';
+    });
+  }
+
   function selectPastelito(idx) {
-    const items = PASTELITOS_DATA[currentPlateCategory];
-    if (!items || !items[idx]) return;
+    if (idx < 0 || idx >= PASTELITOS_LIST.length) return;
     currentPlateIndex = idx;
-    const N = items.length;
+    const N = PASTELITOS_LIST.length;
     const targetAngle = idx * PLATE_STEP;
     const wheel = document.getElementById('plate-wheel');
     if (wheel) wheel.style.transform = 'translate(-50%, -50%) rotate(' + (-targetAngle) + 'deg)';
@@ -574,8 +601,12 @@ function LB(sel) {
       el.style.opacity = dist === 0 ? '1' : (dist === 1 ? '0.85' : (dist === 2 ? '0.45' : '0'));
       el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
     });
-    const cur = items[idx];
+    const cur = PASTELITOS_LIST[idx];
     const bT = document.getElementById('plate-badge-title'), bP = document.getElementById('plate-badge-price'), bA = document.getElementById('plate-add-btn');
+    const bSub = document.querySelector('#plate-protagonist-badge .badge-sub');
+    if (bSub) {
+      bSub.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : '');
+    }
     if (bT) bT.textContent = cur.n;
     if (bP) bP.textContent = cur.p;
     if (bA) {
@@ -587,6 +618,7 @@ function LB(sel) {
       const nEl = rw.querySelector('.n');
       rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
     });
+    updateCurvedOffsets();
   }
 
   function hookMenuRowsToPlate() {
@@ -594,18 +626,13 @@ function LB(sel) {
       const nEl = rw.querySelector('.n');
       if (!nEl) return;
       const name = nEl.textContent.trim().toLowerCase();
-      const iT = PASTELITOS_DATA['Tradicionales'].findIndex(x => x.n.toLowerCase() === name);
-      const iE = PASTELITOS_DATA['Especiales'].findIndex(x => x.n.toLowerCase() === name);
-      const go = (cat, i) => {
-        if (currentPlateCategory !== cat) initPlateSlots(cat);
-        selectPastelito(i);
-      };
-      if (iT !== -1) {
-        rw.addEventListener('mouseenter', () => go('Tradicionales', iT));
-        rw.addEventListener('click', e => { if (e.target.closest('.pl')) return; go('Tradicionales', iT); });
-      } else if (iE !== -1) {
-        rw.addEventListener('mouseenter', () => go('Especiales', iE));
-        rw.addEventListener('click', e => { if (e.target.closest('.pl')) return; go('Especiales', iE); });
+      const idx = PASTELITOS_LIST.findIndex(x => x.n.toLowerCase() === name);
+      if (idx !== -1) {
+        rw.addEventListener('mouseenter', () => selectPastelito(idx));
+        rw.addEventListener('click', e => {
+          if (e.target.closest('.pl')) return;
+          selectPastelito(idx);
+        });
       }
     });
   }
@@ -617,6 +644,7 @@ function LB(sel) {
     if (!mnEl.classList.contains('is-pastelitos') || !matchMedia('(min-width:800px)').matches) {
       mnEl.style.removeProperty('grid-template-columns');
       if (wheel) wheel.style.height = '';
+      updateCurvedOffsets();
       return;
     }
     const avail = mnEl.clientWidth;
@@ -632,6 +660,7 @@ function LB(sel) {
       const maxByWidth = Math.floor(left * 2.15);
       wheel.style.height = Math.min(H - 20, maxByWidth) + 'px';
     }
+    updateCurvedOffsets();
   }
 
   function syncPlate(k) {
@@ -639,8 +668,9 @@ function LB(sel) {
     if (k === 'Pastelitos') {
       mnEl.classList.add('is-pastelitos');
       layoutPlate();
-      initPlateSlots(PASTELITOS_DATA[currentPlateCategory] ? currentPlateCategory : 'Tradicionales');
+      initPlateSlots();
       hookMenuRowsToPlate();
+      requestAnimationFrame(updateCurvedOffsets);
     } else {
       mnEl.classList.remove('is-pastelitos');
       layoutPlate();
@@ -653,6 +683,11 @@ function LB(sel) {
       selectPastelito(currentPlateIndex);
     }
   });
+  window.addEventListener('scroll', () => {
+    if (mnEl && mnEl.classList.contains('is-pastelitos') && matchMedia('(min-width:800px)').matches) {
+      updateCurvedOffsets();
+    }
+  }, { passive: true });
 
   const initTab = document.querySelector('#tb [aria-pressed=true]');
   syncPlate(initTab ? initTab.textContent : '');
@@ -772,31 +807,56 @@ function LB(sel) {
   x = size;
   apply();
 
-  /* ---- carrito ---- */
+  /* ---- carrito con cálculo de combos 2x$1 en tradicionales ---- */
+  const TRAD_ITEMS = new Set([
+    'Pastelito Queso',
+    'Pastelito Jamón & Queso',
+    'Pastelito Tocineta',
+    'Pastelito Pepperoni',
+    'Pastelito Mortadela'
+  ]);
   let und = null, ut = 0, bt = 0;
   function draw() {
-    const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0), subtotal = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0), un = ks.some(k => C[k].u == null);
+    const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
+    const subtotalBruto = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0);
+    const un = ks.some(k => C[k].u == null);
+
+    let tradQty = 0;
+    ks.forEach(k => {
+      if (TRAD_ITEMS.has(k)) tradQty += C[k].q;
+    });
+    const tradPairs = Math.floor(tradQty / 2);
+    const tradAhorro = tradPairs * 0.30;
+    const subtotal = Math.max(0, subtotalBruto - tradAhorro);
+
     const zona = ZONAS_DELIVERY[selectedZonaIdx] || ZONAS_DELIVERY[0];
     const deliveryCosto = zona.p || 0;
     const total = subtotal + deliveryCosto;
 
     $('cn').textContent = n;
-    $('cli').innerHTML = ks.length ? ks.map(k => '<div class="cl"><b>' + k + '</b><b>' + (C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q)) + '</b><div class="q"><button data-a="-" data-k="' + k + '" aria-label="Quitar uno">−</button>' + C[k].q + '<button data-a="+" data-k="' + k + '" aria-label="Agregar uno">+</button><button class="rm" data-a="x" data-k="' + k + '">Quitar</button></div></div>').join('') : '<div class="cem">Tu pedido está vacío.<br>Toca + en el menú para agregar.</div>';
+    $('cli').innerHTML = ks.length ? ks.map(k => '<div class="cl"><b>' + k + (TRAD_ITEMS.has(k) ? ' <span class="badge-promo-tag" style="font-size:0.65rem;padding:1px 6px">Promo 2x$1</span>' : '') + '</b><b>' + (C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q)) + '</b><div class="q"><button data-a="-" data-k="' + k + '" aria-label="Quitar uno">−</button>' + C[k].q + '<button data-a="+" data-k="' + k + '" aria-label="Agregar uno">+</button><button class="rm" data-a="x" data-k="' + k + '">Quitar</button></div></div>').join('') : '<div class="cem">Tu pedido está vacío.<br>Toca + en el menú para agregar.</div>';
 
     $('cft').style.display = ks.length ? '' : 'none';
-    $('ctt').innerHTML = '<div class="row"><span>Subtotal productos:</span><span>' + m(subtotal) + (un ? ' + consultar' : '') + '</span></div>' +
-      '<div class="row"><span>Entrega (' + (deliveryCosto > 0 ? zona.n.split('(')[0].trim() : 'Pick Up') + '):</span><span>' + (zona.c ? 'Por cotizar' : (deliveryCosto === 0 ? 'Gratis' : m(deliveryCosto))) + '</span></div>' +
+    let cttHtml = '<div class="row"><span>Subtotal productos:</span><span>' + m(subtotalBruto) + (un ? ' + consultar' : '') + '</span></div>';
+    if (tradAhorro > 0) {
+      cttHtml += '<div class="row" style="color:var(--sage);font-weight:700"><span>🎁 Promo 2x$1 (' + tradPairs + (tradPairs > 1 ? ' pares' : ' par') + '):</span><span>-' + m(tradAhorro) + '</span></div>';
+    }
+    cttHtml += '<div class="row"><span>Entrega (' + (deliveryCosto > 0 ? zona.n.split('(')[0].trim() : 'Pick Up') + '):</span><span>' + (zona.c ? 'Por cotizar' : (deliveryCosto === 0 ? 'Gratis' : m(deliveryCosto))) + '</span></div>' +
       '<div class="row total"><span>Total a pagar:</span><span>' + m(total) + (un || zona.c ? ' + consultar' : '') + '</span></div>';
+    $('ctt').innerHTML = cttHtml;
 
     if (!bt) { $('cbar').textContent = 'Ver pedido · ' + n + ' · ' + m(total); }
     $('cbar').classList.toggle('on', n > 0 && !want);
     document.body.classList.toggle('has-cart', n > 0);
 
-    const msg = 'Hola Masafácil, quiero hacer un pedido:\n\n' +
-      ks.map(k => '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q))).join('\n') +
-      '\n\nSubtotal: ' + m(subtotal) +
+    let msg = 'Hola Masafácil, quiero hacer un pedido:\n\n' +
+      ks.map(k => '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q))).join('\n');
+    if (tradAhorro > 0) {
+      msg += '\n\n🎉 Ahorro Promo Tradicionales (2x$1 en ' + tradQty + ' piezas): -' + m(tradAhorro);
+    }
+    msg += '\n\nSubtotal productos: ' + m(subtotal) +
       '\nEntrega: ' + zona.n + (deliveryCosto > 0 ? ' (' + m(deliveryCosto) + ')' : '') +
-      '\nTotal: ' + m(total) + (un || zona.c ? ' (más consultar)' : '') +
+      '\nTotal a pagar: ' + m(total) + (un || zona.c ? ' (más consultar)' : '') +
       ($('cnt').value ? '\n\nNotas/Dirección: ' + $('cnt').value : '');
 
     $('cwa').href = WA + '?text=' + encodeURIComponent(msg);
