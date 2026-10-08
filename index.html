@@ -1,4 +1,6 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Masafácil · El Maracucho | Pastelitos, paninis, masas y café en San Diego, Carabobo</title>
+<link rel="icon" type="image/png" href="assets/img/logo_masafacil.png">
+<link rel="apple-touch-icon" href="assets/img/logo_masafacil.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
@@ -123,7 +125,7 @@ html.lock{overflow:hidden}
 <section class="kr faq"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Preguntas frecuentes</h2>
 <details><summary>¿Cuál es el horario de atención?</summary><p>Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm ininterrumpido.</p></details>
 <details><summary>¿Cómo funciona el delivery y cuánto cuesta?</summary><p>El delivery está tarifado según la distancia ($1/km desde La Esmeralda). Ejemplos: La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. También puedes retirar en el local (Pick Up) sin costo.</p></details>
-<details><summary>¿Cuánto cuestan los pastelitos y masas?</summary><p>Pastelitos tradicionales: 2 por $1,00. Especiales: $1,10. Gourmet: $1,99. Paquetes de masa para freír en casa desde $1,50 (12 discos), $2,80 (24 discos) y $5,50 (50 discos).</p></details>
+<details><summary>¿Cuánto cuestan los pastelitos y masas?</summary><p>Pastelitos tradicionales: $0,65 c/u. Especiales: $1,10. Gourmet: $1,99. Paquetes de masa para freír en casa desde $1,50 (12 discos), $2,80 (24 discos) y $5,50 (50 discos).</p></details>
 <details><summary>¿Qué métodos de pago aceptan?</summary><p>Aceptamos Efectivo en Divisas ($), Pago Móvil (a tasa oficial BCV del día), Transferencias bancarias nacionales, Zelle y Punto de Venta en el local.</p></details>
 <details><summary>¿Cómo cocinar las masas y tequeños congelados en casa?</summary><p>En freidora tradicional o sartén: calentar abundante aceite a 180°C y freír sin descongelar durante 3 a 4 minutos hasta dorar. En freidora de aire (Air Fryer): precalentar a 190°C, pincelar ligeramente con aceite y cocinar 8 minutos volteando a la mitad.</p></details>
 <details><summary>¿Hacen pedidos para fiestas y eventos?</summary><p>¡Sí! Tenemos combos de pasapalos para eventos de 30, 60 y 100 piezas (mini pastelitos y tequeños) listos para freír o fritos calientes. Recomendamos encargar con 24 horas de anticipación por WhatsApp.</p></details>
@@ -170,7 +172,7 @@ const M = {
     g: [
       {
         t: 'Tradicionales',
-        r: ['Queso', 'Jamón & Queso', 'Tocineta', 'Pepperoni', 'Mortadela'].map(x => R(x, 'Masa maracucha crujiente con relleno generoso', '2 x $1,00'))
+        r: ['Queso', 'Jamón & Queso', 'Tocineta', 'Pepperoni', 'Mortadela'].map(x => R(x, 'Masa maracucha crujiente con relleno generoso', '$0,65'))
       },
       {
         t: 'Especiales',
@@ -312,6 +314,7 @@ show(ks[0]);
 const QA = [
   ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
   ['¿Hacen delivery y cuánto cuesta?', 'Sí, delivery activo por zonas ($1 por km): La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. Retiro en local (Pick Up) gratis.'],
+  ['¿Cuánto cuestan los pastelitos?', 'Los tradicionales cuestan $0,65 c/u, los especiales $1,10 y los gourmet (camarón y champiñón) $1,99.'],
   ['¿Venden masas crudas y congelados?', '¡Sí! Vendemos paquetes de 12, 24 y 50 discos de masa fácil, bandejas de 25 y 50 tequeños congelados y kilo de masa lista para preparar en casa.'],
   ['¿Cómo freír las masas congeladas?', 'En abundante aceite a 180°C durante 3 a 4 minutos hasta dorar. En freidora de aire a 190°C por 8 minutos con una pizca de aceite.'],
   ['¿Qué métodos de pago aceptan?', 'Efectivo en dólares ($), Pago Móvil (a tasa oficial BCV), Zelle y Punto de Venta en el local.'],
@@ -438,7 +441,7 @@ function LB(sel) {
   document.body.insertAdjacentHTML('beforeend', '<button id="cbar" aria-live="polite"></button><div id="sc"></div><aside id="sh" role="dialog" aria-modal="true" aria-label="Mi pedido"><div class="grab" aria-hidden="true"></div><header><span>Mi pedido</span><button id="ccx" aria-label="Cerrar pedido">×</button></header><div id="und"></div><div id="cli"></div><div id="cft"><div class="sel-box"><label for="czona">Método de entrega:</label><select id="czona"></select></div><textarea id="cnt" rows="2" placeholder="Notas: dirección exacta, punto de referencia, sabor del jugo..."></textarea><div id="ctt"></div><a class="btn" id="cwa" href="#">Enviar pedido por WhatsApp</a></div></aside>');
 
   const hero = document.querySelector('.hero .ph');
-  if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/tequenos_dorados.webp" alt="Tequeños dorados"></div><div class="tg1">Pastelitos<br><b>2 x $1,00</b></div>');
+  if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/logo_masafacil.png" alt="Masa Fácil"></div><div class="tg1">Pastelitos<br><b>$0,65 c/u</b></div>');
 
   document.getElementById('menu').insertAdjacentHTML('beforebegin', '<div class="band" aria-hidden="true"><div>' + '★ PASTELITOS CRUJIENTES ★ TEQUEÑOS DORADOS ★ MASAS PARA LLEVAR ★ PANINIS ARTESANALES ★ CAFÉ DE ESPECIALIDAD ★ LA ESMERALDA, SAN DIEGO ★ '.repeat(6) + '</div></div>');
 
