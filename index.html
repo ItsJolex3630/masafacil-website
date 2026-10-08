@@ -110,12 +110,12 @@ html.lock{overflow:hidden}
 .plate-stage{display:none}
 #menu{position:relative;overflow-x:clip}
 @media(min-width:800px){
-.mn.is-pastelitos{position:relative;grid-template-columns:minmax(360px,440px) 1fr!important;align-items:stretch!important}
+.mn.is-pastelitos{position:relative!important;display:block!important;min-height:880px!important}
 .mn.is-pastelitos #mi{display:none!important}
-.mn.is-pastelitos .mn-left{position:static;height:100%;min-height:750px}
-.mn.is-pastelitos .plate-stage{display:flex;position:absolute;top:0;bottom:0;left:calc(-1 * ((100vw - min(1040px,100vw)) / 2 + 18px));width:calc((100vw - min(1040px,100vw)) / 2 + 18px + 420px);max-width:620px;height:100%;min-height:750px;overflow:visible;pointer-events:none;z-index:5;border-radius:0;background:none;box-shadow:none}
+.mn.is-pastelitos .mn-left{position:absolute!important;left:0;top:0;bottom:0;width:0;height:100%;pointer-events:none;z-index:5}
+.mn.is-pastelitos .plate-stage{display:flex;position:absolute;top:0;bottom:0;left:calc(-1 * ((100vw - min(1040px, 100vw)) / 2 + 18px));width:calc((100vw - min(1040px, 100vw)) / 2 + 18px + 430px);max-width:620px;height:100%;min-height:850px;overflow:visible;pointer-events:none;z-index:5;background:none;border:none;box-shadow:none}
 .plate-viewport{position:absolute;inset:0;overflow:hidden;pointer-events:auto}
-.plate-wheel{position:absolute;top:50%;left:0;height:min(850px,95%);aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;transform-origin:center center;transition:transform 700ms var(--ea)}
+.plate-wheel{position:absolute;top:50%;left:0;height:min(840px,94%);aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;transform-origin:center center;transition:transform 700ms var(--ea)}
 .plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 28px rgba(64,32,26,.22));user-select:none;pointer-events:none;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges}
 .plate-slots{position:absolute;inset:0}
 .plate-item{position:absolute;top:50%;left:50%;width:150px;height:150px;margin:-75px 0 0 -75px;cursor:pointer;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform 700ms var(--ea),filter 300ms ease,opacity 350ms ease;z-index:2}
@@ -123,16 +123,18 @@ html.lock{overflow:hidden}
 .plate-stage .plate-item:hover img{transform:scale(1.12)}
 .plate-item.is-active{z-index:10}
 .plate-item.is-active img{transform:scale(1.26);filter:drop-shadow(0 16px 26px rgba(40,20,14,.42))}
-.plate-badge{position:absolute;right:14px;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1.5px solid rgba(201,165,119,.5);border-radius:22px;padding:14px 20px;box-shadow:0 12px 36px rgba(64,32,26,.18);min-width:210px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
+.plate-badge{position:absolute;left:190px;right:auto;top:50%;transform:translateY(18px);background:rgba(255,253,249,.94);backdrop-filter:blur(16px) saturate(180%);border:1.5px solid rgba(201,165,119,.5);border-radius:22px;padding:14px 20px;box-shadow:0 12px 36px rgba(64,32,26,.18);min-width:210px;z-index:20;transition:transform 350ms var(--ea),opacity 200ms ease;pointer-events:auto}
 .badge-sub{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--md)}
 .badge-promo-tag{background:var(--sage);color:#fff;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.02em;box-shadow:0 2px 6px rgba(56,102,65,.3)}
 #plate-badge-title{margin:3px 0 8px;font:600 1.25rem var(--h);color:var(--dk)}
 .badge-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .badge-price{font:600 1.15rem var(--h);background:var(--k);padding:2px 12px;border-radius:99px}
-.mn.is-pastelitos #mg{display:flex;flex-direction:column;justify-content:center;padding:10px 0;background:none!important;border:none!important;box-shadow:none!important}
-.mn.is-pastelitos #mg .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:8px 0!important;margin-bottom:2px!important;transition:padding-left 350ms var(--ea),transform 200ms ease;cursor:pointer}
-.mn.is-pastelitos #mg .rw:hover{transform:translateX(4px)}
-.mn.is-pastelitos #mg .rw.plate-focus{transform:translateX(6px)}
+.mn.is-pastelitos #mg{position:relative;z-index:6;width:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0 24px;background:none!important;border:none!important;box-shadow:none!important}
+.mn.is-pastelitos #mg .nt{max-width:580px;margin-left:auto;margin-bottom:14px}
+.mn.is-pastelitos #mg .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left}
+.mn.is-pastelitos #mg .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left,transform;cursor:pointer}
+.mn.is-pastelitos #mg .rw:hover{transform:translateX(6px)}
+.mn.is-pastelitos #mg .rw.plate-focus{transform:translateX(8px)}
 .mn.is-pastelitos #mg .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
@@ -192,16 +194,18 @@ const M = {
     nt: 'Pastelitos fritos al momento, dorados y crujientes con masa tradicional maracucha. ¡PROMO: 2 Tradicionales por $1,00!',
     g: [
       {
-        t: 'Tradicionales (Promo 2 x $1,00)',
+        t: 'Tradicionales',
         r: ['Queso', 'Jamón & Queso', 'Tocineta', 'Pepperoni', 'Mortadela'].map(x => R(x, 'Masa maracucha crujiente con relleno generoso', '$0,65', '2x$1'))
       },
       {
-        t: 'Especiales Caseros',
-        r: ['Pollo', 'Molida', 'Salchicha', 'Papa con queso', 'Andino', 'Dos Quesos'].map(x => R(x, 'Guiso casero tradicional bien sazonado', '$1,10'))
-      },
-      {
-        t: 'Especiales Gourmet',
+        t: 'Especiales',
         r: [
+          R('Pollo', 'Guiso casero tradicional bien sazonado', '$1,10'),
+          R('Molida', 'Guiso casero tradicional bien sazonado', '$1,10'),
+          R('Salchicha', 'Guiso casero tradicional bien sazonado', '$1,10'),
+          R('Papa con queso', 'Guiso casero tradicional bien sazonado', '$1,10'),
+          R('Andino', 'Guiso casero tradicional bien sazonado', '$1,10'),
+          R('Dos Quesos', 'Guiso casero tradicional bien sazonado', '$1,10'),
           R('Camarón al ajillo con queso crema', 'Camarones seleccionados con toque de ajo y queso crema', '$1,99', 'Gourmet'),
           R('Champiñón con queso crema y tocineta', 'Champiñones salteados, tocineta crocante y queso crema', '$1,99', 'Gourmet')
         ]
@@ -517,14 +521,14 @@ function LB(sel) {
     { id: '3_tocineta', n: 'Tocineta', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/3_tocineta.webp' },
     { id: '4_pepperoni', n: 'Pepperoni', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/4_pepperoni.webp' },
     { id: '5_mortadela', n: 'Mortadela', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/5_mortadela.webp' },
-    { id: '6_pollo', n: 'Pollo', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/6_pollo.webp' },
-    { id: '7_carne_molida', n: 'Molida', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/7_carne_molida.webp' },
-    { id: '8_salchicha', n: 'Salchicha', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/8_salchicha.webp' },
-    { id: '9_papa_con_queso', n: 'Papa con queso', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/9_papa_con_queso.webp' },
-    { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
-    { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, cat: 'Especial Casero', promo: false, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
-    { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, cat: 'Gourmet', promo: false, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
-    { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Gourmet', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
+    { id: '6_pollo', n: 'Pollo', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/6_pollo.webp' },
+    { id: '7_carne_molida', n: 'Molida', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/7_carne_molida.webp' },
+    { id: '8_salchicha', n: 'Salchicha', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/8_salchicha.webp' },
+    { id: '9_papa_con_queso', n: 'Papa con queso', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/9_papa_con_queso.webp' },
+    { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
+    { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
+    { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
+    { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
   ];
   let currentPlateIndex = 0;
   const PLATE_STEP = 360 / PASTELITOS_LIST.length;
@@ -546,20 +550,44 @@ function LB(sel) {
 
   function updateCurvedOffsets() {
     if (!mnEl || !mnEl.classList.contains('is-pastelitos') || !matchMedia('(min-width:800px)').matches) {
-      document.querySelectorAll('#mg .rw').forEach(r => r.style.removeProperty('padding-left'));
+      document.querySelectorAll('#mg .rw, #mg .gt').forEach(el => {
+        el.style.removeProperty('margin-left');
+        el.style.removeProperty('max-width');
+      });
       return;
     }
-    const stage = document.getElementById('plate-stage');
-    if (!stage) return;
-    const stageRect = stage.getBoundingClientRect();
-    const centerY = stageRect.top + stageRect.height / 2;
-    const halfH = stageRect.height / 2 || 375;
-    document.querySelectorAll('#mg .rw').forEach(r => {
-      const rRect = r.getBoundingClientRect();
-      const rY = rRect.top + rRect.height / 2;
-      const normDist = Math.min(1, Math.max(-1, (rY - centerY) / halfH));
-      const curveOffset = Math.round(58 * Math.cos(normDist * (Math.PI / 2.2)));
-      r.style.paddingLeft = Math.max(0, curveOffset) + 'px';
+    const wheel = document.getElementById('plate-wheel');
+    const mgEl = document.getElementById('mg');
+    if (!wheel || !mgEl) return;
+
+    const wheelRect = wheel.getBoundingClientRect();
+    const mgRect = mgEl.getBoundingClientRect();
+    const centerX = wheelRect.left + wheelRect.width / 2;
+    const centerY = wheelRect.top + wheelRect.height / 2;
+    const radius = wheel.offsetWidth / 2;
+
+    // Alinear al arco circular tanto las categorías (.gt) como las filas (.rw)
+    document.querySelectorAll('#mg .rw, #mg .gt').forEach(el => {
+      const elRect = el.getBoundingClientRect();
+      const elY = elRect.top + elRect.height / 2;
+      const dy = elY - centerY;
+
+      let targetLeft = 0;
+      if (Math.abs(dy) < radius) {
+        // Ecuación de la circunferencia: x = centerX + sqrt(R^2 - dy^2)
+        const xCircleEdge = centerX + Math.sqrt(radius * radius - dy * dy);
+        // Distancia relativa al contenedor de la lista más 32px de margen visual
+        const offsetInMg = xCircleEdge - mgRect.left + 32;
+        targetLeft = Math.max(0, offsetInMg);
+      } else {
+        targetLeft = 0;
+      }
+
+      const roundedLeft = Math.round(targetLeft);
+      el.style.marginLeft = roundedLeft + 'px';
+      if (el.classList.contains('rw')) {
+        el.style.maxWidth = 'calc(100% - ' + roundedLeft + 'px)';
+      }
     });
   }
 
@@ -587,7 +615,7 @@ function LB(sel) {
     const bT = document.getElementById('plate-badge-title'), bP = document.getElementById('plate-badge-price'), bA = document.getElementById('plate-add-btn');
     const bSub = document.querySelector('#plate-protagonist-badge .badge-sub');
     if (bSub) {
-      bSub.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : '');
+      bSub.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : (cur.cat === 'Especial' && cur.u > 1.5 ? ' <span class="badge-promo-tag">Gourmet</span>' : ''));
     }
     if (bT) bT.textContent = cur.n;
     if (bP) bP.textContent = cur.p;
