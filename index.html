@@ -154,6 +154,8 @@ html.lock{overflow:hidden}
 .arch-img{width:100%;max-height:380px;object-fit:cover;border-radius:999px 999px 28px 28px;box-shadow:14px 14px 0 var(--tan);border:4px solid var(--bg);display:block}
 .zigzag-content .items-group{margin-top:4px}
 .front-plates-section{height:100%;display:flex;flex-direction:column;gap:18px}
+.front-plates-hint{display:none}
+.front-plate-meta{display:none}
 .front-plates-row{display:flex;justify-content:center;align-items:flex-end;gap:32px;padding:20px 10px 32px;margin-bottom:12px}
 .front-plate-item{flex:0 1 250px;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:transform 450ms cubic-bezier(.32,.72,0,1),filter 300ms ease;user-select:none}
 .front-plate-img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 12px 20px rgba(64,32,26,.22));transition:transform 400ms cubic-bezier(.32,.72,0,1),filter 350ms ease;pointer-events:none}
@@ -365,49 +367,101 @@ html.lock{overflow:hidden}
 }
 
 @media(max-width:799px){
-  /* PANINIS MÓVIL: Fila de 4 platos con elevación 3D + Tarjeta activa centrada */
+  /* PANINIS MÓVIL: Vitrina 2x2 con platos grandes sin colisión + Nombres y precios */
   .front-plates-section{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:16px;
-    width:100%;
-    padding:8px 0 20px;
-  }
-  .front-plates-row{
-    display:flex;
-    justify-content:center;
-    align-items:center;
     gap:12px;
     width:100%;
-    padding:14px 4px 18px;
-    margin-bottom:0;
+    max-width:380px;
+    margin:0 auto;
+    padding:6px 0 20px;
+  }
+  .front-plates-hint{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    font-size:0.75rem;
+    font-weight:600;
+    color:var(--md);
+    background:rgba(201,165,119,0.18);
+    border:1px solid rgba(201,165,119,0.35);
+    padding:4px 12px;
+    border-radius:99px;
+    text-align:center;
+  }
+  .front-plates-row{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px;
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+    padding:4px 0 8px;
     box-sizing:border-box;
   }
   .front-plate-item{
-    flex:0 0 74px;
-    width:74px;
-    height:74px;
+    flex:none;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    background:rgba(255,253,248,0.85);
+    backdrop-filter:blur(8px);
+    border:1.5px solid rgba(201,165,119,0.4);
+    border-radius:18px;
+    padding:8px 6px 10px;
     cursor:pointer;
-    transition:transform 300ms cubic-bezier(.22,1,.36,1),opacity 250ms ease;
+    transition:transform 250ms cubic-bezier(.22,1,.36,1), border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+    box-sizing:border-box;
+    text-align:center;
   }
   .front-plate-item .front-plate-img{
-    width:100%;
-    height:100%;
+    width:105px;
+    height:105px;
+    max-width:100%;
     object-fit:contain;
-    filter:drop-shadow(0 6px 12px rgba(64,32,26,.22));
-    transition:transform 300ms cubic-bezier(.22,1,.36,1),filter 300ms ease;
+    filter:drop-shadow(0 8px 14px rgba(64,32,26,0.22));
+    transition:transform 250ms cubic-bezier(.22,1,.36,1), filter 250ms ease;
   }
   .front-plate-item.is-active{
-    z-index:5;
+    z-index:2;
+    border-color:var(--md);
+    background:#fff;
+    box-shadow:0 8px 22px rgba(64,32,26,0.16);
+    transform:translateY(-3px);
   }
   .front-plate-item.is-active .front-plate-img{
-    transform:translateY(-8px) scale(1.22);
-    filter:drop-shadow(0 14px 22px rgba(64,32,26,.36));
+    transform:scale(1.08) translateY(-4px);
+    filter:drop-shadow(0 14px 20px rgba(64,32,26,0.32));
   }
   .front-plate-item:not(.is-active){
-    opacity:0.78;
-    transform:scale(0.94);
+    opacity:0.86;
+  }
+  .front-plate-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    margin-top:6px;
+    width:100%;
+  }
+  .front-plate-name{
+    font:600 0.82rem var(--h);
+    color:var(--dk);
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:130px;
+  }
+  .front-plate-price{
+    font:600 0.76rem var(--h);
+    color:var(--dk);
+    background:var(--k);
+    padding:1px 8px;
+    border-radius:99px;
   }
   .front-cards-row{
     display:flex;
@@ -423,10 +477,12 @@ html.lock{overflow:hidden}
     display:flex;
     width:100%;
     min-height:auto;
-    padding:16px 18px;
-    border-radius:20px;
-    box-shadow:0 10px 28px rgba(64,32,26,.18);
+    padding:14px 16px;
+    border-radius:18px;
+    box-shadow:0 8px 24px rgba(64,32,26,0.14);
     animation:panCardFade 250ms ease;
+    border:1.5px solid var(--md);
+    background:#fff;
   }
   @keyframes panCardFade{
     from{opacity:0;transform:translateY(6px)}
@@ -749,10 +805,14 @@ function frontHTML(cat, imgs) {
   const rows = M[cat].g[0].r;
   const prefix = cat === 'Paninis' ? 'Panini ' : '';
 
-  // 1. Elementos de Escritorio
+  // Elementos de la vitrina interactiva
   const plates = rows.map((r, i) => 
     '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
       '<img src="' + imgs[i] + '" alt="' + r.n + '" class="front-plate-img">' +
+      '<div class="front-plate-meta">' +
+        '<span class="front-plate-name">' + r.n + '</span>' +
+        '<span class="front-plate-price">' + r.p + '</span>' +
+      '</div>' +
     '</div>'
   ).join('');
 
@@ -774,6 +834,7 @@ function frontHTML(cat, imgs) {
   }).join('');
 
   return '<div class="front-plates-section">' +
+    '<div class="front-plates-hint"><span>👆 Toca un panini para ver ingredientes y pedir</span></div>' +
     '<div class="front-plates-row">' + plates + '</div>' +
     '<div class="front-cards-row">' + cards + '</div>' +
   '</div>';
