@@ -161,8 +161,6 @@ html.lock{overflow:hidden}
 .front-plate-item.is-active{z-index:5}
 .front-plate-item.is-active .front-plate-img{transform:translateY(10px) scale(1.16);filter:drop-shadow(0 20px 32px rgba(64,32,26,.38))}
 /* Tarjetas y Platos Paninis (Desktop) */
-.paninis-desktop-view{display:flex;flex-direction:column;gap:18px}
-.paninis-mobile-view{display:none}
 .front-cards-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .front-card{display:flex;flex-direction:column;background:rgba(255,253,248,.85);backdrop-filter:blur(10px);border:1.5px solid rgba(201,165,119,.45);border-radius:20px;padding:16px 18px;min-height:148px;box-sizing:border-box;transition:transform 250ms ease,border-color 250ms ease,box-shadow 250ms ease,background-color 250ms ease;cursor:pointer}
 .front-card:hover{transform:translateY(-3px);border-color:var(--md);box-shadow:0 8px 20px rgba(64,32,26,.12);background:rgba(255,255,255,.95)}
@@ -202,9 +200,7 @@ html.lock{overflow:hidden}
 .sw-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px dashed rgba(201,165,119,.35)}
 .sw-fresh-badge{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--md)}
 
-/* Entradas Vista Dual: Desktop vs Móvil */
-.entradas-desktop-view{display:contents}
-.entradas-mobile-view{display:none}
+/* Sección Entradas */
 .layout-entradas{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;min-height:540px}
 @media(min-width:800px){.layout-entradas{grid-template-columns:1fr 1fr;gap:40px}}
 .entradas-diamond-stage{position:relative;width:min(530px,94vw);aspect-ratio:1/1;margin:0 auto;display:flex;align-items:center;justify-content:center}
@@ -225,431 +221,322 @@ html.lock{overflow:hidden}
 .diamond-center-card .badge-price{font:600 1.12rem var(--h);background:var(--k);padding:2px 10px;border-radius:99px;color:var(--dk)}
 
 /* =========================================================================
-   REGLAS MÓVILES OPTIMIZADAS (max-width: 849px): VISTA SIMULTÁNEA 2 COLUMNAS
+   ADAPTACIÓN MÓVIL SIMÉTRICA CON ANIMACIONES PRESERVADAS (max-width: 849px)
    ========================================================================= */
 @media(max-width:849px){
-  /* SÁNDWICH Y BURGER MÓVIL: Rejilla 2 columnas compacta */
+  /* SÁNDWICH Y BURGER MÓVIL: Plato hero centrado + Selector simétrico 3 columnas */
   .sandwiches-showcase-layout{
-    grid-template-columns:132px 1fr;
-    gap:10px;
-    align-items:start;
-    padding:6px 0 16px;
-  }
-  .sw-nav-col .gt{
-    font-size:0.74rem;
-    margin-bottom:4px;
-    padding-left:2px;
-  }
-  .sw-nav-list{
-    gap:6px;
-    margin-top:0;
-  }
-  .sw-nav-card{
-    padding:6px 8px;
-    border-radius:12px;
-    gap:8px;
-    border-width:1px;
-  }
-  .sw-nav-card:hover, .sw-nav-card.is-active{
-    transform:translateX(3px);
-  }
-  .sw-nav-thumb{
-    width:38px;
-    height:38px;
-    min-width:38px;
-  }
-  .sw-nav-info{
-    gap:1px;
-  }
-  .sw-nav-name{
-    font-size:0.80rem;
-    line-height:1.15;
-  }
-  .sw-nav-title-box .tg{
-    font-size:0.54rem;
-    padding:1px 4px;
-  }
-  .sw-nav-price{
-    font-size:0.76rem;
-    padding:1px 6px;
-    margin-top:2px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    max-width:380px;
+    margin:0 auto;
+    padding:8px 0 20px;
   }
   .sw-hero-col{
-    gap:4px;
+    order:1;
     width:100%;
+    display:flex;
+    flex-direction:column;
     align-items:center;
+    gap:12px;
   }
   .sw-hero-stage{
-    max-width:175px;
-    height:105px;
+    width:100%;
+    max-width:250px;
+    height:150px;
     aspect-ratio:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto;
   }
   .sw-hero-img{
-    max-height:100px;
+    max-height:145px;
     width:auto;
     max-width:100%;
-    filter:drop-shadow(0 6px 12px rgba(64,32,26,.2));
+    object-fit:contain;
+    filter:drop-shadow(0 14px 22px rgba(64,32,26,.26));
+    transition:transform 300ms cubic-bezier(.22,1,.36,1),opacity 200ms ease;
   }
   .sw-hero-card{
-    padding:10px 12px;
-    border-radius:16px;
-    margin-top:2px;
-    box-shadow:0 6px 18px rgba(64,32,26,.12);
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+    padding:14px 18px;
+    border-radius:18px;
     box-sizing:border-box;
   }
   .sw-card-head{
-    margin-bottom:4px;
-    gap:6px;
+    margin-bottom:6px;
+    gap:8px;
   }
   .sw-card-title-box h3{
-    font-size:1.0rem;
+    font-size:1.20rem;
   }
-  .sw-card-title-box .badge-sub{
-    font-size:0.60rem;
+  .sw-card-title-box .tg{
+    font-size:0.62rem;
   }
   .sw-card-price{
-    font-size:0.94rem;
-    padding:2px 8px;
+    font-size:1.10rem;
+    padding:2px 10px;
   }
   .sw-card-desc{
-    font-size:0.70rem;
-    line-height:1.25;
-    margin:0 0 6px;
+    font-size:0.78rem;
+    line-height:1.3;
+    margin:0 0 10px;
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
     overflow:hidden;
   }
-  .sw-card-foot{
-    padding-top:6px;
-    gap:6px;
-  }
   .sw-fresh-badge{
-    font-size:0.60rem;
+    font-size:0.68rem;
   }
   .sw-card-foot .pl{
-    width:26px;
-    height:26px;
-    font-size:1.05rem;
+    width:28px;
+    height:28px;
+    font-size:1.15rem;
+  }
+
+  .sw-nav-col{
+    order:2;
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+  }
+  .sw-nav-col .gt{
+    font-size:0.95rem;
+    text-align:center;
+    margin-bottom:8px;
+    display:block;
+  }
+  .sw-nav-list{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    width:100%;
+    margin-top:0;
+  }
+  .sw-nav-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    padding:8px 6px;
+    gap:4px;
+    border-radius:14px;
+    border-width:1.5px;
+    transition:transform 200ms ease,border-color 200ms ease,box-shadow 200ms ease;
+  }
+  .sw-nav-card:hover, .sw-nav-card.is-active{
+    transform:translateY(-3px);
+    border-color:var(--md);
+    box-shadow:0 6px 18px rgba(64,32,26,.15);
+    background:#fff;
+  }
+  .sw-nav-thumb{
+    width:44px;
+    height:44px;
+    min-width:44px;
+  }
+  .sw-nav-info{
+    align-items:center;
+    gap:2px;
+  }
+  .sw-nav-name{
+    font-size:0.74rem;
+    line-height:1.15;
+    text-align:center;
+    white-space:normal;
+    word-break:break-word;
+  }
+  .sw-nav-title-box .tg{
+    display:none;
+  }
+  .sw-nav-price{
+    font-size:0.72rem;
+    padding:1px 6px;
+    align-self:center;
+    margin-top:1px;
   }
 }
 
 @media(max-width:799px){
-  /* PANINIS MÓVIL: Oculta filas de escritorio y activa Showcase 2 columnas */
-  .paninis-desktop-view{display:none}
-  .paninis-mobile-view{
-    display:grid;
-    grid-template-columns:132px 1fr;
-    gap:10px;
-    align-items:start;
-    padding:6px 0 16px;
-  }
-  .paninis-mobile-nav{
+  /* PANINIS MÓVIL: Fila de 4 platos con elevación 3D + Tarjeta activa centrada */
+  .front-plates-section{
     display:flex;
     flex-direction:column;
-    gap:5px;
-  }
-  .paninis-m-card{
-    display:flex;
     align-items:center;
-    gap:7px;
-    background:rgba(255,253,248,.85);
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(201,165,119,.45);
-    border-radius:12px;
-    padding:5px 7px;
-    text-align:left;
-    cursor:pointer;
-    transition:transform 200ms ease,border-color 200ms ease,background-color 200ms ease;
+    gap:16px;
+    width:100%;
+    padding:8px 0 20px;
   }
-  .paninis-m-card.is-active{
-    border-color:var(--md);
-    background:#fff;
-    box-shadow:0 6px 18px rgba(64,32,26,.12);
-    transform:translateX(3px);
-  }
-  .paninis-m-thumb{
-    width:36px;
-    height:36px;
-    min-width:36px;
+  .front-plates-row{
     display:flex;
-    align-items:center;
     justify-content:center;
-  }
-  .paninis-m-thumb img{
-    width:100%;
-    height:auto;
-    object-fit:contain;
-    filter:drop-shadow(0 4px 8px rgba(64,32,26,.18));
-    pointer-events:none;
-  }
-  .paninis-m-info{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-    min-width:0;
-  }
-  .paninis-m-name{
-    margin:0;
-    font:600 0.80rem var(--h);
-    color:var(--dk);
-    line-height:1.15;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .paninis-m-price{
-    font:600 0.76rem var(--h);
-    color:var(--dk);
-    background:var(--k);
-    padding:1px 6px;
-    border-radius:99px;
-    align-self:flex-start;
-  }
-  .paninis-mobile-hero{
-    display:flex;
-    flex-direction:column;
     align-items:center;
-    gap:4px;
+    gap:12px;
     width:100%;
-  }
-  .paninis-hero-stage{
-    width:100%;
-    max-width:175px;
-    height:105px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .paninis-hero-img{
-    max-height:100px;
-    width:auto;
-    max-width:100%;
-    object-fit:contain;
-    filter:drop-shadow(0 8px 14px rgba(64,32,26,.22));
-    transition:transform 300ms cubic-bezier(.22,1,.36,1),opacity 200ms ease;
-    pointer-events:none;
-  }
-  .paninis-hero-card{
-    width:100%;
-    background:rgba(255,253,249,.95);
-    backdrop-filter:blur(16px);
-    border:1.5px solid rgba(201,165,119,.5);
-    border-radius:16px;
-    padding:10px 12px;
-    box-shadow:0 6px 18px rgba(64,32,26,.12);
+    padding:14px 4px 18px;
+    margin-bottom:0;
     box-sizing:border-box;
   }
-  .paninis-hero-card .fc-head{
+  .front-plate-item{
+    flex:0 0 74px;
+    width:74px;
+    height:74px;
+    cursor:pointer;
+    transition:transform 300ms cubic-bezier(.22,1,.36,1),opacity 250ms ease;
+  }
+  .front-plate-item .front-plate-img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 6px 12px rgba(64,32,26,.22));
+    transition:transform 300ms cubic-bezier(.22,1,.36,1),filter 300ms ease;
+  }
+  .front-plate-item.is-active{
+    z-index:5;
+  }
+  .front-plate-item.is-active .front-plate-img{
+    transform:translateY(-8px) scale(1.22);
+    filter:drop-shadow(0 14px 22px rgba(64,32,26,.36));
+  }
+  .front-plate-item:not(.is-active){
+    opacity:0.78;
+    transform:scale(0.94);
+  }
+  .front-cards-row{
     display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:6px;
-    margin-bottom:4px;
+    justify-content:center;
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
   }
-  .paninis-hero-card h3{
-    margin:0;
-    font:600 1.02rem var(--h);
-    color:var(--dk);
-    line-height:1.2;
+  .front-card:not(.is-active){
+    display:none;
   }
-  .paninis-hero-card .fc-price{
-    font:600 0.94rem var(--h);
-    background:var(--k);
-    padding:2px 8px;
-    border-radius:99px;
-    color:var(--dk);
-    white-space:nowrap;
-  }
-  .paninis-hero-card .fc-desc{
-    font-size:0.70rem;
-    color:#6a5750;
-    line-height:1.25;
-    margin:0 0 6px;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-  }
-  .paninis-hero-card .fc-foot{
+  .front-card.is-active{
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:6px;
-    padding-top:6px;
-    border-top:1px dashed rgba(201,165,119,.35);
+    width:100%;
+    min-height:auto;
+    padding:16px 18px;
+    border-radius:20px;
+    box-shadow:0 10px 28px rgba(64,32,26,.18);
+    animation:panCardFade 250ms ease;
   }
-  .paninis-hero-card .fc-badge{
-    font-size:0.60rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:var(--md);
+  @keyframes panCardFade{
+    from{opacity:0;transform:translateY(6px)}
+    to{opacity:1;transform:translateY(0)}
   }
-  .paninis-hero-card .pl{
-    width:26px;
-    height:26px;
+  .front-card .fc-name{
+    font-size:1.15rem;
+  }
+  .front-card .fc-price{
     font-size:1.05rem;
+    padding:2px 10px;
+  }
+  .front-card .fc-desc{
+    font-size:0.78rem;
+    line-height:1.3;
+    margin:0 0 10px;
+  }
+  .front-card .fc-foot .pl{
+    width:28px;
+    height:28px;
+    font-size:1.15rem;
   }
 
-  /* ENTRADAS MÓVIL: Oculta diamante de escritorio y activa Showcase 2 columnas */
-  .entradas-desktop-view{display:none}
-  .entradas-mobile-view{
-    display:grid;
-    grid-template-columns:132px 1fr;
-    gap:10px;
-    align-items:start;
-    padding:6px 0 16px;
-  }
-  .entradas-mobile-nav{
+  /* ENTRADAS MÓVIL: Rueda de diamante giratoria 90° centrada + Tarjeta de contexto en medio + Lista abajo */
+  .layout-entradas{
     display:flex;
     flex-direction:column;
-    gap:5px;
-  }
-  .entradas-m-card{
-    display:flex;
     align-items:center;
-    gap:7px;
-    background:rgba(255,253,248,.85);
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(201,165,119,.45);
-    border-radius:12px;
-    padding:5px 7px;
-    text-align:left;
-    cursor:pointer;
-    transition:transform 200ms ease,border-color 200ms ease,background-color 200ms ease;
+    gap:18px;
+    width:100%;
+    max-width:380px;
+    margin:0 auto;
+    padding:8px 0 20px;
+    min-height:auto;
   }
-  .entradas-m-card.is-active{
-    border-color:var(--md);
-    background:#fff;
-    box-shadow:0 6px 18px rgba(64,32,26,.12);
-    transform:translateX(3px);
-  }
-  .entradas-m-thumb{
-    width:36px;
-    height:36px;
-    min-width:36px;
+  .entradas-diamond-stage{
+    width:min(320px, 86vw);
+    aspect-ratio:1/1;
+    margin:0 auto;
+    position:relative;
     display:flex;
     align-items:center;
     justify-content:center;
   }
-  .entradas-m-thumb img{
-    width:100%;
-    height:auto;
-    object-fit:contain;
-    filter:drop-shadow(0 4px 8px rgba(64,32,26,.18));
-    pointer-events:none;
+  .diamond-wheel{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
   }
-  .entradas-m-info{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-    min-width:0;
+  .diamond-track-ring{
+    inset:42px;
   }
-  .entradas-m-name{
-    margin:0;
-    font:600 0.80rem var(--h);
-    color:var(--dk);
-    line-height:1.15;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+  .diamond-item{
+    width:90px;
+    height:90px;
+    margin:-45px 0 0 -45px;
   }
-  .entradas-m-price{
-    font:600 0.76rem var(--h);
-    color:var(--dk);
-    background:var(--k);
-    padding:1px 6px;
-    border-radius:99px;
-    align-self:flex-start;
-  }
-  .entradas-mobile-hero{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    width:100%;
-  }
-  .entradas-hero-stage{
-    width:100%;
-    max-width:175px;
-    height:105px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .entradas-hero-img{
-    max-height:100px;
-    width:auto;
-    max-width:100%;
-    object-fit:contain;
-    filter:drop-shadow(0 8px 14px rgba(64,32,26,.22));
-    transition:transform 300ms cubic-bezier(.22,1,.36,1),opacity 200ms ease;
-    pointer-events:none;
-  }
-  .entradas-hero-card{
-    width:100%;
-    background:rgba(255,253,249,.95);
-    backdrop-filter:blur(16px);
-    border:1.5px solid rgba(201,165,119,.5);
+  .diamond-center-card{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:130px;
+    max-width:135px;
+    padding:8px 10px;
     border-radius:16px;
-    padding:10px 12px;
-    box-shadow:0 6px 18px rgba(64,32,26,.12);
-    box-sizing:border-box;
+    box-shadow:0 8px 24px rgba(64,32,26,.18);
   }
-  .entradas-hero-card .badge-sub{
-    font-size:0.60rem;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:var(--md);
-    margin-bottom:2px;
+  .diamond-center-card .badge-sub{
+    font-size:0.58rem;
   }
-  .entradas-hero-card .eh-head{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:6px;
-    margin-bottom:4px;
+  .diamond-center-card h4{
+    font-size:0.86rem;
+    line-height:1.15;
+    margin:0 0 2px;
   }
-  .entradas-hero-card h4{
-    margin:0;
-    font:600 1.02rem var(--h);
-    color:var(--dk);
+  .diamond-center-card .badge-desc{
+    font-size:0.66rem;
     line-height:1.2;
-  }
-  .entradas-hero-card .badge-price{
-    font:600 0.94rem var(--h);
-    background:var(--k);
-    padding:2px 8px;
-    border-radius:99px;
-    color:var(--dk);
-    white-space:nowrap;
-  }
-  .entradas-hero-card .badge-desc{
-    font-size:0.70rem;
-    color:#6a5750;
-    line-height:1.25;
     margin:0 0 6px;
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
     overflow:hidden;
   }
-  .entradas-hero-card .badge-actions{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:6px;
-    padding-top:6px;
-    border-top:1px dashed rgba(201,165,119,.35);
+  .diamond-center-card .badge-actions{
+    gap:4px;
   }
-  .entradas-hero-card .pl{
+  .diamond-center-card .badge-price{
+    font-size:0.82rem;
+    padding:1px 7px;
+  }
+  .diamond-center-card .pl{
     width:26px;
     height:26px;
     font-size:1.05rem;
+  }
+  .entradas-list-col{
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+  }
+  .entradas-list-col .gt{
+    font-size:0.95rem;
+    text-align:center;
+    margin-bottom:8px;
+    display:block;
+  }
+  .entradas-list-col .items-group{
+    gap:6px;
   }
 }
 .entradas-list-col .items-group{margin-top:4px}
@@ -886,46 +773,9 @@ function frontHTML(cat, imgs) {
     '</div>';
   }).join('');
 
-  // 2. Elementos Móviles (Showcase compacto 2 columnas)
-  const mobileNav = rows.map((r, i) =>
-    '<button type="button" class="paninis-m-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<div class="paninis-m-thumb"><img src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
-      '<div class="paninis-m-info">' +
-        '<h4 class="paninis-m-name">' + r.n + '</h4>' +
-        '<span class="paninis-m-price">' + r.p + '</span>' +
-      '</div>' +
-    '</button>'
-  ).join('');
-
-  const r0 = rows[0];
-  const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
-
   return '<div class="front-plates-section">' +
-    '<!-- Vista Escritorio -->' +
-    '<div class="paninis-desktop-view">' +
-      '<div class="front-plates-row">' + plates + '</div>' +
-      '<div class="front-cards-row">' + cards + '</div>' +
-    '</div>' +
-    '<!-- Vista Móvil (Simultánea 2 columnas) -->' +
-    '<div class="paninis-mobile-view">' +
-      '<div class="paninis-mobile-nav">' + mobileNav + '</div>' +
-      '<div class="paninis-mobile-hero">' +
-        '<div class="paninis-hero-stage">' +
-          '<img id="paninis-hero-img" class="paninis-hero-img" src="' + imgs[0] + '" alt="' + r0.n + '">' +
-        '</div>' +
-        '<div class="paninis-hero-card" id="paninis-hero-card">' +
-          '<div class="fc-head">' +
-            '<h3 id="paninis-hero-name">' + r0.n + '</h3>' +
-            '<span id="paninis-hero-price" class="fc-price">' + r0.p + '</span>' +
-          '</div>' +
-          '<p id="paninis-hero-desc" class="fc-desc">' + (r0.d || '') + '</p>' +
-          '<div class="fc-foot">' +
-            '<span class="fc-badge">Panini artesanal</span>' +
-            '<button id="paninis-hero-add-btn" class="pl" data-k="' + prefix + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
+    '<div class="front-plates-row">' + plates + '</div>' +
+    '<div class="front-cards-row">' + cards + '</div>' +
   '</div>';
 }
 function diamondHTML(cat, imgs) {
@@ -934,60 +784,25 @@ function diamondHTML(cat, imgs) {
   const r0 = rows[0];
   const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
 
-  // 1. Selector móvil compacto
-  const mobileNav = rows.map((r, i) =>
-    '<button type="button" class="entradas-m-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<div class="entradas-m-thumb"><img src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
-      '<div class="entradas-m-info">' +
-        '<h4 class="entradas-m-name">' + r.n + '</h4>' +
-        '<span class="entradas-m-price">' + r.p + '</span>' +
-      '</div>' +
-    '</button>'
-  ).join('');
-
-  return '<!-- Vista Escritorio (Rueda de Diamante + Lista) -->' +
-  '<div class="entradas-desktop-view">' +
-    '<div class="entradas-diamond-stage" id="entradas-stage">' +
-      '<div class="diamond-wheel" id="diamond-wheel">' +
-        '<div class="diamond-track-ring"></div>' +
-        items +
-      '</div>' +
-      '<div class="diamond-center-card" id="entradas-badge">' +
-        '<span class="badge-sub">Entradas · Ración</span>' +
-        '<h4 id="entradas-badge-title">' + r0.n + '</h4>' +
-        '<p id="entradas-badge-desc" class="badge-desc">' + (r0.d || '') + '</p>' +
-        '<div class="badge-actions">' +
-          '<span id="entradas-badge-price" class="badge-price">' + r0.p + '</span>' +
-          '<button id="entradas-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
-        '</div>' +
-      '</div>' +
+  return '<div class="entradas-diamond-stage" id="entradas-stage">' +
+    '<div class="diamond-wheel" id="diamond-wheel">' +
+      '<div class="diamond-track-ring"></div>' +
+      items +
     '</div>' +
-    '<div class="entradas-list-col">' +
-      '<span class="gt">' + M[cat].g[0].t + '</span>' +
-      '<div class="items-group">' +
-        rows.map((r, i) => rowHTML(r, i, cat)).join('') +
+    '<div class="diamond-center-card" id="entradas-badge">' +
+      '<span class="badge-sub">Entradas · Ración</span>' +
+      '<h4 id="entradas-badge-title">' + r0.n + '</h4>' +
+      '<p id="entradas-badge-desc" class="badge-desc">' + (r0.d || '') + '</p>' +
+      '<div class="badge-actions">' +
+        '<span id="entradas-badge-price" class="badge-price">' + r0.p + '</span>' +
+        '<button id="entradas-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
       '</div>' +
     '</div>' +
   '</div>' +
-  '<!-- Vista Móvil (Simultánea 2 columnas) -->' +
-  '<div class="entradas-mobile-view">' +
-    '<div class="entradas-mobile-nav">' + mobileNav + '</div>' +
-    '<div class="entradas-mobile-hero">' +
-      '<div class="entradas-hero-stage">' +
-        '<img id="entradas-hero-img" class="entradas-hero-img" src="' + imgs[0] + '" alt="' + r0.n + '">' +
-      '</div>' +
-      '<div class="entradas-hero-card" id="entradas-hero-card">' +
-        '<span class="badge-sub">Entradas · Ración</span>' +
-        '<div class="eh-head">' +
-          '<h4 id="entradas-m-hero-title">' + r0.n + '</h4>' +
-          '<span id="entradas-m-hero-price" class="badge-price">' + r0.p + '</span>' +
-        '</div>' +
-        '<p id="entradas-m-hero-desc" class="badge-desc">' + (r0.d || '') + '</p>' +
-        '<div class="badge-actions">' +
-          '<span class="badge-sub" style="margin:0">Hecho al momento</span>' +
-          '<button id="entradas-m-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
-        '</div>' +
-      '</div>' +
+  '<div class="entradas-list-col">' +
+    '<span class="gt">' + M[cat].g[0].t + '</span>' +
+    '<div class="items-group">' +
+      rows.map((r, i) => rowHTML(r, i, cat)).join('') +
     '</div>' +
   '</div>';
 }
@@ -1525,63 +1340,27 @@ function LB(sel) {
   }
 
   function initFrontPlates(id) {
-    const c = document.getElementById(id);
-    if (!c) return;
-    const rows = M['Paninis'].g[0].r;
-    const imgs = IMGS.paninis;
-    const prefix = 'Panini ';
-
-    // 1. Elementos Escritorio
-    const dPlates = [...c.querySelectorAll('.front-plate-item')];
-    const dCards = [...c.querySelectorAll('.front-card')];
-
-    // 2. Elementos Móvil
-    const mCards = [...c.querySelectorAll('.paninis-m-card')];
-    const mImg = c.querySelector('#paninis-hero-img');
-    const mName = c.querySelector('#paninis-hero-name');
-    const mPrice = c.querySelector('#paninis-hero-price');
-    const mDesc = c.querySelector('#paninis-hero-desc');
-    const mAddBtn = c.querySelector('#paninis-hero-add-btn');
+    const root = document.getElementById(id);
+    if (!root) return;
+    const plates = [...root.querySelectorAll('.front-plate-item')];
+    const cards = [...root.querySelectorAll('.front-card')];
 
     const pick = i => {
-      if (i < 0 || i >= rows.length) return;
-      const cur = rows[i];
-
-      // Actualizar Escritorio
-      dPlates.forEach((p, j) => p.classList.toggle('is-active', j === i));
-      dCards.forEach((k, j) => {
+      if (i < 0 || i >= plates.length) return;
+      plates.forEach((p, j) => p.classList.toggle('is-active', j === i));
+      cards.forEach((k, j) => {
         const active = j === i;
         k.classList.toggle('is-active', active);
         const ind = k.querySelector('.fc-indicator');
         if (ind) ind.textContent = active ? '● Seleccionado' : 'Ver plato';
       });
-
-      // Actualizar Móvil
-      mCards.forEach((k, j) => k.classList.toggle('is-active', j === i));
-      if (mImg) {
-        mImg.style.opacity = '0';
-        mImg.style.transform = 'scale(0.92)';
-        setTimeout(() => {
-          mImg.src = imgs[i];
-          mImg.alt = cur.n;
-          mImg.style.opacity = '1';
-          mImg.style.transform = 'scale(1)';
-        }, 120);
-      }
-      if (mName) mName.textContent = cur.n;
-      if (mPrice) mPrice.textContent = cur.p;
-      if (mDesc) mDesc.textContent = cur.d || '';
-      if (mAddBtn) {
-        const u = parseFloat(cur.p.replace(/[^\d,]/g, '').replace(',', '.'));
-        mAddBtn.dataset.k = prefix + cur.n;
-        mAddBtn.dataset.u = isNaN(u) ? '' : u;
-        mAddBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
-      }
     };
 
-    dPlates.forEach((p, i) => p.addEventListener('click', () => pick(i)));
-    dCards.forEach((k, i) => k.addEventListener('click', e => { if (e.target.closest('.pl')) return; pick(i); }));
-    mCards.forEach((k, i) => k.addEventListener('click', () => pick(i)));
+    plates.forEach((p, i) => p.addEventListener('click', () => pick(i)));
+    cards.forEach((k, i) => k.addEventListener('click', e => {
+      if (e.target.closest('.pl')) return;
+      pick(i);
+    }));
   }
 
   function initDiamondEntradas(id) {
@@ -1596,24 +1375,14 @@ function LB(sel) {
     const bPrice = document.getElementById('entradas-badge-price');
     const bAdd = document.getElementById('entradas-add-btn');
 
-    // Elementos Móviles
-    const mCards = [...c.querySelectorAll('.entradas-m-card')];
-    const mImg = c.querySelector('#entradas-hero-img');
-    const mTitle = c.querySelector('#entradas-m-hero-title');
-    const mPrice = c.querySelector('#entradas-m-hero-price');
-    const mDesc = c.querySelector('#entradas-m-hero-desc');
-    const mAddBtn = c.querySelector('#entradas-m-add-btn');
-
     const catData = M['Entradas'].g[0].r;
-    const imgs = IMGS.entradas;
     const N = items.length; // 4
     let currentIdx = 0;
 
     function updateDiamond() {
-      // Salvaguarda: si stage.offsetWidth es 0 (oculto durante render), usar fallback saludable (520px)
-      const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : 520;
       const isDesktop = matchMedia('(min-width: 800px)').matches;
-      const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(138, stageW * 0.38);
+      const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : (isDesktop ? 520 : 320);
+      const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(115, stageW * 0.36);
       const wheelAngle = -currentIdx * 90;
 
       if (wheel) {
@@ -1643,8 +1412,6 @@ function LB(sel) {
       updateDiamond();
 
       const cur = catData[idx];
-
-      // Actualizar Escritorio
       if (bTitle) bTitle.textContent = cur.n;
       if (bDesc) bDesc.textContent = cur.d || '';
       if (bPrice) bPrice.textContent = cur.p;
@@ -1655,28 +1422,6 @@ function LB(sel) {
         bAdd.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
       }
       rows.forEach((r, j) => r.classList.toggle('plate-focus', j === idx));
-
-      // Actualizar Móvil
-      mCards.forEach((k, j) => k.classList.toggle('is-active', j === idx));
-      if (mImg) {
-        mImg.style.opacity = '0';
-        mImg.style.transform = 'scale(0.92)';
-        setTimeout(() => {
-          mImg.src = imgs[idx];
-          mImg.alt = cur.n;
-          mImg.style.opacity = '1';
-          mImg.style.transform = 'scale(1)';
-        }, 120);
-      }
-      if (mTitle) mTitle.textContent = cur.n;
-      if (mPrice) mPrice.textContent = cur.p;
-      if (mDesc) mDesc.textContent = cur.d || '';
-      if (mAddBtn) {
-        const u = parseFloat(cur.p.replace(/[^\d,]/g, '').replace(',', '.'));
-        mAddBtn.dataset.k = cur.n;
-        mAddBtn.dataset.u = isNaN(u) ? '' : u;
-        mAddBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
-      }
     }
 
     items.forEach((item, i) => {
@@ -1689,10 +1434,6 @@ function LB(sel) {
         if (e.target.closest('.pl')) return;
         selectEntrada(i);
       });
-    });
-
-    mCards.forEach((k, i) => {
-      k.addEventListener('click', () => selectEntrada(i));
     });
 
     window.addEventListener('resize', updateDiamond);
