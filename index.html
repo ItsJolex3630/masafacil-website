@@ -473,7 +473,7 @@ html.lock{overflow:hidden}
     border-radius:0!important;
     box-shadow:none!important;
     filter:drop-shadow(0 4px 8px rgba(40,20,14,.22));
-    transition:transform 400ms var(--ea), filter 300ms ease;
+    transition:transform 700ms var(--ea), filter 300ms ease;
   }
   /* Ítems de bebidas rodeando la bandeja */
   .mn.is-bebidas .drink-item{
@@ -1378,6 +1378,7 @@ function LB(sel) {
     { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
   ];
   let currentPlateIndex = 0;
+  let plateWheelAngle = 0;
   const PLATE_STEP = 360 / PASTELITOS_LIST.length;
 
   function getDynamicRadius() {
@@ -1471,10 +1472,15 @@ function LB(sel) {
 
     // En escritorio el plato rota hacia la derecha (0°).
     // En móvil rota completamente abajo (90°).
-    const wheelAngle = isDesktop ? (-idx * PLATE_STEP) : (90 - idx * PLATE_STEP);
+    // Camino angular más corto (shortest path) para evitar giros bruscos de 332° al saltar entre extremos (0 <-> 12)
+    const targetAngle = isDesktop ? (-idx * PLATE_STEP) : (90 - idx * PLATE_STEP);
+    let delta = (targetAngle - (plateWheelAngle % 360));
+    while (delta > 180) delta -= 360;
+    while (delta < -180) delta += 360;
+    plateWheelAngle += delta;
 
     if (wheel) {
-      wheel.style.transform = 'translate(-50%, -50%) rotate(' + wheelAngle + 'deg)';
+      wheel.style.transform = 'translate(-50%, -50%) rotate(' + plateWheelAngle + 'deg)';
     }
 
     if (isDesktop) {
@@ -1484,7 +1490,7 @@ function LB(sel) {
         if (off > N / 2) off -= N;
         if (off < -N / 2) off += N;
         const absAngle = off * PLATE_STEP;
-        el.style.transform = 'rotate(' + (absAngle - wheelAngle) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
+        el.style.transform = 'rotate(' + (absAngle - plateWheelAngle) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
         const dist = Math.abs(off);
         el.classList.toggle('is-active', i === idx);
         el.style.opacity = dist === 0 ? '1' : (dist === 1 ? '0.85' : (dist === 2 ? '0.45' : '0'));
@@ -1504,7 +1510,7 @@ function LB(sel) {
 
         const img = el.querySelector('img');
         if (img) {
-          img.style.transform = 'rotate(' + (-wheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.35)' : ' scale(0.92)');
+          img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.35)' : ' scale(0.92)');
           img.style.filter = isProtagonist ? 'drop-shadow(0 14px 22px rgba(40,20,14,.45))' : 'drop-shadow(0 4px 8px rgba(40,20,14,.22))';
         }
       });
@@ -1666,7 +1672,6 @@ function LB(sel) {
     document.querySelectorAll('#drinks-slots .drink-item').forEach((el, i) => {
       const slotAngle = i * DRINKS_STEP;
       const counterAngle = -(drinksWheelAngle + slotAngle);
-      el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + counterAngle + 'deg)';
       const isActive = (i === idx);
       const r = (!isDesktop && isActive) ? (radius + 12) : radius;
       el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + counterAngle + 'deg)';
@@ -1794,24 +1799,29 @@ function LB(sel) {
     const catData = M['Entradas'].g[0].r;
     const N = items.length; // 4
     let currentIdx = 0;
+    let diamondWheelAngle = 0;
 
     function updateDiamond() {
       const isDesktop = matchMedia('(min-width: 800px)').matches;
       const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : (isDesktop ? 520 : 320);
       const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(115, stageW * 0.36);
-      
+
       // En escritorio el plato protagonista rota a la derecha (0°).
       // En móvil rota completamente abajo (90°), conectando visualmente con la lista inferior.
       const targetProtagonistAngle = isDesktop ? 0 : 90;
-      const wheelAngle = targetProtagonistAngle - currentIdx * 90;
+      const targetAngle = targetProtagonistAngle - currentIdx * 90;
+      let delta = (targetAngle - (diamondWheelAngle % 360));
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      diamondWheelAngle += delta;
 
       if (wheel) {
-        wheel.style.transform = 'rotate(' + wheelAngle + 'deg)';
+        wheel.style.transform = 'rotate(' + diamondWheelAngle + 'deg)';
       }
 
       items.forEach((item, i) => {
         const slotAngle = i * 90;
-        const visualAngle = slotAngle + wheelAngle;
+        const visualAngle = slotAngle + diamondWheelAngle;
         const norm = ((visualAngle % 360) + 360) % 360;
         const isProtagonist = norm === targetProtagonistAngle;
 
@@ -1821,7 +1831,7 @@ function LB(sel) {
 
         const img = item.querySelector('img');
         if (img) {
-          img.style.transform = 'rotate(' + (-wheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.30)' : ' scale(0.90)');
+          img.style.transform = 'rotate(' + (-diamondWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.30)' : ' scale(0.90)');
         }
       });
     }
