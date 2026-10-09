@@ -108,6 +108,7 @@ html.lock{overflow:hidden}
 @media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms}.faq details::details-content{transition:none}}</style><style id="plate">
 .mn-left{position:relative;width:100%}
 .plate-stage{display:none}
+.plate-detail-card{display:none}
 #menu{position:relative;overflow-x:clip}
 @media(min-width:800px){
 .mn.is-pastelitos,.mn.is-bebidas{position:relative!important;display:block!important;min-height:880px!important}
@@ -367,20 +368,23 @@ html.lock{overflow:hidden}
 }
 
 @media(max-width:799px){
-  /* ETAPAS INTERACTIVAS MÓVILES: PASTELITOS Y BEBIDAS */
+  /* ETAPAS INTERACTIVAS MÓVILES: PLATO COMPLETO 360° PARA PASTELITOS Y BEBIDAS */
   .mn.is-pastelitos, .mn.is-bebidas{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:16px;
+    gap:14px;
     width:100%;
-    padding:6px 0 20px;
+    padding:4px 0 20px;
     min-height:auto!important;
+  }
+  .mn.is-pastelitos .nt, .mn.is-bebidas .nt{
+    display:none; /* Ocultar el bloque marrón redundante: la información está integrada en la ficha */
   }
   .mn.is-pastelitos .mn-left, .mn.is-bebidas .mn-left{
     width:100%;
     display:flex;
-    justify-content:center;
+    flex-direction:column;
     align-items:center;
     position:relative;
     height:auto!important;
@@ -389,7 +393,7 @@ html.lock{overflow:hidden}
   .mn.is-pastelitos .plate-stage, .mn.is-bebidas .plate-stage{
     display:flex;
     position:relative;
-    width:min(290px, 84vw);
+    width:min(310px, 86vw);
     aspect-ratio:1/1;
     margin:0 auto;
     align-items:center;
@@ -397,87 +401,185 @@ html.lock{overflow:hidden}
     height:auto;
     min-height:auto;
     pointer-events:auto;
+    overflow:visible;
   }
-  .mn.is-pastelitos .plate-viewport, .mn.is-bebidas .plate-viewport{
+  .plate-viewport{
     position:absolute;
     inset:0;
     border-radius:50%;
     overflow:visible;
   }
-  .mn.is-pastelitos .plate-wheel, .mn.is-bebidas .plate-wheel{
+  .plate-wheel{
     position:absolute;
     top:50%;
     left:50%;
     width:100%;
     height:100%;
     border-radius:50%;
-    transform:translate(-50%,-50%);
-    transition:transform 700ms var(--ea);
+    transform:translate(-50%, -50%);
     will-change:transform;
-    transform-origin:center center;
+    transition:transform 700ms var(--ea);
   }
-  .mn.is-pastelitos .plate-slots, .mn.is-bebidas .plate-slots{
+  .plate-stage .plate-base-img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius:50%;
+    filter:drop-shadow(0 14px 26px rgba(64,32,26,.24));
+  }
+  .plate-slots{
     position:absolute;
     inset:0;
   }
-  .mn.is-pastelitos .plate-item, .mn.is-bebidas .plate-item{
+  /* Ítems de pastelitos rodeando el plato en 360° */
+  .mn.is-pastelitos .plate-item{
+    width:48px;
+    height:48px;
+    margin:-24px 0 0 -24px;
     position:absolute;
     top:50%;
     left:50%;
-    width:78px;
-    height:78px;
-    margin:-39px 0 0 -39px;
     display:flex;
     align-items:center;
     justify-content:center;
-    transform-origin:center center;
-    transition:transform 700ms var(--ea),opacity 350ms ease;
+    transition:transform 700ms var(--ea), opacity 300ms ease;
+    cursor:pointer;
   }
   .mn.is-pastelitos .plate-item img{
     width:100%;
     height:100%;
     object-fit:contain;
-    filter:drop-shadow(0 8px 14px rgba(40,20,14,.3));
-    transition:transform 450ms var(--ea),filter 300ms ease;
+    transition:transform 400ms var(--ea), filter 300ms ease;
   }
-  .mn.is-pastelitos .plate-item.is-active img{
-    transform:scale(1.25);
-    filter:drop-shadow(0 12px 20px rgba(40,20,14,.4));
-  }
+  /* Ítems de bebidas rodeando la bandeja */
   .mn.is-bebidas .drink-item{
-    width:76px;
-    height:76px;
-    margin:-38px 0 0 -38px;
+    width:70px;
+    height:70px;
+    margin:-35px 0 0 -35px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 700ms var(--ea);
+    cursor:pointer;
   }
+  /* Mini cuadro en el centro del plato/bandeja */
   .mn.is-pastelitos .plate-badge, .mn.is-bebidas .plate-badge{
     position:absolute;
     top:50%;
     left:50%;
-    transform:translate(-50%,-50%);
-    width:130px;
-    max-width:135px;
-    padding:8px 10px;
-    border-radius:16px;
-    box-shadow:0 8px 24px rgba(64,32,26,.18);
-    z-index:20;
+    transform:translate(-50%, -50%);
+    width:102px;
+    max-width:108px;
+    padding:6px 8px;
+    border-radius:14px;
+    background:rgba(255,253,249,.95);
+    backdrop-filter:blur(12px);
+    border:1.5px solid rgba(201,165,119,.5);
+    box-shadow:0 6px 18px rgba(64,32,26,.18);
+    z-index:10;
+    text-align:center;
+    box-sizing:border-box;
   }
-  .plate-badge .badge-sub{
-    font-size:0.58rem;
-  }
-  #plate-badge-title, #drinks-badge-title{
-    font-size:0.86rem;
+  .plate-badge #plate-badge-title, .plate-badge #drinks-badge-title{
+    font-size:0.78rem;
+    font-weight:700;
+    margin:0 0 3px;
     line-height:1.15;
-    margin:1px 0 3px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    color:var(--dk);
+  }
+  .plate-badge .badge-actions{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
   }
   .plate-badge .badge-price{
-    font-size:0.82rem;
-    padding:1px 7px;
+    font-size:0.74rem;
+    padding:1px 6px;
   }
   .plate-badge .pl{
-    width:26px;
-    height:26px;
-    font-size:1.05rem;
+    width:22px;
+    height:22px;
+    font-size:0.95rem;
   }
+
+  /* Ficha detallada debajo del plato (alineada con el pastelito inferior agrandado) */
+  .plate-detail-card{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:360px;
+    margin:10px auto 0;
+    background:rgba(255,253,249,.96);
+    backdrop-filter:blur(16px);
+    border:1.5px solid rgba(201,165,119,.5);
+    border-radius:20px;
+    padding:14px 18px;
+    box-shadow:0 10px 28px rgba(64,32,26,.16);
+    box-sizing:border-box;
+    animation:panCardFade 250ms ease;
+  }
+  .pd-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .pd-head .badge-sub{
+    font-size:0.62rem;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--md);
+    margin:0;
+  }
+  .pd-price{
+    font:600 1.15rem var(--h);
+    color:var(--dk);
+    background:var(--k);
+    padding:2px 10px;
+    border-radius:99px;
+  }
+  .plate-detail-card h3{
+    margin:0 0 4px;
+    font:600 1.22rem var(--h);
+    color:var(--dk);
+    line-height:1.2;
+  }
+  .pd-desc{
+    font-size:0.80rem;
+    line-height:1.35;
+    color:#6a5750;
+    margin:0 0 10px;
+  }
+  .pd-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding-top:8px;
+    border-top:1px dashed rgba(201,165,119,.35);
+  }
+  .pd-note{
+    font-size:0.72rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--md);
+  }
+  .plate-detail-card .pl{
+    width:28px;
+    height:28px;
+    font-size:1.15rem;
+  }
+
   .menu-list-curved{
     width:100%;
     max-width:380px;
@@ -727,11 +829,11 @@ html.lock{overflow:hidden}
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
-<div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Masa maracucha crujiente con relleno generoso.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
 <div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
 <div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div id="content-sandwiches"></div></div></div>
-<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><span class="badge-sub">Bebida</span><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar al pedido">+</button></div></div></div><div id="drinks-detail-card" class="plate-detail-card"><div class="pd-head"><span id="drinks-detail-tag" class="badge-sub">CAFETERÍA DE ESPECIALIDAD</span><span id="drinks-detail-price" class="pd-price">$2,00</span></div><h3 id="drinks-detail-title">Café Latte</h3><p id="drinks-detail-desc" class="pd-desc">Café espresso con leche cremosa al vapor.</p><div class="pd-foot"><span class="pd-note">Granos venezolanos seleccionados</span><button id="drinks-detail-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar Latte al pedido">+</button></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Combos Eventos" id="slide-combos"><div class="w"><div class="layout-zigzag" id="content-combos"></div></div></div>
 </div></div></section>
 
@@ -1253,7 +1355,7 @@ function LB(sel) {
     if (isDesktop) {
       return Math.max(265, currentWheelRadius * 0.70);
     }
-    return Math.max(80, currentWheelRadius * 0.64);
+    return Math.max(85, currentWheelRadius * 0.68);
   }
 
   function initPlateSlots() {
@@ -1330,28 +1432,57 @@ function LB(sel) {
     if (idx < 0 || idx >= PASTELITOS_LIST.length) return;
     currentPlateIndex = idx;
     const N = PASTELITOS_LIST.length;
-    const targetAngle = idx * PLATE_STEP;
-    const wheel = document.getElementById('plate-wheel');
-    if (wheel) wheel.style.transform = 'translate(-50%, -50%) rotate(' + (-targetAngle) + 'deg)';
-    const wheelAngle = -targetAngle;
+    const isDesktop = matchMedia('(min-width: 800px)').matches;
     const radius = getDynamicRadius();
-    document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
-      let off = (i - idx) % N;
-      if (off > N / 2) off -= N;
-      if (off < -N / 2) off += N;
-      const absAngle = off * PLATE_STEP;
-      el.style.transform = 'rotate(' + (absAngle - wheelAngle) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
-      const dist = Math.abs(off);
-      el.classList.toggle('is-active', i === idx);
-      el.style.opacity = dist === 0 ? '1' : (dist === 1 ? '0.85' : (dist === 2 ? '0.45' : '0'));
-      el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
-    });
-    const cur = PASTELITOS_LIST[idx];
-    const bT = document.getElementById('plate-badge-title'), bP = document.getElementById('plate-badge-price'), bA = document.getElementById('plate-add-btn');
-    const bSub = document.querySelector('#plate-protagonist-badge .badge-sub');
-    if (bSub) {
-      bSub.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : (cur.cat === 'Especial' && cur.u > 1.5 ? ' <span class="badge-promo-tag">Gourmet</span>' : ''));
+    const wheel = document.getElementById('plate-wheel');
+
+    // En escritorio el plato rota hacia la derecha (0°).
+    // En móvil rota completamente abajo (90°).
+    const wheelAngle = isDesktop ? (-idx * PLATE_STEP) : (90 - idx * PLATE_STEP);
+
+    if (wheel) {
+      wheel.style.transform = 'translate(-50%, -50%) rotate(' + wheelAngle + 'deg)';
     }
+
+    if (isDesktop) {
+      // Escritorio: lógica de arco lateral original
+      document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
+        let off = (i - idx) % N;
+        if (off > N / 2) off -= N;
+        if (off < -N / 2) off += N;
+        const absAngle = off * PLATE_STEP;
+        el.style.transform = 'rotate(' + (absAngle - wheelAngle) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
+        const dist = Math.abs(off);
+        el.classList.toggle('is-active', i === idx);
+        el.style.opacity = dist === 0 ? '1' : (dist === 1 ? '0.85' : (dist === 2 ? '0.45' : '0'));
+        el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
+      });
+    } else {
+      // Móvil: todos los 13 pastelitos orbitan en 360°. El seleccionado queda abajo y sobresale
+      document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
+        const slotAngle = i * PLATE_STEP;
+        const isProtagonist = (i === idx);
+        const r = isProtagonist ? (radius + 12) : radius;
+        el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + (-slotAngle) + 'deg)';
+        el.classList.toggle('is-active', isProtagonist);
+        el.style.opacity = isProtagonist ? '1' : '0.88';
+        el.style.pointerEvents = 'auto';
+        el.style.zIndex = isProtagonist ? '15' : '2';
+
+        const img = el.querySelector('img');
+        if (img) {
+          img.style.transform = 'rotate(' + (-wheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.35)' : ' scale(0.92)');
+          img.style.filter = isProtagonist ? 'drop-shadow(0 14px 22px rgba(40,20,14,.45))' : 'drop-shadow(0 4px 8px rgba(40,20,14,.22))';
+        }
+      });
+    }
+
+    const cur = PASTELITOS_LIST[idx];
+
+    // 1. Mini cuadro en el centro del plato
+    const bT = document.getElementById('plate-badge-title'),
+          bP = document.getElementById('plate-badge-price'),
+          bA = document.getElementById('plate-add-btn');
     if (bT) bT.textContent = cur.n;
     if (bP) bP.textContent = cur.p;
     if (bA) {
@@ -1359,6 +1490,33 @@ function LB(sel) {
       bA.dataset.u = cur.u;
       bA.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
     }
+
+    // 2. Ficha detallada debajo del plato (móvil)
+    const dTag = document.getElementById('plate-detail-tag'),
+          dPrice = document.getElementById('plate-detail-price'),
+          dTitle = document.getElementById('plate-detail-title'),
+          dDesc = document.getElementById('plate-detail-desc'),
+          dNote = document.querySelector('#plate-detail-card .pd-note'),
+          dBtn = document.getElementById('plate-detail-add-btn');
+    if (dTag) {
+      dTag.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' · <span class="badge-promo-tag">PROMO 2X$1</span>' : (cur.cat === 'Especial' && cur.u > 1.5 ? ' · <span class="badge-promo-tag">GOURMET</span>' : ''));
+    }
+    if (dPrice) dPrice.textContent = cur.p;
+    if (dTitle) dTitle.textContent = 'Pastelito de ' + cur.n;
+    if (dDesc) {
+      const allRows = (M['Pastelitos'].g[0].r.concat(M['Pastelitos'].g[1].r));
+      const rowObj = allRows.find(x => x.n.toLowerCase() === cur.n.toLowerCase() || cur.n.toLowerCase().includes(x.n.toLowerCase()));
+      dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Masa maracucha crujiente con relleno generoso y dorado al momento.';
+    }
+    if (dNote) {
+      dNote.textContent = cur.promo ? '¡Promo: 2 Tradicionales por $1,00!' : 'Frito al momento y dorado crujiente';
+    }
+    if (dBtn) {
+      dBtn.dataset.k = 'Pastelito ' + cur.n;
+      dBtn.dataset.u = cur.u;
+      dBtn.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
+    }
+
     document.querySelectorAll('#mg-pastelitos .rw').forEach(rw => {
       const nEl = rw.querySelector('.n');
       rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
@@ -1443,7 +1601,7 @@ function LB(sel) {
     if (isDesktop) {
       return Math.max(265, currentWheelRadius * 0.70);
     }
-    return Math.max(75, currentWheelRadius * 0.65);
+    return Math.max(78, currentWheelRadius * 0.65);
   }
 
   function initDrinkSlots() {
@@ -1457,10 +1615,11 @@ function LB(sel) {
   function selectDrink(idx, customData) {
     if (idx < 0 || idx >= DRINKS.length) return;
     currentDrinkIndex = idx;
-    const N = DRINKS.length;
+    const isDesktop = matchMedia('(min-width: 800px)').matches;
+    const radius = getDynamicDrinksRadius();
 
-    // Rotación sobre su propio eje: trayectoria angular más corta hacia el slot
-    const targetAngle = -idx * DRINKS_STEP;
+    // En escritorio rota hacia la derecha (0°). En móvil rota completamente abajo (90°).
+    const targetAngle = isDesktop ? (-idx * DRINKS_STEP) : (90 - idx * DRINKS_STEP);
     let delta = (targetAngle - (drinksWheelAngle % 360));
     while (delta > 180) delta -= 360;
     while (delta < -180) delta += 360;
@@ -1471,30 +1630,57 @@ function LB(sel) {
       wheel.style.transform = 'translate(-50%, -50%) rotate(' + drinksWheelAngle + 'deg)';
     }
 
-    const radius = getDynamicDrinksRadius();
-
     document.querySelectorAll('#drinks-slots .drink-item').forEach((el, i) => {
       const slotAngle = i * DRINKS_STEP;
       const counterAngle = -(drinksWheelAngle + slotAngle);
       el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + counterAngle + 'deg)';
       const isActive = (i === idx);
+      const r = (!isDesktop && isActive) ? (radius + 12) : radius;
+      el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + counterAngle + 'deg)';
       el.classList.toggle('is-active', isActive);
       el.style.opacity = isActive ? '1' : '0.85';
       el.style.pointerEvents = 'auto';
+      el.style.zIndex = isActive ? '10' : '2';
+
+      const img = el.querySelector('img');
+      if (img && !isDesktop) {
+        img.style.transform = isActive ? 'scale(1.28)' : 'scale(0.92)';
+        img.style.filter = isActive ? 'drop-shadow(0 14px 22px rgba(40,20,14,.4))' : 'drop-shadow(0 4px 8px rgba(40,20,14,.2))';
+      }
     });
 
     const cur = customData || DRINKS[idx];
+
+    // 1. Mini cuadro en el centro de la bandeja
     const bT = document.getElementById('drinks-badge-title'),
           bP = document.getElementById('drinks-badge-price'),
-          bA = document.getElementById('drinks-add-btn'),
-          bSub = document.querySelector('#drinks-badge .badge-sub');
-    if (bSub) bSub.textContent = (idx === 0 ? 'Cafetería' : 'Bebida');
+          bA = document.getElementById('drinks-add-btn');
     if (bT) bT.textContent = cur.n;
     if (bP) bP.textContent = cur.p;
     if (bA) {
       bA.dataset.k = cur.n;
       bA.dataset.u = cur.u;
       bA.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
+    }
+
+    // 2. Ficha detallada debajo de la bandeja (móvil)
+    const dTag = document.getElementById('drinks-detail-tag'),
+          dPrice = document.getElementById('drinks-detail-price'),
+          dTitle = document.getElementById('drinks-detail-title'),
+          dDesc = document.getElementById('drinks-detail-desc'),
+          dBtn = document.getElementById('drinks-detail-add-btn');
+    if (dTag) dTag.textContent = (idx === 0 ? 'CAFETERÍA DE ESPECIALIDAD' : 'BEBIDA FRÍA REFRESCANTE');
+    if (dPrice) dPrice.textContent = cur.p;
+    if (dTitle) dTitle.textContent = cur.n;
+    if (dDesc) {
+      const allDrinks = M['Bebidas'].g[0].r.concat(M['Bebidas'].g[1].r);
+      const rowObj = allDrinks.find(x => x.n.toLowerCase() === cur.n.toLowerCase());
+      dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Preparado con ingredientes frescos de primera calidad.';
+    }
+    if (dBtn) {
+      dBtn.dataset.k = cur.n;
+      dBtn.dataset.u = cur.u;
+      dBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
     }
 
     document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
