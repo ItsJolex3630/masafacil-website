@@ -367,6 +367,123 @@ html.lock{overflow:hidden}
 }
 
 @media(max-width:799px){
+  /* ETAPAS INTERACTIVAS MÓVILES: PASTELITOS Y BEBIDAS */
+  .mn.is-pastelitos, .mn.is-bebidas{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    width:100%;
+    padding:6px 0 20px;
+    min-height:auto!important;
+  }
+  .mn.is-pastelitos .mn-left, .mn.is-bebidas .mn-left{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    height:auto!important;
+    pointer-events:auto!important;
+  }
+  .mn.is-pastelitos .plate-stage, .mn.is-bebidas .plate-stage{
+    display:flex;
+    position:relative;
+    width:min(290px, 84vw);
+    aspect-ratio:1/1;
+    margin:0 auto;
+    align-items:center;
+    justify-content:center;
+    height:auto;
+    min-height:auto;
+    pointer-events:auto;
+  }
+  .mn.is-pastelitos .plate-viewport, .mn.is-bebidas .plate-viewport{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    overflow:visible;
+  }
+  .mn.is-pastelitos .plate-wheel, .mn.is-bebidas .plate-wheel{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:100%;
+    height:100%;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    transition:transform 700ms var(--ea);
+    will-change:transform;
+    transform-origin:center center;
+  }
+  .mn.is-pastelitos .plate-slots, .mn.is-bebidas .plate-slots{
+    position:absolute;
+    inset:0;
+  }
+  .mn.is-pastelitos .plate-item, .mn.is-bebidas .plate-item{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:78px;
+    height:78px;
+    margin:-39px 0 0 -39px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transform-origin:center center;
+    transition:transform 700ms var(--ea),opacity 350ms ease;
+  }
+  .mn.is-pastelitos .plate-item img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 8px 14px rgba(40,20,14,.3));
+    transition:transform 450ms var(--ea),filter 300ms ease;
+  }
+  .mn.is-pastelitos .plate-item.is-active img{
+    transform:scale(1.25);
+    filter:drop-shadow(0 12px 20px rgba(40,20,14,.4));
+  }
+  .mn.is-bebidas .drink-item{
+    width:76px;
+    height:76px;
+    margin:-38px 0 0 -38px;
+  }
+  .mn.is-pastelitos .plate-badge, .mn.is-bebidas .plate-badge{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:130px;
+    max-width:135px;
+    padding:8px 10px;
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(64,32,26,.18);
+    z-index:20;
+  }
+  .plate-badge .badge-sub{
+    font-size:0.58rem;
+  }
+  #plate-badge-title, #drinks-badge-title{
+    font-size:0.86rem;
+    line-height:1.15;
+    margin:1px 0 3px;
+  }
+  .plate-badge .badge-price{
+    font-size:0.82rem;
+    padding:1px 7px;
+  }
+  .plate-badge .pl{
+    width:26px;
+    height:26px;
+    font-size:1.05rem;
+  }
+  .menu-list-curved{
+    width:100%;
+    max-width:380px;
+    margin:0 auto;
+  }
+
   /* PANINIS MÓVIL: Vitrina 2x2 con platos grandes sin colisión + Nombres y precios */
   .front-plates-section{
     display:flex;
@@ -1131,8 +1248,12 @@ function LB(sel) {
   function getDynamicRadius() {
     const wheel = document.getElementById('plate-wheel');
     if (!wheel) return 275;
+    const isDesktop = matchMedia('(min-width: 800px)').matches;
     const currentWheelRadius = wheel.offsetHeight / 2;
-    return Math.max(265, currentWheelRadius * 0.70);
+    if (isDesktop) {
+      return Math.max(265, currentWheelRadius * 0.70);
+    }
+    return Math.max(80, currentWheelRadius * 0.64);
   }
 
   function initPlateSlots() {
@@ -1179,8 +1300,19 @@ function LB(sel) {
     if (d) { desktop && cat === 'Bebidas' ? applyCurve(d, document.getElementById('drinks-wheel')) : resetCurve(d); }
   }
 
-  // Ajusta la posición del plato/bandeja al borde físico izquierdo del viewport
+  // Ajusta la posición del plato/bandeja (borde físico en escritorio, centrado en móvil)
   function layoutStages() {
+    const isDesktop = matchMedia('(min-width: 800px)').matches;
+    if (!isDesktop) {
+      ['plate-stage', 'drinks-stage'].forEach(id => {
+        const s = document.getElementById(id);
+        if (s) {
+          s.style.removeProperty('left');
+          s.style.removeProperty('width');
+        }
+      });
+      return;
+    }
     const slide = document.querySelector('.menu-slide.is-active') || document.querySelector('.menu-slide');
     if (!slide) return;
     const slideW = slide.offsetWidth;
@@ -1306,8 +1438,12 @@ function LB(sel) {
   function getDynamicDrinksRadius() {
     const wheel = document.getElementById('drinks-wheel');
     if (!wheel) return 275;
+    const isDesktop = matchMedia('(min-width: 800px)').matches;
     const currentWheelRadius = wheel.offsetHeight / 2;
-    return Math.max(265, currentWheelRadius * 0.70);
+    if (isDesktop) {
+      return Math.max(265, currentWheelRadius * 0.70);
+    }
+    return Math.max(75, currentWheelRadius * 0.65);
   }
 
   function initDrinkSlots() {
