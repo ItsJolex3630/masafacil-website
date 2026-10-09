@@ -140,10 +140,14 @@ html.lock{overflow:hidden}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
 @media(prefers-reduced-motion:reduce){.plate-wheel,.plate-item{transition:none}}
 </style><style id="carousel">
-.menu-carousel-viewport{width:100%;overflow:hidden;position:relative;touch-action:pan-y pinch-zoom}
-.menu-carousel-track{display:flex;align-items:stretch;transition:transform 600ms cubic-bezier(.32,.72,0,1);will-change:transform}
-.menu-slide{flex:0 0 100%;width:100%;min-height:400px;box-sizing:border-box;position:relative}
-@media(min-width:900px){.menu-slide{flex:0 0 calc(100% - 96px);width:calc(100% - 96px);margin-right:40px}}
+.menu-carousel-viewport{width:100%;position:relative;overflow:visible}
+.menu-carousel-track{width:100%;position:relative}
+.menu-slide{display:none;width:100%;box-sizing:border-box;position:relative}
+.menu-slide.is-active{display:block;animation:menuTabIn 280ms cubic-bezier(.22,1,.36,1)}
+@keyframes menuTabIn{
+  from{opacity:0;transform:translateY(6px)}
+  to{opacity:1;transform:none}
+}
 .layout-zigzag{display:flex;flex-direction:column;gap:36px;padding:20px 0}
 .zigzag-row{display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
 @media(min-width:800px){.zigzag-row{grid-template-columns:4fr 6fr}.zigzag-row.reverse{grid-template-columns:6fr 4fr}}
@@ -171,7 +175,33 @@ html.lock{overflow:hidden}
 .fc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px;border-top:1px dashed rgba(201,165,119,.35)}
 .fc-indicator{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tan);transition:color 250ms ease}
 .front-card.is-active .fc-indicator{color:var(--md)}
-.layout-entradas{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;min-height:720px}
+/* Showcase Exclusivo para Sándwich y Burger (3 productos) */
+.sandwiches-showcase-layout{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;padding:10px 0 24px}
+@media(min-width:850px){.sandwiches-showcase-layout{grid-template-columns:4fr 6fr;gap:36px}}
+.sw-nav-col{display:flex;flex-direction:column}
+.sw-nav-list{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.sw-nav-card{display:flex;align-items:center;gap:14px;background:rgba(255,253,248,.85);backdrop-filter:blur(8px);border:1.5px solid rgba(201,165,119,.45);border-radius:18px;padding:10px 14px;text-align:left;cursor:pointer;transition:transform 200ms ease,border-color 200ms ease,box-shadow 200ms ease,background-color 200ms ease}
+.sw-nav-card:hover{transform:translateX(5px);border-color:var(--md);background:rgba(255,255,255,.95);box-shadow:0 6px 18px rgba(64,32,26,.1)}
+.sw-nav-card.is-active{border-color:var(--md);background:#fff;box-shadow:0 8px 24px rgba(64,32,26,.15);transform:translateX(8px)}
+.sw-nav-thumb{width:64px;height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sw-nav-thumb img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(64,32,26,.18));pointer-events:none}
+.sw-nav-info{flex:1;display:flex;flex-direction:column;gap:2px}
+.sw-nav-title-box{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sw-nav-name{margin:0;font:600 1.12rem var(--h);color:var(--dk);line-height:1.2}
+.sw-nav-price{font:600 1.05rem var(--h);color:var(--dk);background:var(--k);padding:1px 9px;border-radius:99px;align-self:flex-start;margin-top:2px}
+.sw-hero-col{display:flex;flex-direction:column;align-items:center;gap:18px}
+.sw-hero-stage{width:100%;max-width:320px;aspect-ratio:1.2/1;display:flex;align-items:center;justify-content:center}
+.sw-hero-img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 18px 28px rgba(64,32,26,.28));transition:transform 350ms cubic-bezier(.22,1,.36,1),opacity 250ms ease;pointer-events:none}
+.sw-hero-card{width:100%;background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border:1.5px solid rgba(201,165,119,.5);border-radius:22px;padding:16px 20px;box-shadow:0 10px 30px rgba(64,32,26,.18);box-sizing:border-box}
+.sw-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.sw-card-title-box{display:flex;flex-direction:column;gap:3px}
+.sw-card-title-box h3{margin:0;font:600 1.35rem var(--h);color:var(--dk);line-height:1.2}
+.sw-card-price{font:600 1.25rem var(--h);background:var(--k);padding:3px 14px;border-radius:99px;color:var(--dk);white-space:nowrap}
+.sw-card-desc{font-size:.88rem;color:#6a5750;line-height:1.35;margin:0 0 14px}
+.sw-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px dashed rgba(201,165,119,.35)}
+.sw-fresh-badge{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--md)}
+
+.layout-entradas{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;min-height:540px}
 @media(min-width:800px){.layout-entradas{grid-template-columns:1fr 1fr;gap:40px}}
 .entradas-diamond-stage{position:relative;width:min(530px,94vw);aspect-ratio:1/1;margin:0 auto;display:flex;align-items:center;justify-content:center}
 .diamond-wheel{position:absolute;inset:0;border-radius:50%;pointer-events:auto;transition:transform 700ms cubic-bezier(.22,1,.36,1);will-change:transform}
@@ -200,11 +230,25 @@ html.lock{overflow:hidden}
 .entradas-list-col .items-group{margin-top:4px}
 .entradas-list-col .rw.plate-focus{transform:translateX(6px)}
 .entradas-list-col .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
-.drink-item{position:absolute;top:50%;left:50%;width:120px;height:120px;margin:-60px 0 0 -60px;cursor:pointer;transition:transform 700ms var(--ea);z-index:2}
-.drink-item img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:radial-gradient(circle at 50% 35%,#fff,#f0e6cf 75%,#dccba8);box-shadow:0 10px 20px rgba(40,20,14,.28);border:3px solid #fff;transition:transform 450ms var(--ea),box-shadow 300ms ease;pointer-events:none}
-.drink-item:hover img{transform:scale(1.08)}
-.drink-item.is-active{z-index:10}
-.drink-item.is-active img{transform:scale(1.18);box-shadow:0 16px 28px rgba(40,20,14,.4)}
+/* Bar & Cafetería Showcase para Bebidas */
+.bebidas-showcase-layout{display:grid;grid-template-columns:1fr;gap:28px;align-items:start;padding:10px 0 24px}
+@media(min-width:850px){.bebidas-showcase-layout{grid-template-columns:5fr 7fr;gap:40px}}
+.drinks-stage-col{display:flex;flex-direction:column;align-items:center;gap:16px;position:sticky;top:80px}
+.drinks-pills-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+.drinks-pill-btn{display:flex;align-items:center;gap:6px;background:rgba(255,253,248,.88);border:1.5px solid rgba(201,165,119,.45);border-radius:99px;padding:4px 12px;font:600 0.8rem var(--h);color:var(--dk);cursor:pointer;transition:transform 160ms ease,border-color 160ms ease,background-color 160ms ease}
+.drinks-pill-btn img{width:22px;height:22px;object-fit:contain}
+.drinks-pill-btn:hover{background:#fff;border-color:var(--md);transform:scale(1.04)}
+.drinks-pill-btn.is-active{background:var(--dk);color:var(--bg);border-color:var(--dk)}
+.drinks-hero-podium{width:100%;max-width:240px;height:220px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 65%,rgba(201,165,119,.28) 0,transparent 70%);border-radius:50%}
+.drinks-hero-img{width:100%;height:100%;max-height:210px;object-fit:contain;filter:drop-shadow(0 16px 24px rgba(64,32,26,.26));transition:transform 350ms cubic-bezier(.22,1,.36,1),opacity 250ms ease;pointer-events:none}
+.drinks-hero-badge{width:100%;background:rgba(255,253,249,.95);backdrop-filter:blur(16px);border:1.5px solid rgba(201,165,119,.5);border-radius:20px;padding:14px 18px;box-shadow:0 8px 24px rgba(64,32,26,.16);box-sizing:border-box}
+.drinks-hero-badge h3{margin:2px 0 4px;font:600 1.25rem var(--h);color:var(--dk);line-height:1.2}
+.drinks-hero-badge .badge-desc{font-size:.8rem;color:#6a5750;margin:0 0 10px;line-height:1.3}
+.drinks-menu-col .items-group{margin-top:4px}
+.drinks-menu-col .rw{cursor:pointer;transition:transform 180ms ease,color 180ms ease}
+.drinks-menu-col .rw:hover{transform:translateX(5px)}
+.drinks-menu-col .rw.plate-focus{transform:translateX(7px)}
+.drinks-menu-col .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
 @media(prefers-reduced-motion:reduce){.menu-carousel-track,.front-plate-item,.diamond-wheel,.diamond-item,.drink-item{transition:none}}
 </style></head>
 <body>
@@ -212,11 +256,11 @@ html.lock{overflow:hidden}
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
-<div class="menu-slide" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><span class="badge-sub">Selección</span><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
 <div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
-<div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div class="layout-front-plates" id="content-sandwiches"></div></div></div>
-<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><span class="badge-sub">Bebida</span><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" aria-label="Agregar al pedido">+</button></div></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div id="content-sandwiches"></div></div></div>
+<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div id="content-bebidas"></div></div></div>
 <div class="menu-slide" data-cat="Combos Eventos" id="slide-combos"><div class="w"><div class="layout-zigzag" id="content-combos"></div></div></div>
 </div></div></section>
 
@@ -381,7 +425,8 @@ const IMGS = {
   combos: ['assets/img/combopasapalos.webp', 'assets/img/surtido_fritos.webp'],
   paninis: ['assets/img/paninis/panini_pollo.png', 'assets/img/paninis/panini_capresa.png', 'assets/img/paninis/panini_roastbeef.png', 'assets/img/paninis/panini_italiano.png'],
   sandwiches: ['assets/img/sandwiches/sandwich_criollo.png', 'assets/img/sandwiches/sandwich_diet.png', 'assets/img/sandwiches/burger_crispy.png'],
-  entradas: ['assets/img/entradas/mini_pastelitos.png', 'assets/img/entradas/tequenos.png', 'assets/img/entradas/tequenos_chocolate.png', 'assets/img/entradas/nuggets_papas.png']
+  entradas: ['assets/img/entradas/mini_pastelitos.png', 'assets/img/entradas/tequenos.png', 'assets/img/entradas/tequenos_chocolate.png', 'assets/img/entradas/nuggets_papas.png'],
+  bebidas: ['assets/img/bebidas/cafe_latte.png', 'assets/img/bebidas/jugo_parchita.png', 'assets/img/bebidas/nestea_limon.png', 'assets/img/bebidas/refresco.png']
 };
 
 const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
@@ -461,29 +506,117 @@ function diamondHTML(cat, imgs) {
   '</div>';
 }
 
+function sandwichesShowcaseHTML(cat, imgs) {
+  const rows = M[cat].g[0].r;
+  const navItems = rows.map((r, i) => {
+    const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
+    return '<button type="button" class="sw-nav-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
+      '<div class="sw-nav-thumb"><img src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
+      '<div class="sw-nav-info">' +
+        '<div class="sw-nav-title-box"><h4 class="sw-nav-name">' + r.n + '</h4>' + tag + '</div>' +
+        '<span class="sw-nav-price">' + r.p + '</span>' +
+      '</div>' +
+    '</button>';
+  }).join('');
+
+  const r0 = rows[0];
+  const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
+  const tag0 = r0.t ? '<span class="tg">' + r0.t + '</span>' : '<span class="badge-sub">Hecho al momento</span>';
+
+  return '<div class="sandwiches-showcase-layout" id="sandwiches-showcase">' +
+    '<div class="sw-nav-col">' +
+      '<span class="gt">' + M[cat].g[0].t + '</span>' +
+      '<div class="sw-nav-list">' + navItems + '</div>' +
+    '</div>' +
+    '<div class="sw-hero-col">' +
+      '<div class="sw-hero-stage">' +
+        '<img id="sw-hero-img" class="sw-hero-img" src="' + imgs[0] + '" alt="' + r0.n + '">' +
+      '</div>' +
+      '<div class="sw-hero-card" id="sw-hero-card">' +
+        '<div class="sw-card-head">' +
+          '<div class="sw-card-title-box">' + tag0 + '<h3 id="sw-hero-name">' + r0.n + '</h3></div>' +
+          '<span id="sw-hero-price" class="sw-card-price">' + r0.p + '</span>' +
+        '</div>' +
+        '<p id="sw-hero-desc" class="sw-card-desc">' + (r0.d || '') + '</p>' +
+        '<div class="sw-card-foot">' +
+          '<span class="sw-fresh-badge">Pan artesanal recién horneado</span>' +
+          '<button id="sw-hero-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function bebidasShowcaseHTML(cat, imgs) {
+  const gCaliente = M[cat].g[0];
+  const gFria = M[cat].g[1];
+  const r0 = gCaliente.r[1] || gCaliente.r[0]; // Latte o Americano
+  const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
+
+  const quickPills = [
+    { n: 'Latte', img: imgs[0], catIdx: 0, rowIdx: 1 },
+    { n: 'Jugos Naturales', img: imgs[1], catIdx: 1, rowIdx: 0 },
+    { n: 'Nestea', img: imgs[2], catIdx: 1, rowIdx: 1 },
+    { n: 'Refresco', img: imgs[3], catIdx: 1, rowIdx: 2 }
+  ].map((p, i) =>
+    '<button type="button" class="drinks-pill-btn' + (i === 0 ? ' is-active' : '') + '" data-pilli="' + i + '">' +
+      '<img src="' + p.img + '" alt="' + p.n + '">' +
+      '<span>' + p.n + '</span>' +
+    '</button>'
+  ).join('');
+
+  let n = 0;
+  const listCaliente = gCaliente.r.map(r => rowHTML(r, n++, cat)).join('');
+  const listFria = gFria.r.map(r => rowHTML(r, n++, cat)).join('');
+
+  return '<div class="bebidas-showcase-layout" id="bebidas-showcase">' +
+    '<div class="drinks-stage-col">' +
+      '<div class="drinks-pills-bar">' + quickPills + '</div>' +
+      '<div class="drinks-hero-podium">' +
+        '<img id="drinks-hero-img" class="drinks-hero-img" src="' + imgs[0] + '" alt="Bebida seleccionada">' +
+      '</div>' +
+      '<div class="drinks-hero-badge" id="drinks-hero-badge">' +
+        '<span id="drinks-badge-cat" class="badge-sub">Cafetería Caliente</span>' +
+        '<h3 id="drinks-badge-title">' + r0.n + '</h3>' +
+        '<p id="drinks-badge-desc" class="badge-desc">' + (r0.d || 'Café recién colado de alta calidad') + '</p>' +
+        '<div class="badge-actions">' +
+          '<span id="drinks-badge-price" class="badge-price">' + r0.p + '</span>' +
+          '<button id="drinks-hero-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="drinks-menu-col">' +
+      '<div class="drinks-group-box">' +
+        '<span class="gt">' + gCaliente.t + '</span>' +
+        '<div class="items-group">' + listCaliente + '</div>' +
+      '</div>' +
+      '<div class="drinks-group-box" style="margin-top:20px">' +
+        '<span class="gt">' + gFria.t + '</span>' +
+        '<div class="items-group">' + listFria + '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
 function buildMenu() {
   const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
   set('mg-pastelitos', groupsHTML('Pastelitos'));
-  set('mg-bebidas', groupsHTML('Bebidas'));
   set('content-combos', zigzagHTML('Combos Eventos', IMGS.combos));
   set('content-entradas', diamondHTML('Entradas', IMGS.entradas));
   set('content-paninis', frontHTML('Paninis', IMGS.paninis));
-  set('content-sandwiches', frontHTML('Sándwich y Burger', IMGS.sandwiches));
+  set('content-sandwiches', sandwichesShowcaseHTML('Sándwich y Burger', IMGS.sandwiches));
+  set('content-bebidas', bebidasShowcaseHTML('Bebidas', IMGS.bebidas));
 }
 buildMenu();
 
-function menuGap() { return matchMedia('(min-width:900px)').matches ? 40 : 0; }
-function positionMenuTrack(index) {
-  const track = document.getElementById('menu-track');
-  const slide = document.querySelector('.menu-slide');
-  if (!track || !slide) return;
-  track.style.transform = 'translateX(-' + (index * (slide.offsetWidth + menuGap())) + 'px)';
-}
 function goToMenuSlide(index) {
   if (index < 0 || index >= SLIDES_CATS.length) return;
   currentSlideIndex = index;
-  positionMenuTrack(index);
-  document.querySelectorAll('#tb button').forEach(b => b.setAttribute('aria-pressed', b.textContent === SLIDES_CATS[index]));
+  const cat = SLIDES_CATS[index];
+  document.querySelectorAll('.menu-slide').forEach((s, i) => {
+    s.classList.toggle('is-active', i === index);
+  });
+  document.querySelectorAll('#tb button').forEach(b => b.setAttribute('aria-pressed', b.textContent === cat));
 }
 function show(k) { goToMenuSlide(SLIDES_CATS.indexOf(k)); }
 
@@ -737,7 +870,7 @@ function LB(sel) {
 
   // Ajusta la posición del plato/bandeja al borde físico izquierdo del viewport
   function layoutStages() {
-    const slide = document.querySelector('.menu-slide');
+    const slide = document.querySelector('.menu-slide.is-active') || document.querySelector('.menu-slide');
     if (!slide) return;
     const slideW = slide.offsetWidth;
     const mnLeft = (slideW - Math.min(1040, slideW)) / 2 + 18;
@@ -806,110 +939,132 @@ function LB(sel) {
     });
   }
 
-  const DRINKS = [
-    { n: 'Latte', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/cafe_latte.png' },
-    { n: 'Jugos Naturales', p: '$3,10', u: 3.10, img: 'assets/img/bebidas/jugo_parchita.png' },
-    { n: 'Nestea', p: '$1,20', u: 1.20, img: 'assets/img/bebidas/nestea_limon.png' },
-    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/refresco.png' }
-  ];
-  let currentDrinkIndex = 0;
-  let drinksWheelAngle = 0;
-  const DRINKS_STEP = 90; // 360 / 4
+  function initSandwichesShowcase(id) {
+    const root = document.getElementById(id);
+    if (!root) return;
+    const cards = [...root.querySelectorAll('.sw-nav-card')];
+    const imgEl = root.querySelector('#sw-hero-img');
+    const nameEl = root.querySelector('#sw-hero-name');
+    const priceEl = root.querySelector('#sw-hero-price');
+    const descEl = root.querySelector('#sw-hero-desc');
+    const addBtn = root.querySelector('#sw-hero-add-btn');
+    const rows = M['Sándwich y Burger'].g[0].r;
+    const imgs = IMGS.sandwiches;
 
-  function getDynamicDrinksRadius() {
-    const wheel = document.getElementById('drinks-wheel');
-    if (!wheel) return 275;
-    const currentWheelRadius = wheel.offsetHeight / 2;
-    return Math.max(265, currentWheelRadius * 0.70);
-  }
-
-  function initDrinkSlots() {
-    const box = document.getElementById('drinks-slots');
-    if (!box) return;
-    box.innerHTML = DRINKS.map((d, i) => '<div class="drink-item" data-idx="' + i + '"><img src="' + d.img + '" alt="' + d.n + '"></div>').join('');
-    box.querySelectorAll('.drink-item').forEach(el => el.addEventListener('click', () => selectDrink(parseInt(el.dataset.idx, 10))));
-    selectDrink(0);
-  }
-
-  function selectDrink(idx, customData) {
-    if (idx < 0 || idx >= DRINKS.length) return;
-    currentDrinkIndex = idx;
-    const N = DRINKS.length;
-
-    // Rotación sobre su propio eje: trayectoria angular más corta hacia el slot
-    const targetAngle = -idx * DRINKS_STEP;
-    let delta = (targetAngle - (drinksWheelAngle % 360));
-    while (delta > 180) delta -= 360;
-    while (delta < -180) delta += 360;
-    drinksWheelAngle += delta;
-
-    const wheel = document.getElementById('drinks-wheel');
-    if (wheel) {
-      wheel.style.transform = 'translate(-50%, -50%) rotate(' + drinksWheelAngle + 'deg)';
+    function pick(idx) {
+      if (idx < 0 || idx >= rows.length) return;
+      cards.forEach((c, i) => c.classList.toggle('is-active', i === idx));
+      const cur = rows[idx];
+      if (imgEl) {
+        imgEl.style.opacity = '0';
+        imgEl.style.transform = 'scale(0.92)';
+        setTimeout(() => {
+          imgEl.src = imgs[idx];
+          imgEl.alt = cur.n;
+          imgEl.style.opacity = '1';
+          imgEl.style.transform = 'scale(1)';
+        }, 120);
+      }
+      if (nameEl) nameEl.textContent = cur.n;
+      if (priceEl) priceEl.textContent = cur.p;
+      if (descEl) descEl.textContent = cur.d || '';
+      if (addBtn) {
+        const u = parseFloat(cur.p.replace(/[^\d,]/g, '').replace(',', '.'));
+        addBtn.dataset.k = cur.n;
+        addBtn.dataset.u = isNaN(u) ? '' : u;
+        addBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
+      }
     }
 
-    const radius = getDynamicDrinksRadius();
-
-    document.querySelectorAll('#drinks-slots .drink-item').forEach((el, i) => {
-      const slotAngle = i * DRINKS_STEP;
-      const counterAngle = -(drinksWheelAngle + slotAngle);
-      el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + counterAngle + 'deg)';
-      const isActive = (i === idx);
-      el.classList.toggle('is-active', isActive);
-      el.style.opacity = isActive ? '1' : '0.85';
-      el.style.pointerEvents = 'auto';
+    cards.forEach((c, i) => {
+      c.addEventListener('mouseenter', () => pick(i));
+      c.addEventListener('click', () => pick(i));
     });
-
-    const cur = customData || DRINKS[idx];
-    const bT = document.getElementById('drinks-badge-title'),
-          bP = document.getElementById('drinks-badge-price'),
-          bA = document.getElementById('drinks-add-btn'),
-          bSub = document.querySelector('#drinks-badge .badge-sub');
-    if (bSub) bSub.textContent = (idx === 0 ? 'Cafetería' : 'Bebida');
-    if (bT) bT.textContent = cur.n;
-    if (bP) bP.textContent = cur.p;
-    if (bA) {
-      bA.dataset.k = cur.n;
-      bA.dataset.u = cur.u;
-      bA.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
-    }
-
-    document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
-      const nEl = rw.querySelector('.n');
-      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
-    });
-    updateCurvedOffsets();
   }
 
-  function hookDrinkRows() {
-    document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
-      const nEl = rw.querySelector('.n');
+  function initBebidasShowcase(id) {
+    const root = document.getElementById(id);
+    if (!root) return;
+    const pills = [...root.querySelectorAll('.drinks-pill-btn')];
+    const imgEl = root.querySelector('#drinks-hero-img');
+    const titleEl = root.querySelector('#drinks-badge-title');
+    const catEl = root.querySelector('#drinks-badge-cat');
+    const descEl = root.querySelector('#drinks-badge-desc');
+    const priceEl = root.querySelector('#drinks-badge-price');
+    const addBtn = root.querySelector('#drinks-hero-add-btn');
+    const rows = [...root.querySelectorAll('.drinks-menu-col .rw')];
+    const imgs = IMGS.bebidas;
+
+    const quickData = [
+      { n: 'Latte', p: '$2,00', u: 2.0, d: 'Café recién colado con leche cremada y arte latte', cat: 'Cafetería Caliente', img: imgs[0] },
+      { n: 'Jugos Naturales', p: '$3,10', u: 3.1, d: 'Parchita · Mora · Fresa · Melón · Piña · Lechosa (500 ml)', cat: 'Bebidas Frías', img: imgs[1] },
+      { n: 'Nestea', p: '$1,20', u: 1.2, d: 'Té frío de limón bien helado', cat: 'Bebidas Frías', img: imgs[2] },
+      { n: 'Refresco 500 ml', p: '$2,00', u: 2.0, d: 'Coca Cola, Chinotto, Frescolita heladas', cat: 'Bebidas Frías', img: imgs[3] }
+    ];
+
+    function showHero(data, pillIdx) {
+      if (pillIdx != null) pills.forEach((p, i) => p.classList.toggle('is-active', i === pillIdx));
+      if (imgEl && data.img) {
+        imgEl.style.opacity = '0';
+        imgEl.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+          imgEl.src = data.img;
+          imgEl.alt = data.n;
+          imgEl.style.opacity = '1';
+          imgEl.style.transform = 'scale(1)';
+        }, 120);
+      }
+      if (titleEl) titleEl.textContent = data.n;
+      if (catEl) catEl.textContent = data.cat || 'Bebida';
+      if (descEl) descEl.textContent = data.d || '';
+      if (priceEl) priceEl.textContent = data.p;
+      if (addBtn) {
+        addBtn.dataset.k = data.n;
+        addBtn.dataset.u = data.u || '';
+        addBtn.setAttribute('aria-label', 'Agregar ' + data.n + ' al pedido');
+      }
+    }
+
+    pills.forEach((p, i) => {
+      p.addEventListener('click', () => {
+        showHero(quickData[i], i);
+        rows.forEach(r => {
+          const nEl = r.querySelector('.n');
+          r.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase().includes(quickData[i].n.toLowerCase().slice(0, 5)));
+        });
+      });
+    });
+
+    rows.forEach(r => {
+      const nEl = r.querySelector('.n');
       if (!nEl) return;
       const name = nEl.textContent.trim();
       const nameLower = name.toLowerCase();
+      const pEl = r.querySelector('.p');
+      const pStr = pEl ? pEl.textContent.trim() : '$2,00';
+      const uVal = parseFloat(pStr.replace(/[^\d,]/g, '').replace(',', '.')) || 2.0;
 
-      let slotIdx = 0;
-      const pEl = rw.querySelector('.p');
-      const priceStr = pEl ? pEl.textContent.trim() : '$2,00';
-      const uVal = parseFloat(priceStr.replace(/[^\d,]/g, '').replace(',', '.')) || 2.0;
-      const itemData = { n: name, p: priceStr, u: uVal };
+      let targetImg = imgs[0];
+      let catName = 'Cafetería Caliente';
+      let pillIdx = 0;
 
       if (nameLower.includes('jugo')) {
-        slotIdx = 1;
+        targetImg = imgs[1]; catName = 'Bebidas Frías'; pillIdx = 1;
       } else if (nameLower.includes('nestea')) {
-        slotIdx = 2;
+        targetImg = imgs[2]; catName = 'Bebidas Frías'; pillIdx = 2;
       } else if (nameLower.includes('refresco')) {
-        slotIdx = 3;
-      } else {
-        // Toda la Cafetería Caliente (Americano, Cappuccino, etc.) activa el slot 0 (taza de café)
-        slotIdx = 0;
+        targetImg = imgs[3]; catName = 'Bebidas Frías'; pillIdx = 3;
       }
 
-      rw.addEventListener('mouseenter', () => selectDrink(slotIdx, itemData));
-      rw.addEventListener('click', e => {
-        if (e.target.closest('.pl')) return;
-        selectDrink(slotIdx, itemData);
-      });
+      const itemData = { n: name, p: pStr, u: uVal, d: 'Bebida fresca servida al momento', cat: catName, img: targetImg };
+
+      const pickRow = () => {
+        rows.forEach(x => x.classList.toggle('plate-focus', x === r));
+        showHero(itemData, pillIdx);
+      };
+
+      r.addEventListener('mouseenter', pickRow);
+      r.addEventListener('click', e => { if (e.target.closest('.pl')) return; pickRow(); });
     });
   }
 
@@ -1012,16 +1167,12 @@ function LB(sel) {
     selectEntrada(0);
   }
 
-  let plateBuilt = false, drinksBuilt = false;
+  let plateBuilt = false;
   function syncPlate(k) {
     layoutStages();
     if (k === 'Pastelitos') {
       if (!plateBuilt) { initPlateSlots(); hookMenuRowsToPlate(); plateBuilt = true; }
       else selectPastelito(currentPlateIndex);
-    }
-    if (k === 'Bebidas') {
-      if (!drinksBuilt) { initDrinkSlots(); hookDrinkRows(); drinksBuilt = true; }
-      else selectDrink(currentDrinkIndex);
     }
     requestAnimationFrame(updateCurvedOffsets);
   }
@@ -1029,13 +1180,13 @@ function LB(sel) {
   window.addEventListener('resize', () => {
     layoutStages();
     if (SLIDES_CATS[currentSlideIndex] === 'Pastelitos') selectPastelito(currentPlateIndex);
-    if (SLIDES_CATS[currentSlideIndex] === 'Bebidas') selectDrink(currentDrinkIndex);
     updateCurvedOffsets();
   });
   window.addEventListener('scroll', () => { updateCurvedOffsets(); }, { passive: true });
 
   initFrontPlates('content-paninis');
-  initFrontPlates('content-sandwiches');
+  initSandwichesShowcase('content-sandwiches');
+  initBebidasShowcase('content-bebidas');
   initDiamondEntradas('content-entradas');
 
   const initTab = document.querySelector('#tb [aria-pressed=true]');
