@@ -542,7 +542,7 @@ html.lock{overflow:hidden}
   }
   .diamond-center-card{
     position:absolute;
-    top:50%;
+    top:calc(50% - 6px);
     left:50%;
     transform:translate(-50%,-50%);
     width:130px;
@@ -1444,7 +1444,11 @@ function LB(sel) {
       const isDesktop = matchMedia('(min-width: 800px)').matches;
       const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : (isDesktop ? 520 : 320);
       const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(115, stageW * 0.36);
-      const wheelAngle = -currentIdx * 90;
+      
+      // En escritorio el plato protagonista rota a la derecha (0°).
+      // En móvil rota completamente abajo (90°), conectando visualmente con la lista inferior.
+      const targetProtagonistAngle = isDesktop ? 0 : 90;
+      const wheelAngle = targetProtagonistAngle - currentIdx * 90;
 
       if (wheel) {
         wheel.style.transform = 'rotate(' + wheelAngle + 'deg)';
@@ -1454,7 +1458,7 @@ function LB(sel) {
         const slotAngle = i * 90;
         const visualAngle = slotAngle + wheelAngle;
         const norm = ((visualAngle % 360) + 360) % 360;
-        const isProtagonist = norm === 0;
+        const isProtagonist = norm === targetProtagonistAngle;
 
         item.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + (-slotAngle) + 'deg)';
         item.classList.toggle('is-protagonist', isProtagonist);
