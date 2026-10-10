@@ -1,53 +1,106 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" role="img" aria-label="Masito, asistente de Masa Fácil">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 560" role="img" aria-label="Masito, el asistente de Masa Fácil">
   <defs>
-    <radialGradient id="masa" cx="42%" cy="34%" r="75%">
-      <stop offset="0%" stop-color="#f7c667"/>
-      <stop offset="60%" stop-color="#eaa63f"/>
-      <stop offset="100%" stop-color="#cf7f2b"/>
+    <radialGradient id="bodyG" cx="36%" cy="26%" r="86%">
+      <stop offset="0%" stop-color="#FBD26C"/>
+      <stop offset="52%" stop-color="#F3B242"/>
+      <stop offset="100%" stop-color="#E29A32"/>
     </radialGradient>
-    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ff6b57"/>
-      <stop offset="100%" stop-color="#d63b2b"/>
+    <radialGradient id="cupG" cx="42%" cy="34%" r="78%">
+      <stop offset="0%" stop-color="#F7B54C"/>
+      <stop offset="100%" stop-color="#EE8A1C"/>
+    </radialGradient>
+    <linearGradient id="bandG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F4A12A"/>
+      <stop offset="100%" stop-color="#ED881B"/>
     </linearGradient>
   </defs>
-  <ellipse cx="160" cy="338" rx="86" ry="14" fill="#40201a" opacity=".16"/>
-  <!-- legs -->
-  <path d="M132 268h16v58h-16z" fill="#f0b34a"/>
-  <path d="M172 268h16v58h-16z" fill="#f0b34a"/>
-  <path d="M120 326h38v14a8 8 0 0 1-8 8h-22a8 8 0 0 1-8-8z" fill="#eaa63f"/>
-  <path d="M162 326h38v14a8 8 0 0 1-8 8h-22a8 8 0 0 1-8-8z" fill="#eaa63f"/>
-  <!-- headphone band -->
-  <path d="M62 150a98 98 0 0 1 196 0" fill="none" stroke="url(#band)" stroke-width="18" stroke-linecap="round"/>
-  <!-- body (empanada/pastelito) -->
-  <path d="M160 66c-58 0-104 40-104 96 0 52 42 88 104 88s104-36 104-88c0-56-46-96-104-96z" fill="url(#masa)" stroke="#8a4a1e" stroke-width="7"/>
-  <!-- braided rim -->
-  <path d="M64 118c10-10 24-6 32 2 8-10 24-10 32 0 8-10 24-10 32 0 8-10 24-10 32 0 8-8 22-12 32-2" fill="none" stroke="#e29a34" stroke-width="12" stroke-linecap="round" opacity=".85"/>
-  <!-- spots -->
-  <circle cx="108" cy="196" r="6" fill="#c97f2e" opacity=".5"/>
-  <circle cx="212" cy="182" r="5" fill="#c97f2e" opacity=".5"/>
-  <circle cx="196" cy="224" r="4" fill="#c97f2e" opacity=".5"/>
-  <circle cx="126" cy="150" r="4" fill="#c97f2e" opacity=".45"/>
-  <!-- eyes -->
-  <ellipse cx="126" cy="160" rx="20" ry="24" fill="#fff" stroke="#6b3515" stroke-width="4"/>
-  <ellipse cx="194" cy="160" rx="20" ry="24" fill="#fff" stroke="#6b3515" stroke-width="4"/>
-  <circle cx="128" cy="164" r="11" fill="#4a2410"/>
-  <circle cx="196" cy="164" r="11" fill="#4a2410"/>
-  <circle cx="132" cy="159" r="4" fill="#fff"/>
-  <circle cx="200" cy="159" r="4" fill="#fff"/>
-  <!-- smile -->
-  <path d="M132 198q28 30 56 0" fill="none" stroke="#6b3515" stroke-width="6" stroke-linecap="round"/>
-  <!-- cheeks -->
-  <ellipse cx="104" cy="192" rx="12" ry="8" fill="#ef7d5a" opacity=".5"/>
-  <ellipse cx="216" cy="192" rx="12" ry="8" fill="#ef7d5a" opacity=".5"/>
-  <!-- ears -->
-  <ellipse cx="56" cy="170" rx="22" ry="30" fill="url(#band)" stroke="#8a4a1e" stroke-width="6"/>
-  <ellipse cx="264" cy="170" rx="22" ry="30" fill="url(#band)" stroke="#8a4a1e" stroke-width="6"/>
-  <ellipse cx="56" cy="170" rx="10" ry="15" fill="#8a4a1e"/>
-  <ellipse cx="264" cy="170" rx="10" ry="15" fill="#8a4a1e"/>
-  <!-- mic -->
-  <path d="M258 196q6 30 -18 40" fill="none" stroke="#8a4a1e" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="236" cy="238" r="8" fill="#d63b2b" stroke="#8a4a1e" stroke-width="3"/>
-  <!-- waving arm -->
-  <path d="M62 210q-30 -6 -30 -42" fill="none" stroke="#f0b34a" stroke-width="16" stroke-linecap="round"/>
-  <path d="M32 168q-4 -20 6 -30M40 170q0 -22 12 -30M50 174q6 -18 18 -22" fill="none" stroke="#f0b34a" stroke-width="9" stroke-linecap="round"/>
+
+  <ellipse cx="256" cy="516" rx="120" ry="18" fill="#E7E3DC"/>
+
+  <!-- copa izquierda (detrás del cuerpo) -->
+  <ellipse cx="116" cy="294" rx="31" ry="42" fill="#C92F22" stroke="#7E2016" stroke-width="6"/>
+  <ellipse cx="116" cy="294" rx="15" ry="23" fill="url(#cupG)"/>
+
+  <!-- arco de audífonos (detrás del cuerpo, pegado a la cabeza) -->
+  <path d="M134 296 C124 156 190 94 256 94 C330 94 390 158 378 296" fill="none" stroke="url(#bandG)" stroke-width="24" stroke-linecap="round"/>
+  <path d="M186 112 C212 96 300 96 326 112" fill="none" stroke="#D4372A" stroke-width="24" stroke-linecap="round"/>
+
+  <!-- piernas y pies -->
+  <path d="M234 418 L234 486" fill="none" stroke="#F0B23E" stroke-width="19" stroke-linecap="round"/>
+  <path d="M280 418 L280 486" fill="none" stroke="#F0B23E" stroke-width="19" stroke-linecap="round"/>
+  <ellipse cx="224" cy="492" rx="23" ry="11" fill="#F0B23E"/>
+  <ellipse cx="290" cy="492" rx="23" ry="11" fill="#F0B23E"/>
+
+  <!-- brazo izquierdo (mano en la cintura) -->
+  <path d="M150 332 C114 350 110 392 152 408" fill="none" stroke="#F0B23E" stroke-width="23" stroke-linecap="round"/>
+  <ellipse cx="166" cy="410" rx="16" ry="14" fill="#F0B23E"/>
+
+  <!-- brazo derecho saludando -->
+  <path d="M376 318 C418 308 446 280 456 236" fill="none" stroke="#F0B23E" stroke-width="23" stroke-linecap="round"/>
+  <ellipse cx="462" cy="218" rx="17" ry="19" fill="#F0B23E"/>
+  <path d="M450 204 q -4 -20 4 -32" fill="none" stroke="#F0B23E" stroke-width="9" stroke-linecap="round"/>
+  <path d="M463 199 q 0 -22 10 -30" fill="none" stroke="#F0B23E" stroke-width="9" stroke-linecap="round"/>
+  <path d="M476 204 q 8 -16 20 -20" fill="none" stroke="#F0B23E" stroke-width="9" stroke-linecap="round"/>
+  <path d="M447 222 q -16 -4 -24 6" fill="none" stroke="#F0B23E" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- cuerpo pastelito (squircle con base ancha ondulada) -->
+  <path d="M104 250 C104 150 176 108 256 108 C336 108 408 150 408 250 C408 314 396 356 372 392 C352 420 316 432 282 426 C272 424 266 432 256 432 C246 432 240 424 230 426 C196 432 160 420 140 392 C116 356 104 314 104 250 Z" fill="url(#bodyG)" stroke="#5C2E11" stroke-width="7" stroke-linejoin="round"/>
+
+  <!-- trenza del borde (arco superior) -->
+  <g stroke="#E0A032" stroke-width="3.5" fill="#F7C458">
+    <ellipse cx="111" cy="298" rx="27" ry="16" transform="rotate(107 111 298)"/>
+    <ellipse cx="106" cy="260" rx="27" ry="16" transform="rotate(90 106 260)"/>
+    <ellipse cx="110" cy="222" rx="27" ry="16" transform="rotate(73 110 222)"/>
+    <ellipse cx="126" cy="188" rx="27" ry="16" transform="rotate(57 126 188)"/>
+    <ellipse cx="150" cy="160" rx="27" ry="16" transform="rotate(42 150 160)"/>
+    <ellipse cx="181" cy="138" rx="27" ry="16" transform="rotate(28 181 138)"/>
+    <ellipse cx="216" cy="125" rx="27" ry="16" transform="rotate(14 216 125)"/>
+    <ellipse cx="256" cy="120" rx="27" ry="16" transform="rotate(0 256 120)"/>
+    <ellipse cx="296" cy="125" rx="27" ry="16" transform="rotate(-14 296 125)"/>
+    <ellipse cx="331" cy="138" rx="27" ry="16" transform="rotate(-28 331 138)"/>
+    <ellipse cx="362" cy="160" rx="27" ry="16" transform="rotate(-42 362 160)"/>
+    <ellipse cx="386" cy="188" rx="27" ry="16" transform="rotate(-57 386 188)"/>
+    <ellipse cx="402" cy="222" rx="27" ry="16" transform="rotate(-73 402 222)"/>
+  </g>
+
+  <!-- manchas doradas -->
+  <g fill="#D98E2B" opacity=".5">
+    <ellipse cx="176" cy="298" rx="7" ry="5"/>
+    <ellipse cx="336" cy="284" rx="6" ry="5"/>
+    <ellipse cx="300" cy="346" rx="5" ry="4"/>
+    <ellipse cx="210" cy="362" rx="6" ry="5"/>
+    <ellipse cx="356" cy="334" rx="5" ry="4"/>
+    <ellipse cx="160" cy="340" rx="5" ry="4"/>
+  </g>
+
+  <!-- mejillas -->
+  <ellipse cx="166" cy="324" rx="16" ry="10" fill="#E88A54" opacity=".32"/>
+  <ellipse cx="356" cy="318" rx="16" ry="10" fill="#E88A54" opacity=".32"/>
+
+  <!-- cejas -->
+  <path d="M182 234 Q202 214 226 224" fill="none" stroke="#5C2E11" stroke-width="7" stroke-linecap="round"/>
+  <path d="M290 224 Q314 214 336 234" fill="none" stroke="#5C2E11" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- ojos -->
+  <ellipse cx="214" cy="280" rx="31" ry="36" fill="#fff" stroke="#5C2E11" stroke-width="6"/>
+  <ellipse cx="302" cy="280" rx="31" ry="36" fill="#fff" stroke="#5C2E11" stroke-width="6"/>
+  <circle cx="218" cy="286" r="17" fill="#4A2410"/>
+  <circle cx="306" cy="286" r="17" fill="#4A2410"/>
+  <circle cx="212" cy="278" r="6" fill="#fff"/>
+  <circle cx="300" cy="278" r="6" fill="#fff"/>
+  <circle cx="224" cy="296" r="3" fill="#fff" opacity=".85"/>
+  <circle cx="312" cy="296" r="3" fill="#fff" opacity=".85"/>
+
+  <!-- boca -->
+  <path d="M228 324 Q266 374 306 324 Q294 358 266 358 Q240 358 228 324 Z" fill="#6E2A14" stroke="#5C2E11" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="266" cy="346" rx="24" ry="11" fill="#E8574A"/>
+
+  <!-- copa derecha (delante del cuerpo) -->
+  <ellipse cx="412" cy="294" rx="37" ry="45" fill="#D4372A" stroke="#7E2016" stroke-width="6"/>
+  <ellipse cx="412" cy="294" rx="21" ry="28" fill="url(#cupG)"/>
+  <ellipse cx="412" cy="292" rx="11" ry="16" fill="#F7B54C" opacity=".75"/>
+
+  <!-- boom de micrófono -->
+  <path d="M408 332 C398 362 362 370 338 360" fill="none" stroke="#5C2E11" stroke-width="7" stroke-linecap="round"/>
+  <rect x="306" y="344" width="42" height="22" rx="11" fill="#D4372A" stroke="#7E2016" stroke-width="4"/>
 </svg>

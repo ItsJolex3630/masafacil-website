@@ -868,13 +868,29 @@ html.lock{overflow:hidden}
 #aib{width:66px;height:66px;padding:0;border-radius:50%;background:linear-gradient(160deg,#f7c667,#cf7f2b);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(64,32,26,.34);display:grid;place-items:center;overflow:visible}
 #aib.want{animation:masitoPulse 1.7s ease-in-out infinite}
 @keyframes masitoPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
-.masito-ava{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;background:#fffdf8;border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
-.masito-ava img{width:100%;height:100%;object-fit:cover;object-position:50% 26%;display:block}
-.masito-ava.sm{width:36px;height:36px;border-width:2px}
+.masito-ava{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 34%,#fff,#f4e8d2);border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
+.masito-ava img{width:100%;height:100%;object-fit:contain;object-position:50% 50%;padding:3px;display:block}
+.masito-ava.sm{width:38px;height:38px;border-width:2px}
+.masito-ava.sm img{padding:2px}
 .masito-dot{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#d63b2b;border:2px solid #fff;display:none}
 #aib.want .masito-dot{display:block}
 .masito-teaser{position:fixed;left:14px;bottom:calc(158px + env(safe-area-inset-bottom,0px));z-index:16;max-width:min(250px,72vw);background:#fffdf8;color:#40201a;border:1.5px solid rgba(201,165,119,.6);border-radius:16px;padding:10px 13px;font:600 .84rem/1.3 var(--h);box-shadow:0 10px 28px rgba(64,32,26,.24);animation:hi 300ms var(--eo) both}
 .masito-teaser::after{content:"";position:absolute;left:22px;bottom:-9px;width:16px;height:16px;background:#fffdf8;border-right:1.5px solid rgba(201,165,119,.6);border-bottom:1.5px solid rgba(201,165,119,.6);transform:rotate(45deg)}
+.masito-toast{position:fixed;left:14px;bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:17;width:min(382px,calc(100vw - 28px));background:rgba(255,253,248,.97);backdrop-filter:blur(18px) saturate(180%);border:1.5px solid rgba(201,165,119,.6);border-radius:20px;padding:12px 13px;box-shadow:0 18px 46px rgba(64,32,26,.32);display:flex;gap:11px;align-items:flex-start;transform-origin:bottom left}
+.masito-toast[hidden]{display:none}
+.masito-toast.in{animation:masitoToastIn 520ms var(--ea) both}
+@keyframes masitoToastIn{from{opacity:0;transform:translateY(20px) scale(.85)}to{opacity:1;transform:none}}
+.masito-toast::after{content:"";position:absolute;left:30px;bottom:-9px;width:18px;height:18px;background:rgba(255,253,248,.97);border-right:1.5px solid rgba(201,165,119,.6);border-bottom:1.5px solid rgba(201,165,119,.6);transform:rotate(45deg)}
+.masito-toast .mt-ava{flex:none;width:54px;height:54px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 34%,#fff,#f4e8d2);border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
+.masito-toast .mt-ava img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.mt-body{flex:1;min-width:0;padding-right:20px}
+.mt-body>b{display:block;font:700 .95rem var(--h);color:var(--dk)}
+.mt-body>p{margin:3px 0 9px;font-size:.86rem;line-height:1.35;color:#4a332c}
+.mt-actions{display:flex;gap:8px;align-items:center}
+.mt-go{border:0;background:var(--md);color:#fff;border-radius:99px;padding:9px 16px;font:600 .84rem var(--h);cursor:pointer;transition:transform 160ms var(--ea),filter 160ms ease}
+.mt-go:active{transform:scale(.97)}
+.masito-toast .mt-x{position:absolute;top:7px;right:7px;width:28px;height:28px;border:0;background:rgba(64,32,26,.08);border-radius:50%;color:var(--dk);font-size:1.15rem;line-height:1;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.masito-toast.in{animation:none}}
 .chat.masito{width:min(372px,calc(100vw - 28px));bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 .chat.masito header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px}
 .masito-head{display:flex;align-items:center;gap:9px}
@@ -885,7 +901,7 @@ html.lock{overflow:hidden}
 .chat.masito .m p{margin:0;padding:9px 12px;border-radius:14px;background:#f1e8d6;max-width:86%;position:relative}
 .chat.masito .m p.u{background:var(--md);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
 .chat.masito .m p.bot{border-bottom-left-radius:4px}
-.chat.masito .m p.bot::before{content:"";display:inline-block;width:20px;height:20px;margin-right:6px;vertical-align:-4px;border-radius:50%;background:url('assets/img/masito.svg') center/cover #fff;border:1.5px solid rgba(201,165,119,.7)}
+.chat.masito .m p.bot::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;border-radius:50%;background:url('assets/img/masito.svg') center/contain no-repeat #fff;border:1.5px solid rgba(201,165,119,.7)}
 .chat.masito .q{padding:2px 12px 10px;max-height:150px;overflow:auto}
 .chat.masito .q button.sel{background:var(--dk);color:#fff;border-color:var(--dk)}
 .masito-input{display:flex;gap:6px;padding:8px 12px 12px;border-top:1px dashed rgba(201,165,119,.5)}
@@ -976,6 +992,7 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 
 <a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito.svg" alt=""></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
 <div class="masito-teaser" id="masito-teaser" role="status" aria-live="polite" hidden></div>
+<div class="masito-toast" id="masito-toast" role="status" aria-live="polite" hidden><span class="mt-ava"><img src="assets/img/masito.svg" alt=""></span><div class="mt-body"><b>Masito</b><p id="masito-toast-msg"></p><div class="mt-actions"><button type="button" class="mt-go" id="masito-toast-go">Abrir</button></div></div><button type="button" class="mt-x" id="masito-toast-x" aria-label="Cerrar notificación">×</button></div>
 <div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito.svg" alt=""></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
 
 <script>
@@ -2715,6 +2732,7 @@ function LB(sel) {
   if (!MFapi) return;
   var $ = function(i){ return document.getElementById(i); };
   var ch = $('ch'), cm = $('cm'), cq = $('cq'), aib = $('aib'), cx = $('cx_ai'), teaser = $('masito-teaser'), form = $('masito-form'), text = $('masito-text');
+  var toast = $('masito-toast'), toastMsg = $('masito-toast-msg'), toastGo = $('masito-toast-go'), toastX = $('masito-toast-x');
   var RM = matchMedia('(prefers-reduced-motion:reduce)');
   var rand = function(n){ return Math.floor(Math.random() * n); };
   var wait = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
@@ -2738,8 +2756,33 @@ function LB(sel) {
     ['¿Venden masas crudas y congeladas?', '¡Sí! Paquetes de 12, 24 y 50 discos, bandejas de 25 y 50 tequeños congelados y kilo de masa lista para preparar en casa.'],
     ['¿Cómo frío las masas congeladas?', 'En abundante aceite a 180°C durante 3 a 4 minutos sin descongelar. En freidora de aire a 190°C por 8 minutos volteando a mitad.'],
     ['¿Qué métodos de pago aceptan?', 'Efectivo en dólares ($), Pago Móvil (a tasa oficial BCV), Zelle y Punto de Venta en el local.'],
-    ['¿Dónde están ubicados?', 'En La Esmeralda, San Diego, Carabobo, a pocos metros de la vía principal.']
+    ['¿Dónde están ubicados?', 'En La Esmeralda, San Diego, Carabobo, a pocos metros de la vía principal.'],
+    ['¿Qué es lo más barato?', 'El pastelito tradicional de queso: $0,65, y con la promo 2x$1,00 queda aún mejor. ¡La opción más rendidora! 🥟'],
+    ['¿Tienen opciones vegetarianas?', 'El Sandwich Diet lleva vegetales frescos y queso paisa ($5,00). Sin carne también tienes pastelito de queso y de papa con queso 🧀.'],
+    ['¿Qué tienen para fiestas o cumpleaños?', 'Los Combos Pasapalos: Familiar (30 piezas) $10, Rumbero (60) $18 y Mega Fiesta (100) $28. ¡Encarga con 24 h de anticipación! 🎉'],
+    ['¿Qué hay de nuevo?', '¡El Panini Caprese! Pesto artesanal, tomate fresco, mozzarella y jamón serrano o prosciutto. $10,00 🥪'],
+    ['¿Manejan opciones sin gluten?', 'Trabajamos con harinas de trigo, así que no garantizamos 100% libre de gluten. Confírmalo por WhatsApp antes de pedir 🙏.'],
+    ['¿Tienen wifi o estacionamiento?', 'Para wifi, mesas, estacionamiento o reservas, escríbenos por WhatsApp al +58 424-4099610 😊.'],
+    ['¿Cuál es lo más gourmet?', 'El Panini Italiano con burrata ($10,00) y el Caprese ($10,00). En pastelitos, camarón y champiñón a $1,99 🍤.']
   ];
+
+  var JOKES = [
+    '¿Sabes por qué el pastelito fue al psicólogo? Porque tenía muchos rellenos emocionales 😄🥟',
+    'Le dije a un tequeño "eres muy intenso"… y me respondió "es que estoy lleno de queso" 🧀',
+    'Mi dieta dice "no fritos", pero mis pastelitos dicen "ven, abrázame" 🥟😋'
+  ];
+
+  function timeSlot(){
+    try {
+      var f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Caracas', hour: 'numeric', hour12: false }).formatToParts(new Date());
+      var h = +(f.find(function(p){ return p.type === 'hour'; }).value) % 24;
+      return h >= 5 && h < 12 ? 'dias' : (h >= 12 && h < 19 ? 'tardes' : 'noches');
+    } catch (e){ return 'tardes'; }
+  }
+  function greetByTime(){
+    var s = timeSlot();
+    return s === 'dias' ? '¡Buenos días! ☀️' : (s === 'tardes' ? '¡Buenas tardes! 🌤️' : '¡Buenas noches! 🌙');
+  }
 
   var busy = false, selCats = new Set(), randomPick = false, idleTimer = null, upsellTimer = null;
   var IDLE_MS = 120000;
@@ -2920,9 +2963,11 @@ function LB(sel) {
     if (hasDrink() || cartCount() === 0) return;
     if (document.documentElement.classList.contains('lock')){ upsellTimer = setTimeout(fireUpsell, 6000); return; }
     sessionStorage.setItem('masito_upsell_shown', '1');
-    ensureOpen(false);
-    addMsg('Noté que no añadiste ninguna bebida… 🥤 ¡Estos deliciosos pastelitos no se pueden comer sin algo que los acompañe!', 'bot');
-    showDrinkChips();
+    notify({
+      body: 'Tu pedido pide una bebida 🥤 ¡Unos pastelitos así lo merecen!',
+      actionLabel: '🥤 Ver bebidas',
+      onAction: function(){ ensureOpen(false); addMsg('Noté que no añadiste ninguna bebida… 🥤 ¡Estos deliciosos pastelitos no se pueden comer sin algo que los acompañe!', 'bot'); showDrinkChips(); }
+    });
   }
   function showDrinkChips(){
     var chips = MFapi.catalog.drinks.map(function(d){
@@ -2963,6 +3008,29 @@ function LB(sel) {
   }
   function respond(v){
     var t = norm(v);
+    /* saludos */
+    if (/buenos dias|buen dia|buenos dia/.test(t)){ addMsg('¡Buenos días! ☀️ Soy <b>Masito</b>. Un cafecito y un pastelito recién frito arrancan el día perfecto. ¿Te ayudo a pedir?', 'bot'); showQAchips(); return; }
+    if (/buenas tardes|buena tarde/.test(t)){ addMsg('¡Buenas tardes! 🌤️ Soy <b>Masito</b>. ¿Qué se te antoja hoy? Te ayudo a elegir 🥟.', 'bot'); showQAchips(); return; }
+    if (/buenas noches|buena noche/.test(t)){ addMsg('¡Buenas noches! 🌙 Soy <b>Masito</b>. ¿Un antojito para cerrar el día? Aquí estoy 🥟.', 'bot'); showQAchips(); return; }
+    if (/(^|\b)(hola|holi|hey|hello|epale|saludos|buenas|que tal|que mas|quiubo|wenas)(\b|$)/.test(t)){ addMsg('¡Hola! 👋 Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. ¿Te ayudo a elegir o respondo alguna duda?', 'bot'); showQAchips(); return; }
+    /* small talk */
+    if (/como estas|como andas|como va|que tal estas|todo bien|como te va/.test(t)){ addMsg('¡Feliz y recién fritito! 😄 ¿Y tú? Dime qué se te antoja y te ayudo.', 'bot'); showQAchips(); return; }
+    if (/quien eres|que eres|como te llamas|tu nombre|eres un bot|eres humano|eres real/.test(t)){ addMsg('Soy <b>Masito</b>, el asistente virtual de Masa Fácil 🥟. No como pastelitos (aunque quisiera), pero me sé todo el menú y te giro la ruleta para elegir 😄.', 'bot'); return; }
+    if (/que puedes hacer|en que me ayudas|ayudame con|opciones|funciones|para que sirves/.test(t)){ addMsg('Puedo contarte precios, promos, horarios, delivery y pagos; recomendarte platos; girar la ruleta para elegir 🎡 y armar tu pedido. ¿Por dónde empezamos?', 'bot'); showQAchips(); return; }
+    if (/gracias|gracia|te lo agradezco|mil gracias/.test(t)){ addMsg('¡Con gusto! 🥟 Para eso estoy. ¿Algo más para tu pedido?', 'bot'); return; }
+    if (/adios|chao|chau|hasta luego|nos vemos|bye|me voy|hasta pronto/.test(t)){ addMsg('¡Hasta pronto! 👋 Que disfrutes tus pastelitos. ¡Vuelve cuando quieras! 🥟', 'bot'); return; }
+    if (/chiste|cuentame algo|algo divertido|hazme reir|algo gracioso/.test(t)){ addMsg(JOKES[rand(JOKES.length)], 'bot'); return; }
+    if (/te quiero|te amo|eres el mejor|eres genial|me caes bien/.test(t)){ addMsg('¡Ay, qué dulce! 🥰 Tan dulce como los tequeños de chocolate. ¿Te añado unos? 🍫', 'bot'); return; }
+    /* intents de menú */
+    if (/mas barato|economico|barato|mas rendidor|poco dinero|no gastar mucho/.test(t)){ addMsg('Lo más económico: <b>pastelito tradicional de queso</b> a $0,65, y con la promo 2x$1,00 queda aún mejor 🥟. La ración de 6 tequeños ($1,70) también rinde.', 'bot'); return; }
+    if (/mas caro|gourmet|premium|lo mejor|mas fino|mas top/.test(t)){ addMsg('Lo más gourmet: <b>Panini Italiano</b> con burrata ($10,00) y el <b>Caprese</b> ($10,00). En pastelitos, camarón y champiñón a $1,99 🍤.', 'bot'); return; }
+    if (/nuevo|novedad|lo ultimo|recien llegado/.test(t)){ addMsg('¡Lo nuevo es el <b>Panini Caprese</b>: pesto artesanal, tomate fresco, mozzarella y jamón serrano o prosciutto. $10,00 🥪', 'bot'); return; }
+    if (/vegetarian|sin carne|veggie/.test(t)){ addMsg('Tenemos el <b>Sandwich Diet</b> (vegetales frescos y queso paisa, $5,00) y opciones sin carne como el pastelito de queso o de papa con queso 🧀.', 'bot'); return; }
+    if (/nino|cumple|fiesta|evento|reunion|pasapalo|celebraci/.test(t)){ addMsg('Para fiestas: <b>Combos Pasapalos</b> — Familiar (30 piezas) $10, Rumbero (60) $18 y Mega Fiesta (100) $28. ¡Encarga con 24 h de anticipación! 🎉', 'bot'); return; }
+    if (/picante|pica|aji/.test(t)){ addMsg('Nuestros platos no son picantes; las salsas de la casa van aparte para que las ajustes a tu gusto 🌶️.', 'bot'); return; }
+    if (/gluten|celiac|celiaqu/.test(t)){ addMsg('Trabajamos con harinas de trigo, así que no garantizamos 0 gluten. Mejor confírmalo por WhatsApp al +58 424-4099610 antes de pedir 🙏.', 'bot'); return; }
+    if (/wifi|internet|estacionamiento|parking|mesa|reserva|mascota|perro/.test(t)){ addMsg('Para wifi, mesas, estacionamiento o reservas, escríbenos por WhatsApp al +58 424-4099610 y te ayudan al instante 😊.', 'bot'); return; }
+    if (/mi pedido|rastrear|va en camino|estado del pedido|donde va|seguimiento/.test(t)){ addMsg('Tu pedido se confirma y sigue por WhatsApp con nuestro equipo; ellos te mantienen al tanto 🛵. ¿Quieres que te arme el mensaje del pedido?', 'bot'); return; }
     if (/ruleta|elegir|antojo|no se|indecis|ayudame|sorprend|recomiend|que como|que pido/.test(t)){ startHelpFlow(); return; }
     var found = findItem(t);
     if (found){
@@ -2987,11 +3055,14 @@ function LB(sel) {
     addMsg('No estoy seguro de eso 🤔, pero puedo ayudarte a elegir con la ruleta 🎡.', 'bot');
     renderCategoryPicker();
   }
+  var qaPage = 0;
   function showQAchips(){
-    var chips = QA.slice(0, 4).map(function(q){
+    var per = 4, pages = Math.ceil(QA.length / per), start = (qaPage % pages) * per;
+    var chips = QA.slice(start, start + per).map(function(q){
       return { t: q[0], fn: function(){ addMsg(esc(q[0]), 'u'); addMsg(q[1], 'bot'); } };
     });
     chips.push({ t: '🎡 Ayúdame a elegir', fn: startHelpFlow });
+    chips.push({ t: '➕ Más preguntas', fn: function(){ qaPage = (qaPage + 1) % pages; showQAchips(); } });
     setChips(chips);
   }
 
@@ -3006,7 +3077,7 @@ function LB(sel) {
     resetIdle();
     if (greet !== false && !cm.dataset.greeted){
       cm.dataset.greeted = '1';
-      addMsg('¡Hola! Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. Puedo responderte dudas o girarte la ruleta para elegir. ¿En qué te ayudo?', 'bot');
+      addMsg(greetByTime() + ' Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. Puedo responderte dudas o girarte la ruleta para elegir. ¿En qué te ayudo?', 'bot');
       showQAchips();
     }
   }
@@ -3024,9 +3095,37 @@ function LB(sel) {
     aib.classList.remove('want');
   }
 
-  aib.addEventListener('click', function(){ ch.classList.contains('on') ? closeChat() : ensureOpen(true); });
+  /* ---------- Notificación toast (desktop/móvil) ---------- */
+  var pending = null, toastTimer = null;
+  function notify(opts){
+    if (ch.classList.contains('on')){ if (opts.onAction) opts.onAction(); return; }
+    pending = opts.onAction || null;
+    toastMsg.textContent = opts.body;
+    toastGo.textContent = opts.actionLabel || 'Abrir';
+    toast.hidden = false;
+    toast.classList.remove('in'); void toast.offsetWidth; toast.classList.add('in');
+    aib.classList.add('want');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.hidden = true; }, 14000);
+  }
+  function hideToast(){ toast.hidden = true; clearTimeout(toastTimer); }
+  function consumePending(act){
+    pending = null;
+    hideToast();
+    aib.classList.remove('want');
+    ensureOpen(true);
+    if (act) act();
+  }
+
+  aib.addEventListener('click', function(){
+    if (ch.classList.contains('on')){ closeChat(); return; }
+    consumePending(pending);
+  });
   cx.addEventListener('click', closeChat);
   teaser.addEventListener('click', function(){ ensureOpen(false); startHelpFlow(); });
+  toastGo.addEventListener('click', function(){ consumePending(pending); });
+  toastX.addEventListener('click', function(){ pending = null; hideToast(); aib.classList.remove('want'); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !toast.hidden){ pending = null; hideToast(); aib.classList.remove('want'); } });
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var v = text.value.trim();
@@ -3051,7 +3150,7 @@ function LB(sel) {
       }
     }
     sessionStorage.setItem('masito_help_shown', '1');
-    startHelpFlow();
+    notify({ body: '¿Se te hace difícil elegir? Deja que gire la ruleta y te recomiende algo rico 🎡', actionLabel: '🎡 Elegir por mí', onAction: startHelpFlow });
   }
 
   window.addEventListener('mf:cart-add', function(e){
@@ -3070,6 +3169,7 @@ function LB(sel) {
     triggerIdle: function(){ fireIdle(true); },
     triggerUpsell: function(){ fireUpsell(); },
     spin: function(cat){ return runRoulette(cat); },
+    notify: function(body, label){ notify({ body: body || 'Mensaje de prueba de Masito 🥟', actionLabel: label || 'Abrir', onAction: startHelpFlow }); },
     open: function(){ ensureOpen(true); }
   };
 
