@@ -10,11 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@libsql/client@0.6.0/+esm";
-  window.libsql = { createClient };
-  window.dispatchEvent(new Event("mf:libsql-ready"));
-</script>
 <style>
 :root{--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif;--line:rgba(201,165,119,.45)}
 *{box-sizing:border-box}
@@ -203,92 +198,68 @@ textarea{width:100%;min-height:52px;resize:vertical}
 (function(){
   'use strict';
   var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
-  var TURSO_URL = "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io";
-  var TURSO_AUTH_TOKEN = "***REMOVED_TURSO_TOKEN***";
-  var ADMIN_EMAILS = ['jolex3630@gmail.com']; // + correo secundario de Masa Fácil
-  var SESSION_KEY = 'mf_admin_user';
+  var CRED_KEY = 'mf_gis_cred'; // sessionStorage: credential JWT de Google (vida ~1h). NUNCA localStorage.
 
-  var db = null, adminEmail = null, adminEmails = [];
+  var adminEmail = null;
   var cliSort = 'pedidos', cliFilter = '', prodFilter = '';
   var $ = function(id){ return document.getElementById(id); };
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
   function fmt(n){ return '$' + Number(n||0).toFixed(2).replace('.',','); }
   function digits(s){ return String(s||'').replace(/[^\d]/g,''); }
   function toast(msg, err){ var t=$('toast'); t.textContent=msg; t.className = 'on' + (err?' err':''); clearTimeout(t._t); t._t=setTimeout(function(){ t.className=''; }, 2600); }
   function parseJwt(token){ try{ var b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''))); }catch(e){ return null; } }
 
-  function getDb(){
-    if(db) return db;
-    try{ if(window.libsql) db = window.libsql.createClient({ url: TURSO_URL, authToken: TURSO_AUTH_TOKEN }); }
-    catch(e){ console.warn('Turso no disponible:', e); }
-    return db;
-  }
-  getDb();
+  // ---- API del servidor (autorización real, verificada en Cloudflare) ----
+  function getCred(){ try{ return sessionStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function setCred(t){ try{ sessionStorage.setItem(CRED_KEY, t); }catch(e){} }
+  function clearCred(){ try{ sessionStorage.removeItem(CRED_KEY); }catch(e){} }
 
-  // Sesión unificada: admin.html (mf_admin_user) o index.html (mf_user_session)
-  function getSavedUser() {
-    try {
-      var a = JSON.parse(localStorage.getItem('mf_admin_user') || 'null');
-      if (a && a.email) return a;
-      var u = JSON.parse(localStorage.getItem('mf_user_session') || 'null');
-      if (u && u.email) return u;
-    } catch(e) {}
-    return null;
-  }
-
-  // Espera no bloqueante a que el cliente libSQL esté disponible (reintentos cada 100ms)
-  function ensureDb(maxWaitMs) {
-    maxWaitMs = maxWaitMs || 6000;
-    var start = Date.now();
-    return new Promise(function(resolve) {
-      var check = function() {
-        var d = getDb();
-        if (d) return resolve(d);
-        if (Date.now() - start >= maxWaitMs) return resolve(null);
-        setTimeout(check, 100);
-      };
-      check();
-    });
-  }
-
-  window.addEventListener('mf:libsql-ready', function() {
-    getDb();
-    var s = getSavedUser();
-    if (s && s.email && !adminEmail) {
-      adminEmail = s.email;
-      verifyAdmin();
+  async function api(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    var t = getCred();
+    if (t) opts.headers['Authorization'] = 'Bearer ' + t;
+    var r;
+    try { r = await fetch(path, opts); }
+    catch(e){ throw new Error('Sin conexión con el servidor'); }
+    if (r.status === 401 || r.status === 403) {
+      clearCred();
+      var err; try { err = (await r.json()).error; } catch(e){}
+      var e = new Error(err || ('HTTP ' + r.status)); e.auth = true; e.status = r.status;
+      throw e;
     }
-  });
+    var data = null;
+    try { data = await r.json(); } catch(e){}
+    if (!r.ok) throw new Error((data && data.error) || ('HTTP ' + r.status));
+    return data;
+  }
 
   function setGate(html){ var g=$('gate'); if(html) g.innerHTML=html; g.style.display=''; $('app').hidden=true; }
   function showApp(){ $('gate').style.display='none'; $('app').hidden=false; }
 
-  window.mfAdminLogin = async function(resp){
+  window.mfAdminLogin = function(resp){
     var p = parseJwt(resp.credential); if(!p) return;
     adminEmail = p.email;
-    try{ localStorage.setItem(SESSION_KEY, JSON.stringify({ email: p.email, nombre: p.name || '' })); }catch(e){}
+    setCred(resp.credential); // la autorización la verifica el servidor con la firma
     verifyAdmin();
   };
 
   async function verifyAdmin(){
     setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Verificando acceso…</h2><p>Conectando con la base de datos de Masa Fácil…</p>');
-    var d = await ensureDb(6000);
-    if(!d){
+    var me;
+    try {
+      me = await api('/api/admin/me');
+    } catch(e) {
+      if (e.auth) {
+        setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail || '')+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
+        return;
+      }
       setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos en este momento.</p><button class="btn sm" onclick="location.reload()" style="margin-top:12px">Reintentar</button>');
       return;
     }
-    try{
-      var r = await d.execute("SELECT email FROM administradores WHERE activo = 1");
-      adminEmails = (r.rows||[]).map(function(x){ return String(x.email).toLowerCase(); });
-    }catch(e){ console.warn('administradores:', e); adminEmails=[]; }
-    var ok = ADMIN_EMAILS.map(function(x){return x.toLowerCase();}).indexOf(String(adminEmail||'').toLowerCase())!==-1
-          || adminEmails.indexOf(String(adminEmail||'').toLowerCase())!==-1;
-    if(!ok){
-      setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail)+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
-      return;
-    }
-    var u = getSavedUser() || {};
-    $('admin-name').textContent = u.nombre || adminEmail;
+    adminEmail = me.email || adminEmail;
+    $('admin-name').textContent = me.nombre || adminEmail;
     $('admin-email').textContent = adminEmail;
     showApp();
     loadClientes(); loadProductos(); loadVentas();
@@ -304,20 +275,18 @@ textarea{width:100%;min-height:52px;resize:vertical}
     });
   });
   $('logout').addEventListener('click', function(){
-    try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+    clearCred();
     try{ if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
     location.reload();
   });
 
   // ---- Clientes ----
   async function loadClientes(){
-    var d = getDb(); var list = $('cli-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    var list = $('cli-list');
     list.innerHTML = '<div class="empty">Cargando clientes…</div>';
     try{
-      var order = cliSort === 'gastado' ? 'total_gastado DESC' : 'total_pedidos DESC';
-      var r = await d.execute("SELECT id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion FROM clientes ORDER BY "+order);
-      var rows = r.rows||[];
-      window._clientes = rows;
+      var rows = await api('/api/admin/clientes?sort=' + cliSort);
+      window._clientes = rows || [];
       renderClientes();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar clientes: '+esc(e.message||e)+'</div>'; }
   }
@@ -345,9 +314,11 @@ textarea{width:100%;min-height:52px;resize:vertical}
         var tr = btn.closest('tr'); var id = tr.dataset.id;
         var pct = Number(tr.querySelector('.pct').value||0);
         var niv = tr.querySelector('.niv').value;
-        var d = getDb(); if(!d) return;
         try{
-          await d.execute({ sql: "UPDATE clientes SET porcentaje_descuento = ?, nivel_fidelizacion = ?, updated_at = datetime('now') WHERE id = ?", args: [pct, niv, id] });
+          await api('/api/admin/clientes/' + encodeURIComponent(id), {
+            method: 'PUT',
+            body: JSON.stringify({ porcentaje_descuento: pct, nivel_fidelizacion: niv })
+          });
           toast('Cliente actualizado ✓');
         }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
       });
@@ -359,11 +330,10 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
   // ---- Productos ----
   async function loadProductos(){
-    var d = getDb(); var list = $('prod-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    var list = $('prod-list');
     list.innerHTML = '<div class="empty">Cargando productos…</div>';
     try{
-      var r = await d.execute("SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre");
-      window._productos = r.rows||[];
+      window._productos = await api('/api/admin/productos') || [];
       renderProductos();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar productos: '+esc(e.message||e)+'</div>'; }
   }
@@ -394,14 +364,15 @@ textarea{width:100%;min-height:52px;resize:vertical}
     list.querySelectorAll('.save-prod').forEach(function(btn){
       btn.addEventListener('click', async function(){
         var card = btn.closest('.card'); var id = card.dataset.id;
-        var precio = Number(card.querySelector('.precio').value||0);
-        var disp = card.querySelector('.disp').checked ? 1 : 0;
-        var tag = card.querySelector('.tag-in').value.trim();
-        var img = card.querySelector('.img-in').value.trim();
-        var desc = card.querySelector('.desc-in').value.trim();
-        var d = getDb(); if(!d) return;
+        var body = {
+          precio: Number(card.querySelector('.precio').value||0),
+          disponible: card.querySelector('.disp').checked ? 1 : 0,
+          promo_tag: card.querySelector('.tag-in').value.trim(),
+          imagen_url: card.querySelector('.img-in').value.trim(),
+          descripcion: card.querySelector('.desc-in').value.trim()
+        };
         try{
-          await d.execute({ sql: "UPDATE productos SET precio = ?, disponible = ?, promo_tag = ?, imagen_url = ?, descripcion = ?, updated_at = datetime('now') WHERE id = ?", args: [precio, disp, tag, img, desc, id] });
+          await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
           toast('Producto actualizado ✓');
         }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
       });
@@ -417,22 +388,18 @@ textarea{width:100%;min-height:52px;resize:vertical}
       return ks.map(function(k){ var q = o[k] && o[k].q; return (q && q > 1 ? q + ' x ' : '') + k; }).join(', ');
     }catch(e){ return ''; }
   }
+  var ESTADOS_OK = { pendiente:1, completado:1, cancelado:1 };
   function estadoBadge(e){
-    e = e || 'pendiente';
-    var label = e === 'completado' ? 'Completado' : (e === 'cancelado' ? 'Cancelado' : 'Pendiente');
-    return '<span class="badge-estado '+e+'">'+label+'</span>';
-  }
-  async function adjustCliente(id, dCount, dSpend){
-    var d = getDb(); if(!d || !id) return;
-    await d.execute({ sql: "UPDATE clientes SET total_pedidos = MAX(0, total_pedidos + ?), total_gastado = MAX(0, total_gastado + ?), updated_at = datetime('now') WHERE id = ?", args: [dCount, dSpend, id] });
+    var k = ESTADOS_OK[e] ? e : 'pendiente';
+    var label = k === 'completado' ? 'Completado' : (k === 'cancelado' ? 'Cancelado' : 'Pendiente');
+    return '<span class="badge-estado '+k+'">'+label+'</span>';
   }
 
   async function loadVentas(){
-    var d = getDb(); var list = $('ventas-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    var list = $('ventas-list');
     list.innerHTML = '<div class="empty">Cargando pedidos…</div>';
     try{
-      var r = await d.execute("SELECT * FROM pedidos ORDER BY datetime(created_at) DESC, id DESC");
-      window._pedidos = r.rows || [];
+      window._pedidos = await api('/api/admin/pedidos') || [];
       renderVentas();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar pedidos: '+esc(e.message||e)+'</div>'; }
   }
@@ -454,7 +421,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     var list = $('ventas-list');
     if(!rows.length){ list.innerHTML = '<div class="empty">No hay pedidos en este filtro.</div>'; return; }
     list.innerHTML = rows.map(function(x){
-      var est = x.estado || 'pendiente';
+      var est = ESTADOS_OK[x.estado] ? x.estado : 'pendiente';
       var items = itemsToText(x.items_json);
       var tel = digits(x.telefono_whatsapp);
       var wa = tel ? '<a class="btn sm tan" target="_blank" rel="noopener" href="https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+(x.nombre_cliente||'')+', te escribimos de Masafácil sobre tu pedido.')+'">💬 WhatsApp</a>' : '';
@@ -478,30 +445,24 @@ textarea{width:100%;min-height:52px;resize:vertical}
   $('venta-filter').addEventListener('change', function(e){ ventaFilter = e.target.value; renderVentas(); });
 
   async function setEstado(id, nuevo){
-    var d = getDb(); if(!d) return;
-    var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
-    if(!p) return;
-    var old = p.estado || 'pendiente';
-    var dCount = 0, dSpend = 0;
-    if(old !== 'completado' && nuevo === 'completado'){ dCount = 1; dSpend = Number(p.total_final||0); }
-    else if(old === 'completado' && nuevo !== 'completado'){ dCount = -1; dSpend = -Number(p.total_final||0); }
-    await d.execute({ sql: "UPDATE pedidos SET estado = ? WHERE id = ?", args: [nuevo, id] });
-    if(p.cliente_id && (dCount || dSpend)) await adjustCliente(p.cliente_id, dCount, dSpend);
-    window._pedidos = (window._pedidos||[]).map(function(x){ return x.id === id ? Object.assign({}, x, { estado: nuevo }) : x; });
-    toast('Pedido marcado como ' + nuevo + ' ✓');
-    renderVentas();
+    try{
+      await api('/api/admin/pedidos/' + encodeURIComponent(id) + '/estado', {
+        method: 'POST',
+        body: JSON.stringify({ estado: nuevo })
+      });
+      await loadVentas();
+    }catch(e){ toast('Error: '+(e.message||e), true); }
   }
 
   async function deleteVenta(id){
     var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
     if(!p) return;
     if(!confirm('¿Eliminar definitivamente este pedido de '+(p.nombre_cliente||'Cliente')+'?')) return;
-    var d = getDb(); if(!d) return;
-    if((p.estado||'pendiente') === 'completado' && p.cliente_id) await adjustCliente(p.cliente_id, -1, -Number(p.total_final||0));
-    await d.execute({ sql: "DELETE FROM pedidos WHERE id = ?", args: [id] });
-    window._pedidos = (window._pedidos||[]).filter(function(x){ return x.id !== id; });
-    toast('Pedido eliminado');
-    renderVentas();
+    try{
+      await api('/api/admin/pedidos/' + encodeURIComponent(id), { method: 'DELETE' });
+      toast('Pedido eliminado');
+      await loadVentas();
+    }catch(e){ toast('Error: '+(e.message||e), true); }
   }
 
   // Acciones de las tarjetas (delegación)
@@ -544,51 +505,37 @@ textarea{width:100%;min-height:52px;resize:vertical}
     $('mv-total').value = p ? Number(p.total_final||0) : '';
     $('mv-items').value = p ? itemsToText(p.items_json) : '';
     $('mv-zona').value = p ? (p.zona_entrega||'') : '';
-    $('mv-estado').value = p ? (p.estado||'pendiente') : 'completado';
+    $('mv-estado').value = p ? (ESTADOS_OK[p.estado] ? p.estado : 'pendiente') : 'completado';
     $('mv-notas').value = p ? (p.notas||'') : '';
     $('modal-venta').classList.add('on');
   }
   $('mv-cancel').addEventListener('click', function(){ $('modal-venta').classList.remove('on'); });
 
   async function saveVenta(){
-    var d = getDb(); if(!d) return;
     var id = $('mv-id').value;
-    var nombre = $('mv-nombre').value.trim() || 'Cliente';
-    var tel = $('mv-tel').value.trim();
-    var email = $('mv-email').value.trim();
-    var total = Number($('mv-total').value || 0);
-    var zona = $('mv-zona').value.trim();
-    var estado = $('mv-estado').value;
-    var notas = $('mv-notas').value.trim();
-    var desc = $('mv-items').value.trim();
-    var items_json = JSON.stringify(desc ? (function(){ var o = {}; o[desc] = { q: 1, u: total }; return o; })() : {});
-
-    if(id){
-      var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
-      if(!p) return;
-      var oldE = p.estado || 'pendiente', oldT = Number(p.total_final||0);
-      if(p.cliente_id){
-        var dC = 0, dS = 0;
-        if(oldE !== 'completado' && estado === 'completado'){ dC = 1; dS = total; }
-        else if(oldE === 'completado' && estado !== 'completado'){ dC = -1; dS = -oldT; }
-        else if(oldE === 'completado' && estado === 'completado'){ dS = total - oldT; }
-        if(dC || dS) await adjustCliente(p.cliente_id, dC, dS);
+    var body = {
+      nombre: $('mv-nombre').value.trim() || 'Cliente',
+      telefono: $('mv-tel').value.trim(),
+      email: $('mv-email').value.trim(),
+      total: Number($('mv-total').value || 0),
+      items: $('mv-items').value.trim(),
+      zona: $('mv-zona').value.trim(),
+      estado: $('mv-estado').value,
+      notas: $('mv-notas').value.trim()
+    };
+    try{
+      if(id){
+        await api('/api/admin/pedidos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
+        toast('Venta actualizada ✓');
+      } else {
+        await api('/api/admin/pedidos', { method: 'POST', body: JSON.stringify(body) });
+        toast('Venta registrada ✓');
       }
-      await d.execute({ sql: "UPDATE pedidos SET nombre_cliente=?, email_cliente=?, telefono_whatsapp=?, items_json=?, total_final=?, zona_entrega=?, notas=?, estado=? WHERE id=?", args: [nombre, email, tel, items_json, total, zona, notas, estado, id] });
-      toast('Venta actualizada ✓');
-    } else {
-      var newId = 'man_' + Date.now();
-      var clienteId = null;
-      if(email){ try{ var q = await d.execute({ sql: "SELECT id FROM clientes WHERE email = ?", args: [email] }); if(q.rows && q.rows.length) clienteId = q.rows[0].id; }catch(e){} }
-      await d.execute({ sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?,?,?,?,?,?,?,0,0,?,?,?,?)", args: [newId, clienteId, nombre, email, tel, items_json, total, total, zona, notas, estado] });
-      if(clienteId && estado === 'completado') await adjustCliente(clienteId, 1, total);
-      toast('Venta registrada ✓');
-    }
-    $('modal-venta').classList.remove('on');
-    await loadVentas();
+      $('modal-venta').classList.remove('on');
+      await loadVentas();
+    }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
   }
   $('mv-save').addEventListener('click', saveVenta);
-
 
   // ---- GIS ----
   var tries = 0;
@@ -603,14 +550,19 @@ textarea{width:100%;min-height:52px;resize:vertical}
   }
   (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
 
-  // ---- Restaurar sesión ----
+  // ---- Restaurar sesión: solo si hay credencial Google vigente en sessionStorage ----
   (function restore(){
-    var s = getSavedUser();
-    if(s && s.email){ adminEmail = s.email; verifyAdmin(); }
+    var t = getCred();
+    if(!t){ return; }
+    var p = parseJwt(t);
+    if (p && p.email) adminEmail = p.email;
+    verifyAdmin();
   })();
 
-  // Exponer utilidades (depuración/pruebas)
-  window.MFAdmin = { get db(){ return getDb(); }, get pedidos(){ return window._pedidos||[]; }, reload: loadVentas };
+  // Utilidades de depuración solo en desarrollo local
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    window.MFAdmin = { reload: loadVentas };
+  }
 })();
 </script>
 </body>

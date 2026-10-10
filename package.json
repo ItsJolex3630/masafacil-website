@@ -1,0 +1,10 @@
+{
+  "name": "masafacil-website",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Masafácil · El Maracucho — Website + API (Cloudflare Pages Functions + Turso)",
+  "dependencies": {
+    "@libsql/client": "^0.15.0",
+    "jose": "^5.9.0"
+  }
+}

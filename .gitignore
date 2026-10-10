@@ -13,3 +13,6 @@ build/
 *.log
 .DS_Store
 Thumbs.db
+# Secretos locales de wrangler (pages dev)
+.dev.vars
+.wrangler/

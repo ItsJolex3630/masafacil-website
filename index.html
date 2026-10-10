@@ -6,12 +6,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
 <!-- Google Identity Services (GIS) SDK Oficial -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<!-- Cliente Web de Turso (libSQL para navegadores) -->
-<script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@libsql/client@0.6.0/+esm";
-  window.libsql = { createClient };
-  window.dispatchEvent(new Event("mf:libsql-ready"));
-</script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif}
 html{scroll-padding-top:calc(56px + env(safe-area-inset-top,0px));scroll-behavior:smooth}*,*::before,*::after{box-sizing:inherit}
@@ -1408,6 +1402,7 @@ function LB(sel) {
 <script>
 (function(){
   const $ = i => document.getElementById(i), WA = 'https://wa.me/584244099610', C = {}, m = n => '$' + n.toFixed(2).replace('.', ','), RM = matchMedia('(prefers-reduced-motion:reduce)'), buzz = n => { try { navigator.vibrate && navigator.vibrate(n); } catch(e) {} };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let selectedZonaIdx = 0;
   const mfApi = {};
 
@@ -2221,7 +2216,7 @@ function LB(sel) {
     };
 
     $('cn').textContent = n;
-    $('cli').innerHTML = ks.length ? ks.map(k => '<div class="cl"><b>' + k + (TRAD_ITEMS.has(k) ? ' <span class="badge-promo-tag" style="font-size:0.65rem;padding:1px 6px">Promo 2x$1</span>' : '') + '</b><b>' + (C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q)) + '</b><div class="q"><button data-a="-" data-k="' + k + '" aria-label="Quitar uno">−</button>' + C[k].q + '<button data-a="+" data-k="' + k + '" aria-label="Agregar uno">+</button><button class="rm" data-a="x" data-k="' + k + '">Quitar</button></div></div>').join('') : '<div class="cem">Tu pedido está vacío.<br>Toca + en el menú para agregar.</div>';
+    $('cli').innerHTML = ks.length ? ks.map(k => '<div class="cl"><b>' + esc(k) + (TRAD_ITEMS.has(k) ? ' <span class="badge-promo-tag" style="font-size:0.65rem;padding:1px 6px">Promo 2x$1</span>' : '') + '</b><b>' + (C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q)) + '</b><div class="q"><button data-a="-" data-k="' + esc(k) + '" aria-label="Quitar uno">−</button>' + C[k].q + '<button data-a="+" data-k="' + esc(k) + '" aria-label="Agregar uno">+</button><button class="rm" data-a="x" data-k="' + esc(k) + '">Quitar</button></div></div>').join('') : '<div class="cem">Tu pedido está vacío.<br>Toca + en el menú para agregar.</div>';
 
     $('cft').style.display = ks.length ? '' : 'none';
     let cttHtml = '<div class="row"><span>Subtotal productos:</span><span>' + m(subtotalBruto) + (un ? ' + consultar' : '') + '</span></div>';
@@ -2267,7 +2262,7 @@ function LB(sel) {
   function showUndo(k, it) {
     und = { k, it };
     const u = $('und');
-    u.innerHTML = '<span>Quitaste ' + k + '</span><button id="udo">Deshacer</button>';
+    u.innerHTML = '<span>Quitaste ' + esc(k) + '</span><button id="udo">Deshacer</button>';
     u.classList.add('on');
     clearTimeout(ut);
     ut = setTimeout(() => { u.classList.remove('on'); und = null; }, 5000);
@@ -2316,20 +2311,21 @@ function LB(sel) {
       return;
     }
     if (e.target.closest('#cwa')) {
+      e.preventDefault(); // el destino final lo decide la respuesta del servidor
       buzz(12);
       const w = $('cwa');
       w.textContent = 'Abriendo WhatsApp…';
       setTimeout(() => w.textContent = 'Enviar pedido por WhatsApp', 3000);
       if (window.MFAuth && window.MFAuth.registrarPedido) {
+        const items = {};
+        Object.keys(C).forEach(k => { items[k] = C[k].q; });
         window.MFAuth.registrarPedido({
-          items: C,
-          subtotalBruto: lastTotals.subtotalBruto || 0,
-          descuento: (lastTotals.fidelidadAhorro || 0) + (lastTotals.tradAhorro || 0),
-          delivery: lastTotals.deliveryCosto || 0,
-          total: lastTotals.total || 0,
+          items: items,
           zona: lastTotals.zonaNombre || '',
           notas: $('cnt').value || ''
         });
+      } else {
+        window.open(w.href, '_blank');
       }
       return;
     }
@@ -2481,18 +2477,19 @@ function LB(sel) {
     if (!map) return;
     const fmtP = n => '$' + Number(n).toFixed(2).replace('.', ',');
     const get = (cat, n) => map[(cat || '') + '|' + (n || '')];
+    const SAFE_IMG = /^assets\/img\/[\w\-\/]+\.webp$/; // allowlist anti-XSS por atributo src
     PASTELITOS_LIST.forEach(it => {
       const o = get('Pastelitos', it.n);
       if (!o) return;
       if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
-      if (o.imagen_url) it.img = o.imagen_url;
+      if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
     });
     DRINKS.forEach(it => {
       const o = get('Bebidas', it.n);
       if (!o) return;
       if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
-      if (o.imagen_url) it.img = o.imagen_url;
+      if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
     });
     document.querySelectorAll('#menu .rw').forEach(rw => {
@@ -2538,21 +2535,21 @@ function LB(sel) {
 })();
 </script>
 <script>
-/* ---- Autenticación Google (GIS) + Fidelización Turso ---- */
+/* ---- Autenticación Google (GIS) + Club Masafácil vía API del servidor ----
+   El navegador jamás toca la base de datos: toda consulta pasa por /api/*
+   con la credencial JWT de Google (firma verificada en el servidor). */
 (function(){
   'use strict';
 
-  // ==== Credenciales activas ====
   var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
-  var TURSO_URL = "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io";
-  var TURSO_AUTH_TOKEN = "***REMOVED_TURSO_TOKEN***";
+  var WA = 'https://wa.me/584244099610';
+  var CRED_KEY = 'mf_gis_cred'; // sessionStorage: credential JWT (vida ~1h). NUNCA localStorage.
 
   window.CURRENT_CLIENTE = null;
-  var tursoClient = null;
-  var SESSION_KEY = 'mf_user_session';
+  var isAdmin = false;
   var $ = function(id){ return document.getElementById(id); };
 
-  // ==== Tarea 3.1 (Plan 2): Validación preventiva de protocolo file:// ====
+  // ==== Validación preventiva de protocolo file:// ====
   var FILE_PROTO_BLOCKED = (window.location.protocol === 'file:');
   if (FILE_PROTO_BLOCKED) {
     console.warn("⚠️ Google OAuth no funciona sobre el protocolo file://. Abre la página a través de un servidor HTTP local (ej: http://localhost:5500).");
@@ -2560,20 +2557,29 @@ function LB(sel) {
     if (_authBox) _authBox.title = "Abre la web desde http://localhost:5500 para probar el inicio de sesión";
   }
 
-  function getTursoClient() {
-    if (tursoClient) return tursoClient;
-    try {
-      if (window.libsql && TURSO_URL && TURSO_AUTH_TOKEN) {
-        tursoClient = window.libsql.createClient({ url: TURSO_URL, authToken: TURSO_AUTH_TOKEN });
-      }
-    } catch (e) {
-      console.warn("Turso no configurado todavía o modo offline:", e);
-    }
-    return tursoClient;
-  }
-  getTursoClient();
+  // ==== Cliente de API ====
+  function getCred(){ try{ return sessionStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function setCred(t){ try{ sessionStorage.setItem(CRED_KEY, t); }catch(e){} }
+  function clearCred(){ try{ sessionStorage.removeItem(CRED_KEY); }catch(e){} }
 
-  // ==== Tarea 3.2: Decodificador JWT ligero (sin dependencias) ====
+  function api(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    var t = getCred();
+    if (t) opts.headers['Authorization'] = 'Bearer ' + t;
+    return fetch(path, opts).then(function(r){
+      if (r.status === 401 || r.status === 403) {
+        clearCred();
+        var err = new Error('HTTP ' + r.status); err.auth = true;
+        throw err;
+      }
+      return r.json().then(function(data){
+        if (!r.ok) throw new Error((data && data.error) || ('HTTP ' + r.status));
+        return data;
+      });
+    });
+  }
+
   function parseJwt(token) {
     try {
       var base64Url = token.split('.')[1];
@@ -2588,44 +2594,29 @@ function LB(sel) {
     }
   }
 
-  function guardarSesion(u) { try { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); } catch (e) {} }
-  function leerSesion() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { return null; } }
-  function borrarSesion() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
-
-  // ==== Sincronización con Turso ====
-  async function sincronizarClienteTurso(u) {
-    var client = getTursoClient();
-    if (!client) {
-      window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
-      return window.CURRENT_CLIENTE;
+  // ==== Club Masafácil: datos del cliente desde el servidor ====
+  function cargarCliente() {
+    if (!getCred()) {
+      window.CURRENT_CLIENTE = null;
+      actualizarUIUsuario();
+      return Promise.resolve(null);
     }
-    try {
-      var res = await client.execute({ sql: "SELECT * FROM clientes WHERE id = ? OR email = ?", args: [u.id, u.email] });
-      if (res.rows && res.rows.length > 0) {
-        var row = res.rows[0];
-        window.CURRENT_CLIENTE = {
-          id: row.id,
-          email: row.email,
-          nombre: row.nombre,
-          avatar: row.avatar_url,
-          telefono: row.telefono_whatsapp,
-          porcentaje_descuento: Number(row.porcentaje_descuento || 0),
-          nivel_fidelizacion: row.nivel_fidelizacion || 'Frecuente',
-          total_pedidos: Number(row.total_pedidos || 0)
-        };
-      } else {
-        await client.execute({
-          sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion) VALUES (?, ?, ?, ?, 0.0, 'Nuevo')",
-          args: [u.id, u.email, u.nombre, u.avatar || '']
-        });
-        window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+    return api('/api/me').then(function(me){
+      window.CURRENT_CLIENTE = me;
+      actualizarUIUsuario();
+      redibujarCarrito();
+      return me;
+    }).catch(function(err){
+      if (err.auth) {
+        window.CURRENT_CLIENTE = null;
+        actualizarUIUsuario();
+        redibujarCarrito();
       }
-    } catch (err) {
-      console.error("Error al sincronizar con Turso:", err);
-      window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
-    }
-    return window.CURRENT_CLIENTE;
+      return window.CURRENT_CLIENTE;
+    });
   }
+  // Nombre mantenido por compatibilidad
+  function sincronizarClienteTurso(){ return cargarCliente(); }
 
   // ==== UI ====
   function actualizarUIUsuario() {
@@ -2658,82 +2649,77 @@ function LB(sel) {
     if (window.MFapi && window.MFapi.redraw) window.MFapi.redraw();
   }
 
-  window.handleGoogleLogin = async function(response) {
+  window.handleGoogleLogin = function(response) {
     var payload = parseJwt(response.credential);
     if (!payload) return;
-    var googleUser = {
+    setCred(response.credential); // la identidad real la valida el servidor con la firma
+    window.CURRENT_CLIENTE = {
       id: payload.sub,
       email: payload.email,
       nombre: payload.name || payload.given_name || 'Cliente',
-      avatar: payload.picture || ''
+      avatar: payload.picture || '',
+      telefono: '',
+      porcentaje_descuento: 0,
+      nivel_fidelizacion: 'Nuevo',
+      total_pedidos: 0
     };
-    guardarSesion(googleUser);
-    window.CURRENT_CLIENTE = Object.assign({}, googleUser, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
     actualizarUIUsuario();
-    await sincronizarClienteTurso(googleUser);
-    actualizarUIUsuario();
+    cargarCliente();
+    verificarAdmin();
     redibujarCarrito();
   };
 
-  async function restaurarSesion() {
-    var u = leerSesion();
-    if (!u || !u.id) { actualizarUIUsuario(); return; }
-    window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
-    actualizarUIUsuario();
-    await sincronizarClienteTurso(u);
-    actualizarUIUsuario();
-    redibujarCarrito();
+  function restaurarSesion() {
+    if (!getCred()) { actualizarUIUsuario(); return; }
+    cargarCliente();
+    verificarAdmin();
   }
 
   function cerrarSesion() {
-    borrarSesion();
+    clearCred();
     window.CURRENT_CLIENTE = null;
+    isAdmin = false;
     actualizarUIUsuario();
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
     redibujarCarrito();
   }
 
-  // ==== Registro asíncrono del pedido (estado 'pendiente', no suma al cliente) ====
+  // ==== Registro del pedido: el SERVIDOR recalcula precios, promo y descuento ====
   function registrarPedido(d) {
-    var c = window.CURRENT_CLIENTE;
-    var client = getTursoClient();
-    if (!client || !d) return;
-    var pedId = 'ped_' + Date.now();
-    client.execute({
-      sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')",
-      args: [
-        pedId,
-        (c && c.id) ? c.id : null,
-        (c && c.nombre) ? c.nombre : 'Invitado',
-        (c && c.email) ? c.email : '',
-        (c && c.telefono) ? c.telefono : '',
-        JSON.stringify(d.items || {}),
-        d.subtotalBruto || 0,
-        d.descuento || 0,
-        d.delivery || 0,
-        d.total || 0,
-        d.zona || '',
-        d.notas || ''
-      ]
-    }).catch(function(err) {
-      console.warn("No se pudo registrar pedido en Turso:", err);
+    // Pestaña abierta desde el gesto del usuario (evita bloqueo de popups);
+    // su destino final lo dicta la respuesta del servidor.
+    var tab = null;
+    try { tab = window.open('about:blank', '_blank'); } catch (e) {}
+
+    function irA(url){ if (tab) { tab.location.href = url; } else { window.location.href = url; } }
+
+    api('/api/pedidos', {
+      method: 'POST',
+      body: JSON.stringify({ items: d.items, zona: d.zona, notas: d.notas })
+    }).then(function(snap){
+      if (snap && snap.waText) irA(WA + '?text=' + encodeURIComponent(snap.waText));
+      else irA($('cwa') ? $('cwa').href : WA);
+    }).catch(function(err){
+      console.warn("No se pudo registrar el pedido en el servidor:", err);
+      var local = $('cwa');
+      irA(local && local.href ? local.href : WA); // mensaje generado localmente en draw()
     });
   }
 
   window.MFAuth = {
     parseJwt: parseJwt,
     sincronizarClienteTurso: sincronizarClienteTurso,
+    cargarCliente: cargarCliente,
     actualizarUIUsuario: actualizarUIUsuario,
     cerrarSesion: cerrarSesion,
     registrarPedido: registrarPedido,
-    get cliente() { return window.CURRENT_CLIENTE; },
-    get turso() { return tursoClient; }
+    get cliente() { return window.CURRENT_CLIENTE; }
   };
 
-  // ==== Tarea 3.2 (Plan 2): Inicialización explícita de GIS con manejo de errores ====
+  // ==== GIS: inicialización con manejo de errores ====
   var gsiAttempts = 0;
   function initGoogle() {
-    if (FILE_PROTO_BLOCKED) return true; // No inicializar sobre file://
+    if (FILE_PROTO_BLOCKED) return true;
     try {
       if (!(window.google && window.google.accounts && window.google.accounts.id)) return false;
       window.google.accounts.id.initialize({
@@ -2759,7 +2745,7 @@ function LB(sel) {
       return true;
     } catch (err) {
       console.warn("Google Identity Services no pudo inicializarse:", err);
-      return true; // Detener reintentos, no bloquear la interfaz
+      return true;
     }
   }
   (function waitForGis() {
@@ -2768,56 +2754,31 @@ function LB(sel) {
     else console.warn("Google Identity Services no cargó (modo offline o bloqueado por red).");
   })();
 
-  // ==== Control de acceso al Panel Admin ====
-  var ADMIN_EMAILS = ['jolex3630@gmail.com']; // + correo secundario de Masa Fácil (o vía tabla administradores)
-  var adminEmailsCache = null;
-
-  function cargarAdministradores() {
-    var client = getTursoClient();
-    if (!client) return;
-    client.execute("SELECT email FROM administradores WHERE activo = 1").then(function(res) {
-      adminEmailsCache = (res.rows || []).map(function(r) { return String(r.email).toLowerCase(); });
-      actualizarBotonAdmin();
-    }).catch(function(e) { console.warn('No se pudo cargar administradores:', e); });
+  // ==== Botón del Panel Admin: visible solo si el SERVIDOR confirma el rol ====
+  function verificarAdmin() {
+    if (!getCred()) { isAdmin = false; actualizarBotonAdmin(); return; }
+    api('/api/admin/me').then(function(){ isAdmin = true; actualizarBotonAdmin(); })
+      .catch(function(){ isAdmin = false; actualizarBotonAdmin(); });
   }
-
-  function esAdmin(email) {
-    if (!email) return false;
-    var e = String(email).toLowerCase();
-    if (ADMIN_EMAILS.some(function(x) { return x.toLowerCase() === e; })) return true;
-    if (adminEmailsCache && adminEmailsCache.indexOf(e) !== -1) return true;
-    return false;
-  }
-
   function actualizarBotonAdmin() {
     var btn = $('admin-btn');
     if (!btn) return;
-    var c = window.CURRENT_CLIENTE;
-    btn.style.display = esAdmin(c && c.email) ? '' : 'none';
+    btn.style.display = isAdmin ? '' : 'none';
   }
-  cargarAdministradores();
 
-  // ==== Catálogo dinámico (precios/disponibilidad desde Turso) ====
+  // ==== Catálogo dinámico (precios/disponibilidad desde el servidor) ====
   function aplicarCatalogoTurso() {
-    var client = getTursoClient();
-    if (!client || !window.MFapi || !window.MFapi.applyProductOverrides) return;
-    client.execute("SELECT categoria, nombre, precio, disponible, promo_tag, imagen_url FROM productos").then(function(res) {
-      if (!res.rows || !res.rows.length) return;
+    if (!window.MFapi || !window.MFapi.applyProductOverrides) return;
+    api('/api/productos').then(function(rows){
+      if (!rows || !rows.length) return;
       var map = {};
-      res.rows.forEach(function(p) { map[(p.categoria || '') + '|' + (p.nombre || '')] = p; });
+      rows.forEach(function(p) { map[(p.categoria || '') + '|' + (p.nombre || '')] = p; });
       window.MFapi.applyProductOverrides(map);
     }).catch(function(e) { console.warn('No se pudo cargar productos:', e); });
   }
 
-  // Reintentar cuando el cliente libSQL termine de cargar (script module diferido)
-  window.addEventListener('mf:libsql-ready', function() {
-    getTursoClient();
-    cargarAdministradores();
-    aplicarCatalogoTurso();
-    var u = leerSesion();
-    if (u && u.id) restaurarSesion();
-  });
   window.addEventListener('load', aplicarCatalogoTurso);
+  aplicarCatalogoTurso();
 
   // ==== Interfaz: logout y modal de privacidad ====
   document.addEventListener('click', function(e) {
@@ -2927,7 +2888,7 @@ function LB(sel) {
   function addCard(item){
     var wrap = document.createElement('div');
     wrap.className = 'masito-card';
-    wrap.innerHTML = '<img src="' + (item.img || 'assets/img/logo_masafacil.png') + '" alt="">' +
+    wrap.innerHTML = '<img src="' + esc(item.img || 'assets/img/logo_masafacil.png') + '" alt="">' +
       '<div class="mc-info"><b>' + esc(item.name) + '</b><span>' + esc(item.price || '') + '</span><small>' + esc(item.desc || 'Recomendado por Masito') + '</small></div>' +
       '<button type="button" class="mc-add">+ Añadir</button>';
     var btn = wrap.querySelector('.mc-add');
