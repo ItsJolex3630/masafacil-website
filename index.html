@@ -414,7 +414,7 @@ html.lock{overflow:hidden}
   .mn.is-pastelitos .plate-stage{
     display:flex;
     position:relative;
-    width:min(345px, 92vw);
+    width:min(360px, 94vw);
     aspect-ratio:1/1;
     margin:0 auto;
     align-items:center;
@@ -470,9 +470,9 @@ html.lock{overflow:hidden}
   }
   /* Ítems de pastelitos más grandes y nítidos rodeando el borde cerámico */
   .mn.is-pastelitos .plate-item{
-    width:58px;
-    height:58px;
-    margin:-29px 0 0 -29px;
+    width:62px;
+    height:62px;
+    margin:-31px 0 0 -31px;
     position:absolute;
     top:50%;
     left:50%;
@@ -1500,7 +1500,7 @@ function LB(sel) {
       return Math.max(265, currentWheelRadius * 0.70);
     }
     // En móvil: radio aumentado hacia el borde cerámico para dar cabida a los pastelitos más grandes
-    return Math.max(95, currentWheelRadius * 0.76);
+    return Math.max(100, currentWheelRadius * 0.78);
   }
 
   function initPlateSlots() {
@@ -1622,8 +1622,8 @@ function LB(sel) {
 
         const img = el.querySelector('img');
         if (img) {
-          // Secundarios a scale(0.98) (~57px) para máxima legibilidad; protagonista a scale(1.42) (~82px)
-          img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.42)' : ' scale(0.98)');
+          // Secundarios a scale(1.00) (~62px) para máxima legibilidad; protagonista a scale(1.5) (~93px)
+          img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.5)' : ' scale(1.0)');
           img.style.filter = isProtagonist ? 'drop-shadow(0 16px 26px rgba(40,20,14,.46))' : 'drop-shadow(0 4px 10px rgba(40,20,14,.24))';
         }
       });
