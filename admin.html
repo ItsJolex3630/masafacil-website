@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel de Administración · Masafácil</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/img/logo_masafacil.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@libsql/client@0.6.0/+esm";
+  window.libsql = { createClient };
+  window.dispatchEvent(new Event("mf:libsql-ready"));
+</script>
+<style>
+:root{--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif;--line:rgba(201,165,119,.45)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;min-height:100vh}
+h1,h2,h3,h4{font-family:var(--h);letter-spacing:-.01em}
+a{color:inherit}
+#gate{max-width:440px;margin:14vh auto;background:var(--cream);border:1.5px solid var(--line);border-radius:22px;padding:30px 26px;text-align:center;box-shadow:0 20px 50px rgba(64,32,26,.18)}
+#gate img{width:64px;height:64px;border-radius:50%;object-fit:cover}
+#gate h2{margin:10px 0 6px}
+#gate p{color:#6a5750}
+#g_btn{display:flex;justify-content:center;margin-top:14px;min-height:44px}
+.denied h2{color:#8a2a1c}
+.btn{display:inline-flex;align-items:center;gap:6px;background:var(--md);color:#fff;border:0;border-radius:99px;padding:10px 18px;font:600 .95rem var(--h);cursor:pointer;text-decoration:none;transition:transform 160ms ease,filter 160ms ease}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--dk);box-shadow:inset 0 0 0 2px var(--tan)}
+.btn.tan{background:var(--tan);color:var(--dk)}
+.btn.sm{padding:6px 12px;font-size:.82rem}
+header.app-top{position:sticky;top:0;z-index:20;background:rgba(64,32,26,.94);backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid rgba(255,255,255,.12)}
+.app-top .bar{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+.app-top img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.3)}
+.app-top b{font:600 1.15rem var(--h)}
+.app-top .who{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:.82rem;opacity:.95}
+.app-top .who small{display:block;opacity:.7;font-size:.72rem}
+.tabs{max-width:1180px;margin:0 auto;padding:0 16px;display:flex;gap:6px;overflow-x:auto;background:rgba(64,32,26,.94)}
+.tabs button{border:0;background:transparent;color:rgba(255,255,255,.72);font:600 .92rem var(--h);padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button.is-active{color:#fff;border-bottom-color:var(--tan)}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+section[hidden]{display:none}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px}
+.kpi b{display:block;font:700 1.6rem var(--h);color:var(--dk)}
+.kpi span{font-size:.78rem;color:#6a5750}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar input[type=search]{flex:1;min-width:180px;padding:9px 14px;border:1.5px solid var(--tan);border-radius:99px;background:var(--cream);font:15px inherit;color:var(--ink)}
+.card{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:600 .78rem var(--h);text-transform:uppercase;letter-spacing:.04em;color:var(--md)}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;background:var(--k);color:var(--dk);border-radius:99px;padding:2px 10px;font:600 .78rem var(--h)}
+.pill.vip{background:#f6e3b0}
+.avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--k);vertical-align:middle;margin-right:7px}
+input.num,select,textarea,input.text{font:15px inherit;color:var(--ink);background:#fff;border:1.5px solid var(--tan);border-radius:10px;padding:7px 9px}
+input.num{width:74px}
+input.text{width:100%}
+select{padding:7px 8px}
+textarea{width:100%;min-height:52px;resize:vertical}
+.switch{display:inline-flex;align-items:center;gap:6px;font-size:.82rem}
+.grid-prod{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+.prod-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
+.prod-head b{font:600 1rem var(--h)}
+.prod-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.prod-row label{font-size:.72rem;color:#6a5750;display:block;margin-bottom:2px}
+.cat-title{font:600 1.05rem var(--h);color:var(--md);margin:18px 0 8px;border-bottom:2px dashed var(--line);padding-bottom:4px}
+.venta{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.venta .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.venta .items{font-size:.85rem;color:#4a332c;margin:8px 0;white-space:pre-line}
+.venta .tot{font:600 .9rem var(--h);color:var(--dk)}
+.tag{display:inline-block;background:rgba(56,102,65,.14);color:var(--sage);border-radius:99px;padding:1px 9px;font:600 .72rem var(--h);margin-left:6px}
+.muted{color:#8a7a72;font-size:.82rem}
+.empty{padding:26px;text-align:center;color:#8a7a72}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--dk);color:#fff;padding:11px 20px;border-radius:99px;font:600 .9rem var(--h);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:50}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:#8a2a1c}
+@media(max-width:640px){.app-top .who span{display:none}.prod-row{grid-template-columns:1fr}th:nth-child(4),td:nth-child(4){display:none}}
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <img src="assets/img/logo_masafacil.png" alt="Masafácil">
+  <h2>Panel de Administración</h2>
+  <p id="gate-msg">Inicia sesión con tu cuenta de administrador de Google.</p>
+  <div id="g_btn"></div>
+  <p style="margin-top:16px"><a class="btn ghost sm" href="index.html">← Volver a la web</a></p>
+</div>
+
+<div id="app" hidden>
+  <header class="app-top">
+    <div class="bar">
+      <img src="assets/img/logo_masafacil.png" alt="Masafácil">
+      <b>Masafácil · Panel</b>
+      <div class="who">
+        <span><b id="admin-name">—</b><small id="admin-email"></small></span>
+        <a class="btn tan sm" href="index.html">Ver web</a>
+        <button class="btn ghost sm" id="logout" style="color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)">Salir</button>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button data-tab="clientes" class="is-active">👥 Clientes y Fidelidad</button>
+      <button data-tab="productos">🍔 Menú y Precios</button>
+      <button data-tab="ventas">📊 Ventas y Pedidos</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="tab-clientes">
+      <div class="toolbar">
+        <input type="search" id="cli-search" placeholder="Buscar por nombre, correo o teléfono…">
+        <button class="btn sm ghost" id="cli-sort-pedidos">Ordenar por pedidos</button>
+        <button class="btn sm ghost" id="cli-sort-gastado">Ordenar por gastado</button>
+      </div>
+      <div id="cli-list"></div>
+    </section>
+
+    <section id="tab-productos" hidden>
+      <div class="toolbar">
+        <input type="search" id="prod-search" placeholder="Buscar producto…">
+        <span class="muted" id="prod-count"></span>
+      </div>
+      <div id="prod-list"></div>
+    </section>
+
+    <section id="tab-ventas" hidden>
+      <div class="kpis" id="ventas-kpis"></div>
+      <div id="ventas-list"></div>
+    </section>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+  var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
+  var TURSO_URL = "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io";
+  var TURSO_AUTH_TOKEN = "***REMOVED_TURSO_TOKEN***";
+  var ADMIN_EMAILS = ['jolex3630@gmail.com']; // + correo secundario de Masa Fácil
+  var SESSION_KEY = 'mf_admin_user';
+
+  var db = null, adminEmail = null, adminEmails = [];
+  var cliSort = 'pedidos', cliFilter = '', prodFilter = '';
+  var $ = function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+  function fmt(n){ return '$' + Number(n||0).toFixed(2).replace('.',','); }
+  function digits(s){ return String(s||'').replace(/[^\d]/g,''); }
+  function toast(msg, err){ var t=$('toast'); t.textContent=msg; t.className = 'on' + (err?' err':''); clearTimeout(t._t); t._t=setTimeout(function(){ t.className=''; }, 2600); }
+  function parseJwt(token){ try{ var b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''))); }catch(e){ return null; } }
+
+  function getDb(){
+    if(db) return db;
+    try{ if(window.libsql) db = window.libsql.createClient({ url: TURSO_URL, authToken: TURSO_AUTH_TOKEN }); }
+    catch(e){ console.warn('Turso no disponible:', e); }
+    return db;
+  }
+  getDb();
+  window.addEventListener('mf:libsql-ready', function(){ getDb(); });
+
+  function setGate(html){ var g=$('gate'); if(html) g.innerHTML=html; g.style.display=''; $('app').hidden=true; }
+  function showApp(){ $('gate').style.display='none'; $('app').hidden=false; }
+
+  window.mfAdminLogin = async function(resp){
+    var p = parseJwt(resp.credential); if(!p) return;
+    adminEmail = p.email;
+    try{ localStorage.setItem(SESSION_KEY, JSON.stringify({ email: p.email, nombre: p.name || '' })); }catch(e){}
+    verifyAdmin();
+  };
+
+  async function verifyAdmin(){
+    var d = getDb();
+    if(!d){ setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos.</p>'); return; }
+    try{
+      var r = await d.execute("SELECT email FROM administradores WHERE activo = 1");
+      adminEmails = (r.rows||[]).map(function(x){ return String(x.email).toLowerCase(); });
+    }catch(e){ console.warn('administradores:', e); adminEmails=[]; }
+    var ok = ADMIN_EMAILS.map(function(x){return x.toLowerCase();}).indexOf(String(adminEmail||'').toLowerCase())!==-1
+          || adminEmails.indexOf(String(adminEmail||'').toLowerCase())!==-1;
+    if(!ok){
+      setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail)+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
+      return;
+    }
+    var u = {}; try{ u = JSON.parse(localStorage.getItem(SESSION_KEY)||'{}'); }catch(e){}
+    $('admin-name').textContent = u.nombre || adminEmail;
+    $('admin-email').textContent = adminEmail;
+    showApp();
+    loadClientes(); loadProductos(); loadVentas();
+  }
+
+  // ---- Tabs ----
+  document.querySelectorAll('.tabs button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.tabs button').forEach(function(x){ x.classList.remove('is-active'); });
+      b.classList.add('is-active');
+      ['clientes','productos','ventas'].forEach(function(t){ $('tab-'+t).hidden = (t !== b.dataset.tab); });
+    });
+  });
+  $('logout').addEventListener('click', function(){
+    try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+    try{ if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
+    location.reload();
+  });
+
+  // ---- Clientes ----
+  async function loadClientes(){
+    var d = getDb(); var list = $('cli-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    list.innerHTML = '<div class="empty">Cargando clientes…</div>';
+    try{
+      var order = cliSort === 'gastado' ? 'total_gastado DESC' : 'total_pedidos DESC';
+      var r = await d.execute("SELECT id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion FROM clientes ORDER BY "+order);
+      var rows = r.rows||[];
+      window._clientes = rows;
+      renderClientes();
+    }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar clientes: '+esc(e.message||e)+'</div>'; }
+  }
+  function renderClientes(){
+    var rows = (window._clientes||[]).filter(function(c){
+      var s = cliFilter.toLowerCase();
+      return !s || String(c.nombre||'').toLowerCase().indexOf(s)!==-1 || String(c.email||'').toLowerCase().indexOf(s)!==-1 || String(c.telefono_whatsapp||'').toLowerCase().indexOf(s)!==-1;
+    });
+    var list = $('cli-list');
+    if(!rows.length){ list.innerHTML='<div class="empty">No hay clientes registrados todavía.</div>'; return; }
+    list.innerHTML = '<div class="card" style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Nivel</th><th>Descuento %</th><th></th></tr></thead><tbody>' +
+      rows.map(function(c){
+        return '<tr data-id="'+esc(c.id)+'">' +
+          '<td><img class="avatar" src="'+esc(c.avatar_url||'assets/img/logo_masafacil.png')+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.png\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
+          '<td><div>'+esc(c.email||'')+'</div><div class="muted">'+esc(c.telefono_whatsapp||'—')+'</div></td>' +
+          '<td>'+Number(c.total_pedidos||0)+'</td>' +
+          '<td>'+fmt(c.total_gastado)+'</td>' +
+          '<td><select class="niv">'+['Nuevo','Frecuente','Plata','Oro','VIP'].map(function(n){return '<option'+(n===c.nivel_fidelizacion?' selected':'')+'>'+n+'</option>';}).join('')+'</select></td>' +
+          '<td><input class="num pct" type="number" min="0" max="100" step="1" value="'+Number(c.porcentaje_descuento||0)+'"> %</td>' +
+          '<td><button class="btn sm save-cli">Guardar</button></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>';
+    list.querySelectorAll('.save-cli').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var tr = btn.closest('tr'); var id = tr.dataset.id;
+        var pct = Number(tr.querySelector('.pct').value||0);
+        var niv = tr.querySelector('.niv').value;
+        var d = getDb(); if(!d) return;
+        try{
+          await d.execute({ sql: "UPDATE clientes SET porcentaje_descuento = ?, nivel_fidelizacion = ?, updated_at = datetime('now') WHERE id = ?", args: [pct, niv, id] });
+          toast('Cliente actualizado ✓');
+        }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
+      });
+    });
+  }
+  $('cli-search').addEventListener('input', function(e){ cliFilter = e.target.value; renderClientes(); });
+  $('cli-sort-pedidos').addEventListener('click', function(){ cliSort='pedidos'; loadClientes(); });
+  $('cli-sort-gastado').addEventListener('click', function(){ cliSort='gastado'; loadClientes(); });
+
+  // ---- Productos ----
+  async function loadProductos(){
+    var d = getDb(); var list = $('prod-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    list.innerHTML = '<div class="empty">Cargando productos…</div>';
+    try{
+      var r = await d.execute("SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre");
+      window._productos = r.rows||[];
+      renderProductos();
+    }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar productos: '+esc(e.message||e)+'</div>'; }
+  }
+  function renderProductos(){
+    var rows = (window._productos||[]).filter(function(p){
+      var s = prodFilter.toLowerCase();
+      return !s || String(p.nombre||'').toLowerCase().indexOf(s)!==-1 || String(p.categoria||'').toLowerCase().indexOf(s)!==-1;
+    });
+    $('prod-count').textContent = (window._productos||[]).length + ' productos en total';
+    var list = $('prod-list');
+    if(!rows.length){ list.innerHTML='<div class="empty">No hay productos en la base de datos.<br>Ejecuta la importación del catálogo o agrégalos en Turso.</div>'; return; }
+    var byCat = {};
+    rows.forEach(function(p){ (byCat[p.categoria||'Sin categoría'] = byCat[p.categoria||'Sin categoría']||[]).push(p); });
+    list.innerHTML = Object.keys(byCat).map(function(cat){
+      return '<h3 class="cat-title">'+esc(cat)+'</h3><div class="grid-prod">' + byCat[cat].map(function(p){
+        return '<div class="card" data-id="'+esc(p.id)+'">' +
+          '<div class="prod-head"><b>'+esc(p.nombre)+'</b><span class="switch"><input type="checkbox" class="disp"'+(Number(p.disponible)?' checked':'')+'> Disponible</span></div>' +
+          '<div class="prod-row">' +
+            '<div><label>Precio ($ USD)</label><input class="num precio" type="number" min="0" step="0.01" value="'+Number(p.precio||0)+'"></div>' +
+            '<div><label>Badge / Tag</label><input class="text tag-in" value="'+esc(p.promo_tag||'')+'"></div>' +
+          '</div>' +
+          '<div class="prod-row"><div><label>Ruta de imagen (.webp)</label><input class="text img-in" value="'+esc(p.imagen_url||'')+'"></div></div>' +
+          '<div><label style="font-size:.72rem;color:#6a5750">Descripción</label><textarea class="desc-in">'+esc(p.descripcion||'')+'</textarea></div>' +
+          '<div style="margin-top:8px;text-align:right"><button class="btn sm save-prod">Guardar</button></div>' +
+        '</div>';
+      }).join('') + '</div>';
+    }).join('');
+    list.querySelectorAll('.save-prod').forEach(function(btn){
+      btn.addEventListener('click', async function(){
+        var card = btn.closest('.card'); var id = card.dataset.id;
+        var precio = Number(card.querySelector('.precio').value||0);
+        var disp = card.querySelector('.disp').checked ? 1 : 0;
+        var tag = card.querySelector('.tag-in').value.trim();
+        var img = card.querySelector('.img-in').value.trim();
+        var desc = card.querySelector('.desc-in').value.trim();
+        var d = getDb(); if(!d) return;
+        try{
+          await d.execute({ sql: "UPDATE productos SET precio = ?, disponible = ?, promo_tag = ?, imagen_url = ?, descripcion = ?, updated_at = datetime('now') WHERE id = ?", args: [precio, disp, tag, img, desc, id] });
+          toast('Producto actualizado ✓');
+        }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
+      });
+    });
+  }
+  $('prod-search').addEventListener('input', function(e){ prodFilter = e.target.value; renderProductos(); });
+
+  // ---- Ventas ----
+  async function loadVentas(){
+    var d = getDb(); var list = $('ventas-list'); var kp = $('ventas-kpis'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    list.innerHTML = '<div class="empty">Cargando pedidos…</div>';
+    try{
+      var r = await d.execute("SELECT * FROM pedidos ORDER BY datetime(created_at) DESC, id DESC");
+      var rows = r.rows||[];
+      var totalIngresos = rows.reduce(function(a,x){ return a + Number(x.total_final||0); }, 0);
+      var totalDesc = rows.reduce(function(a,x){ return a + Number(x.descuento_aplicado||0); }, 0);
+      kp.innerHTML =
+        '<div class="kpi"><b>'+rows.length+'</b><span>Pedidos registrados</span></div>' +
+        '<div class="kpi"><b>'+fmt(totalIngresos)+'</b><span>Ventas brutas</span></div>' +
+        '<div class="kpi"><b>'+fmt(totalDesc)+'</b><span>Descuentos otorgados</span></div>' +
+        '<div class="kpi"><b>'+fmt(rows.length? totalIngresos/rows.length : 0)+'</b><span>Ticket promedio</span></div>';
+      if(!rows.length){ list.innerHTML='<div class="empty">Aún no hay pedidos registrados.</div>'; return; }
+      list.innerHTML = rows.map(function(x){
+        var items = []; try{ var it = JSON.parse(x.items_json||'{}'); Object.keys(it).forEach(function(k){ items.push('• '+it[k].q+' x '+k); }); }catch(e){}
+        var tel = digits(x.telefono_whatsapp);
+        var wa = tel ? '<a class="btn sm tan" target="_blank" rel="noopener" href="https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+(x.nombre_cliente||'')+', te escribimos de Masafácil sobre tu pedido.')+'">💬 WhatsApp</a>' : '<span class="muted">Sin teléfono</span>';
+        var guest = x.cliente_id ? '' : '<span class="tag">Invitado</span>';
+        return '<div class="venta">' +
+          '<div class="top"><div><b>'+esc(x.nombre_cliente||'Cliente')+'</b> '+guest+'<div class="muted">'+esc(x.email_cliente||'')+' · '+esc(x.created_at||'')+'</div></div><div class="tot">'+fmt(x.total_final)+'</div></div>' +
+          '<div class="items">'+esc(items.join('\n'))+'</div>' +
+          '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
+          '<div style="margin-top:10px">'+wa+'</div>' +
+        '</div>';
+      }).join('');
+    }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar pedidos: '+esc(e.message||e)+'</div>'; }
+  }
+
+  // ---- GIS ----
+  var tries = 0;
+  function initGoogle(){
+    try{
+      if(!(window.google && google.accounts && google.accounts.id)) return false;
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: window.mfAdminLogin, auto_select: false, cancel_on_tap_outside: true });
+      var el = $('g_btn');
+      if(el && !el.dataset.rendered){ google.accounts.id.renderButton(el, { type:'standard', size:'large', theme:'outline', text:'signin_with', shape:'pill', logo_alignment:'left', width:280 }); el.dataset.rendered='1'; }
+      return true;
+    }catch(e){ console.warn('GIS:', e); return true; }
+  }
+  (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
+
+  // ---- Restaurar sesión ----
+  (function restore(){
+    var s = null; try{ s = JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }catch(e){}
+    if(s && s.email){ adminEmail = s.email; verifyAdmin(); }
+  })();
+})();
+</script>
+</body>
+</html>

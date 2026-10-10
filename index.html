@@ -950,6 +950,13 @@ html.lock{overflow:hidden}
 .u-logout{background:transparent;border:0;color:rgba(255,255,255,.7);cursor:pointer;font-size:.8rem;line-height:1;padding:2px 4px;border-radius:50%;flex-shrink:0}
 .u-logout:hover{color:#fff;background:rgba(255,255,255,.14)}
 nav .btn-pedir{background:var(--tan);color:var(--dk);font:600 .82rem var(--h);text-decoration:none;padding:0 12px;height:32px;display:inline-flex;align-items:center;justify-content:center;border-radius:99px;white-space:nowrap;flex-shrink:0;transition:transform 160ms ease,filter 160ms ease}
+.admin-btn{background:linear-gradient(160deg,#3f7d4e,#2c5c39);color:#fff;font:600 .8rem var(--h);text-decoration:none;padding:0 12px;height:32px;display:inline-flex;align-items:center;gap:5px;border-radius:99px;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 12px rgba(44,92,57,.35);transition:transform 160ms ease,filter 160ms ease}
+.admin-btn:hover{filter:brightness(1.08)}
+.admin-btn:active{transform:scale(.97)}
+@media(max-width:600px){.admin-btn{height:30px;padding:0 8px;font-size:.74rem}.admin-btn-label{display:none}}
+.rw.agotado{opacity:.55}
+.rw.agotado .p{text-decoration:line-through}
+.pl:disabled{cursor:not-allowed;opacity:.55}
 @media(max-width:600px){
   nav{height:48px}
   nav .w{padding:0 8px;gap:6px;flex-wrap:nowrap!important}
@@ -971,7 +978,7 @@ nav .btn-pedir{background:var(--tan);color:var(--dk);font:600 .82rem var(--h);te
 footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:2px;font-weight:600}
 </style></head>
 <body>
-<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img src="assets/img/logo_masafacil.png" alt="Logo Masafácil"><b>Masafácil</b></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
+<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img src="assets/img/logo_masafacil.png" alt="Logo Masafácil"><b>Masafácil</b></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
@@ -1150,10 +1157,10 @@ const $ = i => document.getElementById(i), ks = Object.keys(M);
 
 const IMGS = {
   combos: ['assets/img/combopasapalos.webp', 'assets/img/surtido_fritos.webp'],
-  paninis: ['assets/img/paninis/panini_pollo.png', 'assets/img/paninis/panini_capresa.png', 'assets/img/paninis/panini_roastbeef.png', 'assets/img/paninis/panini_italiano.png'],
-  sandwiches: ['assets/img/sandwiches/sandwich_criollo.png', 'assets/img/sandwiches/sandwich_diet.png', 'assets/img/sandwiches/burger_crispy.png'],
-  entradas: ['assets/img/entradas/mini_pastelitos.png', 'assets/img/entradas/tequenos.png', 'assets/img/entradas/tequenos_chocolate.png', 'assets/img/entradas/nuggets_papas.png'],
-  bebidas: ['assets/img/bebidas/cafe_latte.png', 'assets/img/bebidas/jugo_parchita.png', 'assets/img/bebidas/nestea_limon.png', 'assets/img/bebidas/refresco.png']
+  paninis: ['assets/img/paninis/panini_pollo.webp', 'assets/img/paninis/panini_capresa.webp', 'assets/img/paninis/panini_roastbeef.webp', 'assets/img/paninis/panini_italiano.webp'],
+  sandwiches: ['assets/img/sandwiches/sandwich_criollo.webp', 'assets/img/sandwiches/sandwich_diet.webp', 'assets/img/sandwiches/burger_crispy.webp'],
+  entradas: ['assets/img/entradas/mini_pastelitos.webp', 'assets/img/entradas/tequenos.webp', 'assets/img/entradas/tequenos_chocolate.webp', 'assets/img/entradas/nuggets_papas.webp'],
+  bebidas: ['assets/img/bebidas/cafe_latte.webp', 'assets/img/bebidas/jugo_parchita.webp', 'assets/img/bebidas/nestea_limon.webp', 'assets/img/bebidas/refresco.webp']
 };
 
 const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
@@ -1730,10 +1737,10 @@ function LB(sel) {
   }
 
   const DRINKS = [
-    { n: 'Latte', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/cafe_latte.png' },
-    { n: 'Jugos Naturales', p: '$3,10', u: 3.10, img: 'assets/img/bebidas/jugo_parchita.png' },
-    { n: 'Nestea', p: '$1,20', u: 1.20, img: 'assets/img/bebidas/nestea_limon.png' },
-    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/refresco.png' }
+    { n: 'Latte', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/cafe_latte.webp' },
+    { n: 'Jugos Naturales', p: '$3,10', u: 3.10, img: 'assets/img/bebidas/jugo_parchita.webp' },
+    { n: 'Nestea', p: '$1,20', u: 1.20, img: 'assets/img/bebidas/nestea_limon.webp' },
+    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/refresco.webp' }
   ];
   let currentDrinkIndex = 0;
   let drinksWheelAngle = 0;
@@ -2470,6 +2477,40 @@ function LB(sel) {
   mfApi.selectDrink = selectDrink;
   mfApi.getCart = () => C;
   mfApi.redraw = draw;
+  mfApi.applyProductOverrides = function(map){
+    if (!map) return;
+    const fmtP = n => '$' + Number(n).toFixed(2).replace('.', ',');
+    const get = (cat, n) => map[(cat || '') + '|' + (n || '')];
+    PASTELITOS_LIST.forEach(it => {
+      const o = get('Pastelitos', it.n);
+      if (!o) return;
+      if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
+      if (o.imagen_url) it.img = o.imagen_url;
+      if (Number(o.disponible) === 0) it.agotado = true;
+    });
+    DRINKS.forEach(it => {
+      const o = get('Bebidas', it.n);
+      if (!o) return;
+      if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
+      if (o.imagen_url) it.img = o.imagen_url;
+      if (Number(o.disponible) === 0) it.agotado = true;
+    });
+    document.querySelectorAll('#menu .rw').forEach(rw => {
+      const cat = rw.dataset.cat || '';
+      const nEl = rw.querySelector('.n'); if (!nEl) return;
+      const o = get(cat, nEl.textContent.trim()); if (!o) return;
+      if (o.precio != null) { const pEl = rw.querySelector('.p'); if (pEl) pEl.textContent = fmtP(o.precio); }
+      const addBtn = rw.querySelector('.pl');
+      if (addBtn && o.precio != null) addBtn.dataset.u = o.precio;
+      if (o.promo_tag) { const tg = rw.querySelector('.tg'); if (tg) tg.textContent = o.promo_tag; }
+      if (Number(o.disponible) === 0) {
+        rw.classList.add('agotado');
+        if (addBtn) { addBtn.disabled = true; addBtn.setAttribute('aria-disabled', 'true'); addBtn.textContent = '×'; }
+      }
+    });
+    try { if (document.querySelector('#plate-slots .plate-item')) selectPastelito(currentPlateIndex); } catch (e) {}
+    try { if (document.querySelector('#drinks-slots .drink-item')) selectDrink(currentDrinkIndex); } catch (e) {}
+  };
   mfApi.buzz = buzz;
   mfApi.addToCart = function (k, u) {
     if (!k) return;
@@ -2559,7 +2600,7 @@ function LB(sel) {
       return window.CURRENT_CLIENTE;
     }
     try {
-      var res = await client.execute({ sql: "SELECT * FROM clientes WHERE id = ?", args: [u.id] });
+      var res = await client.execute({ sql: "SELECT * FROM clientes WHERE id = ? OR email = ?", args: [u.id, u.email] });
       if (res.rows && res.rows.length > 0) {
         var row = res.rows[0];
         window.CURRENT_CLIENTE = {
@@ -2589,6 +2630,7 @@ function LB(sel) {
   // ==== UI ====
   function actualizarUIUsuario() {
     var c = window.CURRENT_CLIENTE;
+    actualizarBotonAdmin();
     var pill = $('user-pill');
     var signin = $('g_signin');
     if (!pill) return;
@@ -2721,12 +2763,56 @@ function LB(sel) {
     else console.warn("Google Identity Services no cargó (modo offline o bloqueado por red).");
   })();
 
+  // ==== Control de acceso al Panel Admin ====
+  var ADMIN_EMAILS = ['jolex3630@gmail.com']; // + correo secundario de Masa Fácil (o vía tabla administradores)
+  var adminEmailsCache = null;
+
+  function cargarAdministradores() {
+    var client = getTursoClient();
+    if (!client) return;
+    client.execute("SELECT email FROM administradores WHERE activo = 1").then(function(res) {
+      adminEmailsCache = (res.rows || []).map(function(r) { return String(r.email).toLowerCase(); });
+      actualizarBotonAdmin();
+    }).catch(function(e) { console.warn('No se pudo cargar administradores:', e); });
+  }
+
+  function esAdmin(email) {
+    if (!email) return false;
+    var e = String(email).toLowerCase();
+    if (ADMIN_EMAILS.some(function(x) { return x.toLowerCase() === e; })) return true;
+    if (adminEmailsCache && adminEmailsCache.indexOf(e) !== -1) return true;
+    return false;
+  }
+
+  function actualizarBotonAdmin() {
+    var btn = $('admin-btn');
+    if (!btn) return;
+    var c = window.CURRENT_CLIENTE;
+    btn.style.display = esAdmin(c && c.email) ? '' : 'none';
+  }
+  cargarAdministradores();
+
+  // ==== Catálogo dinámico (precios/disponibilidad desde Turso) ====
+  function aplicarCatalogoTurso() {
+    var client = getTursoClient();
+    if (!client || !window.MFapi || !window.MFapi.applyProductOverrides) return;
+    client.execute("SELECT categoria, nombre, precio, disponible, promo_tag, imagen_url FROM productos").then(function(res) {
+      if (!res.rows || !res.rows.length) return;
+      var map = {};
+      res.rows.forEach(function(p) { map[(p.categoria || '') + '|' + (p.nombre || '')] = p; });
+      window.MFapi.applyProductOverrides(map);
+    }).catch(function(e) { console.warn('No se pudo cargar productos:', e); });
+  }
+
   // Reintentar cuando el cliente libSQL termine de cargar (script module diferido)
   window.addEventListener('mf:libsql-ready', function() {
     getTursoClient();
+    cargarAdministradores();
+    aplicarCatalogoTurso();
     var u = leerSesion();
     if (u && u.id) restaurarSesion();
   });
+  window.addEventListener('load', aplicarCatalogoTurso);
 
   // ==== Interfaz: logout y modal de privacidad ====
   document.addEventListener('click', function(e) {
