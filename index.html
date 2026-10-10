@@ -1124,7 +1124,12 @@ const M = {
       {
         t: 'Bebidas Frías',
         r: [
-          R('Jugos Naturales', 'Mora · Parchita · Fresa · Melón · Lechosa · Piña (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Parchita', 'Fruta natural 100% fresca bien fría (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Mora', 'Mora natural seleccionada bien fría (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Fresa', 'Fresas naturales dulces y refrescantes (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Melón', 'Melón fresco y ligero (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Piña', 'Piña dulce y refrescante (500 ml)', '$3,10', 'Natural'),
+          R('Jugo de Lechosa', 'Papaya / lechosa cremosa y natural (500 ml)', '$3,10', 'Natural'),
           R('Nestea', 'Té frío de limón bien helado', '$1,20'),
           R('Refresco 500 ml', 'Coca Cola, Chinotto, Frescolita heladas', '$2,00')
         ]
@@ -1732,14 +1737,19 @@ function LB(sel) {
   }
 
   const DRINKS = [
-    { n: 'Latte', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/cafe_latte.webp' },
-    { n: 'Jugos Naturales', p: '$3,10', u: 3.10, img: 'assets/img/bebidas/jugo_parchita.webp' },
-    { n: 'Nestea', p: '$1,20', u: 1.20, img: 'assets/img/bebidas/nestea_limon.webp' },
-    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, img: 'assets/img/bebidas/refresco.webp' }
+    { n: 'Café Latte', p: '$2,00', u: 2.00, tag: 'CAFETERÍA', img: 'assets/img/bebidas/cafe_latte.webp' },
+    { n: 'Jugo de Parchita', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_parchita.webp' },
+    { n: 'Jugo de Mora', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_mora.webp' },
+    { n: 'Jugo de Fresa', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_fresa.webp' },
+    { n: 'Jugo de Melón', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_melon.webp' },
+    { n: 'Jugo de Piña', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_pina.webp' },
+    { n: 'Jugo de Lechosa', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_lechosa.webp' },
+    { n: 'Nestea Limón', p: '$1,20', u: 1.20, tag: 'TÉ FRÍO', img: 'assets/img/bebidas/nestea_limon.webp' },
+    { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, tag: 'REFRESCO', img: 'assets/img/bebidas/refresco.webp' }
   ];
   let currentDrinkIndex = 0;
   let drinksWheelAngle = 0;
-  const DRINKS_STEP = 90; // 360 / 4
+  const DRINKS_STEP = 360 / DRINKS.length; // 40 grados por ítem
 
   function getDynamicDrinksRadius() {
     const wheel = document.getElementById('drinks-wheel');
@@ -1816,7 +1826,7 @@ function LB(sel) {
           dTitle = document.getElementById('drinks-detail-title'),
           dDesc = document.getElementById('drinks-detail-desc'),
           dBtn = document.getElementById('drinks-detail-add-btn');
-    if (dTag) dTag.textContent = (idx === 0 ? 'CAFETERÍA DE ESPECIALIDAD' : 'BEBIDA FRÍA REFRESCANTE');
+    if (dTag) dTag.textContent = cur.tag || (idx === 0 ? 'CAFETERÍA DE ESPECIALIDAD' : 'BEBIDA FRÍA REFRESCANTE');
     if (dPrice) dPrice.textContent = cur.p;
     if (dTitle) dTitle.textContent = cur.n;
     if (dDesc) {
@@ -1848,14 +1858,24 @@ function LB(sel) {
       const pEl = rw.querySelector('.p');
       const priceStr = pEl ? pEl.textContent.trim() : '$2,00';
       const uVal = parseFloat(priceStr.replace(/[^\d,]/g, '').replace(',', '.')) || 2.0;
-      const itemData = { n: name, p: priceStr, u: uVal };
+      const tag = nameLower.includes('jugo') ? 'JUGO NATURAL'
+        : nameLower.includes('nestea') ? 'TÉ FRÍO'
+        : nameLower.includes('refresco') ? 'REFRESCO'
+        : 'CAFETERÍA';
+      const itemData = { n: name, p: priceStr, u: uVal, tag: tag };
 
       if (nameLower.includes('jugo')) {
-        slotIdx = 1;
+        if (nameLower.includes('parchita')) slotIdx = 1;
+        else if (nameLower.includes('mora')) slotIdx = 2;
+        else if (nameLower.includes('fresa')) slotIdx = 3;
+        else if (nameLower.includes('melón') || nameLower.includes('melon')) slotIdx = 4;
+        else if (nameLower.includes('piña') || nameLower.includes('pina')) slotIdx = 5;
+        else if (nameLower.includes('lechosa')) slotIdx = 6;
+        else slotIdx = 1;
       } else if (nameLower.includes('nestea')) {
-        slotIdx = 2;
+        slotIdx = 7;
       } else if (nameLower.includes('refresco')) {
-        slotIdx = 3;
+        slotIdx = 8;
       } else {
         // Toda la Cafetería Caliente (Americano, Cappuccino, etc.) activa el slot 0 (taza de café)
         slotIdx = 0;
