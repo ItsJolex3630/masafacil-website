@@ -163,7 +163,41 @@ textarea{width:100%;min-height:52px;resize:vertical}
     return db;
   }
   getDb();
-  window.addEventListener('mf:libsql-ready', function(){ getDb(); });
+
+  // Sesión unificada: admin.html (mf_admin_user) o index.html (mf_user_session)
+  function getSavedUser() {
+    try {
+      var a = JSON.parse(localStorage.getItem('mf_admin_user') || 'null');
+      if (a && a.email) return a;
+      var u = JSON.parse(localStorage.getItem('mf_user_session') || 'null');
+      if (u && u.email) return u;
+    } catch(e) {}
+    return null;
+  }
+
+  // Espera no bloqueante a que el cliente libSQL esté disponible (reintentos cada 100ms)
+  function ensureDb(maxWaitMs) {
+    maxWaitMs = maxWaitMs || 6000;
+    var start = Date.now();
+    return new Promise(function(resolve) {
+      var check = function() {
+        var d = getDb();
+        if (d) return resolve(d);
+        if (Date.now() - start >= maxWaitMs) return resolve(null);
+        setTimeout(check, 100);
+      };
+      check();
+    });
+  }
+
+  window.addEventListener('mf:libsql-ready', function() {
+    getDb();
+    var s = getSavedUser();
+    if (s && s.email && !adminEmail) {
+      adminEmail = s.email;
+      verifyAdmin();
+    }
+  });
 
   function setGate(html){ var g=$('gate'); if(html) g.innerHTML=html; g.style.display=''; $('app').hidden=true; }
   function showApp(){ $('gate').style.display='none'; $('app').hidden=false; }
@@ -176,8 +210,12 @@ textarea{width:100%;min-height:52px;resize:vertical}
   };
 
   async function verifyAdmin(){
-    var d = getDb();
-    if(!d){ setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos.</p>'); return; }
+    setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Verificando acceso…</h2><p>Conectando con la base de datos de Masa Fácil…</p>');
+    var d = await ensureDb(6000);
+    if(!d){
+      setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos en este momento.</p><button class="btn sm" onclick="location.reload()" style="margin-top:12px">Reintentar</button>');
+      return;
+    }
     try{
       var r = await d.execute("SELECT email FROM administradores WHERE activo = 1");
       adminEmails = (r.rows||[]).map(function(x){ return String(x.email).toLowerCase(); });
@@ -188,7 +226,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail)+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
       return;
     }
-    var u = {}; try{ u = JSON.parse(localStorage.getItem(SESSION_KEY)||'{}'); }catch(e){}
+    var u = getSavedUser() || {};
     $('admin-name').textContent = u.nombre || adminEmail;
     $('admin-email').textContent = adminEmail;
     showApp();
@@ -354,7 +392,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
   // ---- Restaurar sesión ----
   (function restore(){
-    var s = null; try{ s = JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }catch(e){}
+    var s = getSavedUser();
     if(s && s.email){ adminEmail = s.email; verifyAdmin(); }
   })();
 })();
