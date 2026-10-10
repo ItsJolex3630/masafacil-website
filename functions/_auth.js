@@ -43,16 +43,33 @@ export async function requireUser(request, env) {
   return payload;
 }
 
-// Administrador: identidad verificada + correo autorizado en la tabla administradores.
+// Administradores base autorizados (siempre en minúsculas). Defensa en profundidad:
+// garantiza el acceso aunque la tabla administradores tarde o no esté disponible.
+const ADMIN_WHITELIST = new Set([
+  "jolex3630@gmail.com",
+  "masafacilelmaracucho@gmail.com",
+  "somosvendo.ve@gmail.com",
+]);
+
+// Administrador: identidad verificada + correo autorizado (lista blanca o tabla administradores).
 export async function requireAdmin(request, env) {
   const payload = await verify(request, env);
-  if (!payload) throw new HttpError(401, "Inicia sesión con Google para continuar");
+  if (!payload || !payload.email) throw new HttpError(401, "Inicia sesión con Google para continuar");
+
+  const userEmail = String(payload.email).trim().toLowerCase();
+
+  // 1. Verificación rápida contra la lista blanca estática
+  if (ADMIN_WHITELIST.has(userEmail)) return payload;
+
+  // 2. Verificación contra la tabla administradores en Turso (correos dinámicos)
   const { getDb } = await import("./_db.js");
   const db = getDb(env);
   const r = await db.execute({
-    sql: "SELECT 1 AS ok FROM administradores WHERE lower(email) = lower(?) AND activo = 1",
-    args: [String(payload.email)],
+    sql: "SELECT 1 AS ok FROM administradores WHERE lower(email) = ? AND activo = 1",
+    args: [userEmail],
   });
-  if (!r.rows.length) throw new HttpError(403, "Acceso restringido: no eres administrador");
+  if (!r.rows.length) {
+    throw new HttpError(403, "Acceso restringido: la cuenta " + userEmail + " no tiene permisos de administrador");
+  }
   return payload;
 }

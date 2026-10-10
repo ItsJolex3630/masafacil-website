@@ -7,6 +7,40 @@ import { buildPedido } from "../_pedidos.js";
 const NIVELES = ["Nuevo", "Frecuente", "Plata", "Oro", "VIP"];
 const ESTADOS = ["pendiente", "completado", "cancelado"];
 
+// Auto-registro idempotente de administradores base en Turso (se ejecuta al verificar un admin).
+const SEED_ADMINS = [
+  ["masafacilelmaracucho@gmail.com", "Masa Fácil Maracucho"],
+  ["somosvendo.ve@gmail.com", "Somos Vendo"],
+];
+let adminsSeeded = false;
+async function seedAdmins(db) {
+  if (adminsSeeded) return;
+  try {
+    const values = SEED_ADMINS.map(() => "(?, ?, 1)").join(", ");
+    await db.execute({
+      sql: "INSERT INTO administradores (email, nombre, activo) VALUES " + values + " ON CONFLICT(email) DO UPDATE SET activo = 1",
+      args: SEED_ADMINS.flat(),
+    });
+    adminsSeeded = true;
+  } catch (e) {
+    // Fallback si la tabla no tiene restricción única en email: insertar solo los que falten.
+    console.error("seedAdmins ON CONFLICT falló, usando fallback:", e && e.message);
+    try {
+      for (const [email, nombre] of SEED_ADMINS) {
+        const q = await db.execute({ sql: "SELECT 1 FROM administradores WHERE lower(email) = lower(?)", args: [email] });
+        if (q.rows.length) {
+          await db.execute({ sql: "UPDATE administradores SET activo = 1 WHERE lower(email) = lower(?)", args: [email] });
+        } else {
+          await db.execute({ sql: "INSERT INTO administradores (email, nombre, activo) VALUES (?, ?, 1)", args: [email, nombre] });
+        }
+      }
+      adminsSeeded = true;
+    } catch (e2) {
+      console.error("seedAdmins fallback error:", e2);
+    }
+  }
+}
+
 const CLIENTE_COLS =
   "id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion";
 
@@ -83,6 +117,7 @@ export async function onRequest(context) {
     // ---------- Administración (admin verificado en servidor) ----------
     if (route === "/admin/me" && method === "GET") {
       const u = await requireAdmin(request, env);
+      await seedAdmins(db);
       return json({ email: u.email, nombre: u.name || "", picture: u.picture || "" });
     }
 
