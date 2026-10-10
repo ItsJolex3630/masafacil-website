@@ -416,7 +416,21 @@ html.lock{overflow:hidden}
     height:auto!important;
     pointer-events:auto!important;
   }
-  .mn.is-pastelitos .plate-stage, .mn.is-bebidas .plate-stage{
+  /* Plato ampliado en móvil para lucir los 13 pastelitos con máximo detalle */
+  .mn.is-pastelitos .plate-stage{
+    display:flex;
+    position:relative;
+    width:min(345px, 92vw);
+    aspect-ratio:1/1;
+    margin:0 auto;
+    align-items:center;
+    justify-content:center;
+    height:auto;
+    min-height:auto;
+    pointer-events:auto;
+    overflow:visible;
+  }
+  .mn.is-bebidas .plate-stage{
     display:flex;
     position:relative;
     width:min(310px, 86vw);
@@ -460,11 +474,11 @@ html.lock{overflow:hidden}
     position:absolute;
     inset:0;
   }
-  /* Ítems de pastelitos rodeando el plato en 360° */
+  /* Ítems de pastelitos más grandes y nítidos rodeando el borde cerámico */
   .mn.is-pastelitos .plate-item{
-    width:48px;
-    height:48px;
-    margin:-24px 0 0 -24px;
+    width:58px;
+    height:58px;
+    margin:-29px 0 0 -29px;
     position:absolute;
     top:50%;
     left:50%;
@@ -1478,7 +1492,8 @@ function LB(sel) {
     if (isDesktop) {
       return Math.max(265, currentWheelRadius * 0.70);
     }
-    return Math.max(85, currentWheelRadius * 0.68);
+    // En móvil: radio aumentado hacia el borde cerámico para dar cabida a los pastelitos más grandes
+    return Math.max(95, currentWheelRadius * 0.76);
   }
 
   function initPlateSlots() {
@@ -1586,21 +1601,23 @@ function LB(sel) {
         el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
       });
     } else {
-      // Móvil: todos los 13 pastelitos orbitan en 360°. El seleccionado queda abajo y sobresale
+      // Móvil: todos los 13 pastelitos orbitan en 360°. Pastelitos más grandes, detallados y nítidos
       document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
         const slotAngle = i * PLATE_STEP;
         const isProtagonist = (i === idx);
-        const r = isProtagonist ? (radius + 12) : radius;
+        // El protagonista sobresale 14px hacia afuera del borde cerámico
+        const r = isProtagonist ? (radius + 14) : radius;
         el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + (-slotAngle) + 'deg)';
         el.classList.toggle('is-active', isProtagonist);
-        el.style.opacity = isProtagonist ? '1' : '0.88';
+        el.style.opacity = isProtagonist ? '1' : '0.92';
         el.style.pointerEvents = 'auto';
         el.style.zIndex = isProtagonist ? '15' : '2';
 
         const img = el.querySelector('img');
         if (img) {
-          img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.35)' : ' scale(0.92)');
-          img.style.filter = isProtagonist ? 'drop-shadow(0 14px 22px rgba(40,20,14,.45))' : 'drop-shadow(0 4px 8px rgba(40,20,14,.22))';
+          // Secundarios a scale(0.98) (~57px) para máxima legibilidad; protagonista a scale(1.42) (~82px)
+          img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.42)' : ' scale(0.98)');
+          img.style.filter = isProtagonist ? 'drop-shadow(0 16px 26px rgba(40,20,14,.46))' : 'drop-shadow(0 4px 10px rgba(40,20,14,.24))';
         }
       });
     }
