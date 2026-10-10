@@ -4,6 +4,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<!-- Google Identity Services (GIS) SDK Oficial -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Cliente Web de Turso (libSQL para navegadores) -->
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@libsql/client@0.6.0/+esm";
+  window.libsql = { createClient };
+  window.dispatchEvent(new Event("mf:libsql-ready"));
+</script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif}
 html{scroll-padding-top:calc(70px + env(safe-area-inset-top,0px));scroll-behavior:smooth}*,*::before,*::after{box-sizing:inherit}
@@ -856,9 +864,73 @@ html.lock{overflow:hidden}
 .drink-item.is-active{z-index:10}
 .drink-item.is-active img{transform:scale(1.18);box-shadow:0 16px 28px rgba(40,20,14,.4)}
 @media(prefers-reduced-motion:reduce){.menu-carousel-track,.front-plate-item,.diamond-wheel,.diamond-item,.drink-item{transition:none}}
+</style><style id="masito">
+#aib{width:66px;height:66px;padding:0;border-radius:50%;background:linear-gradient(160deg,#f7c667,#cf7f2b);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(64,32,26,.34);display:grid;place-items:center;overflow:visible}
+#aib.want{animation:masitoPulse 1.7s ease-in-out infinite}
+@keyframes masitoPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
+.masito-ava{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;background:#fffdf8;border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
+.masito-ava img{width:100%;height:100%;object-fit:cover;object-position:50% 26%;display:block}
+.masito-ava.sm{width:36px;height:36px;border-width:2px}
+.masito-dot{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#d63b2b;border:2px solid #fff;display:none}
+#aib.want .masito-dot{display:block}
+.masito-teaser{position:fixed;left:14px;bottom:calc(158px + env(safe-area-inset-bottom,0px));z-index:16;max-width:min(250px,72vw);background:#fffdf8;color:#40201a;border:1.5px solid rgba(201,165,119,.6);border-radius:16px;padding:10px 13px;font:600 .84rem/1.3 var(--h);box-shadow:0 10px 28px rgba(64,32,26,.24);animation:hi 300ms var(--eo) both}
+.masito-teaser::after{content:"";position:absolute;left:22px;bottom:-9px;width:16px;height:16px;background:#fffdf8;border-right:1.5px solid rgba(201,165,119,.6);border-bottom:1.5px solid rgba(201,165,119,.6);transform:rotate(45deg)}
+.chat.masito{width:min(372px,calc(100vw - 28px));bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.chat.masito header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px}
+.masito-head{display:flex;align-items:center;gap:9px}
+.masito-head span span{display:flex;flex-direction:column;line-height:1.05}
+.masito-head b{font:700 1rem var(--h)}
+.masito-head small{font:500 .68rem/1 system-ui;opacity:.8;margin-top:2px}
+.chat.masito .m{max-height:min(46vh,340px);display:flex;flex-direction:column;gap:8px;padding:12px 12px 4px}
+.chat.masito .m p{margin:0;padding:9px 12px;border-radius:14px;background:#f1e8d6;max-width:86%;position:relative}
+.chat.masito .m p.u{background:var(--md);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+.chat.masito .m p.bot{border-bottom-left-radius:4px}
+.chat.masito .m p.bot::before{content:"";display:inline-block;width:20px;height:20px;margin-right:6px;vertical-align:-4px;border-radius:50%;background:url('assets/img/masito.svg') center/cover #fff;border:1.5px solid rgba(201,165,119,.7)}
+.chat.masito .q{padding:2px 12px 10px;max-height:150px;overflow:auto}
+.chat.masito .q button.sel{background:var(--dk);color:#fff;border-color:var(--dk)}
+.masito-input{display:flex;gap:6px;padding:8px 12px 12px;border-top:1px dashed rgba(201,165,119,.5)}
+.masito-input input{flex:1;min-width:0;font:15px system-ui;padding:9px 12px;border:1.5px solid var(--tan);border-radius:99px;background:#fffdf9;color:var(--ink)}
+.masito-input button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--md);color:#fff;font-size:1.1rem;cursor:pointer}
+.masito-card{display:flex;gap:10px;align-items:center;background:#fffdf9;border:1.5px solid rgba(201,165,119,.55);border-radius:16px;padding:9px 11px;margin-top:2px;animation:panCardFade 250ms ease}
+.masito-card img{width:56px;height:56px;object-fit:contain;flex:none;filter:drop-shadow(0 6px 10px rgba(64,32,26,.22))}
+.masito-card .mc-info{flex:1;min-width:0}
+.masito-card .mc-info b{display:block;font:600 .95rem var(--h);color:var(--dk);line-height:1.15}
+.masito-card .mc-info span{font:600 .8rem var(--h);color:var(--md)}
+.masito-card .mc-info small{display:block;font-size:.72rem;color:#6a5750;margin-top:2px}
+.masito-card .mc-add{flex:none;border:0;background:var(--md);color:#fff;border-radius:99px;padding:8px 12px;font:600 .8rem var(--h);cursor:pointer}
+.masito-card .mc-add.ok{background:#3b7a3b}
+.masito-spin{display:flex;align-items:center;gap:8px;font:600 .84rem var(--h);color:var(--md);padding:4px 2px}
+.masito-spin .sp{width:16px;height:16px;border-radius:50%;border:3px solid rgba(111,56,38,.25);border-top-color:var(--md);animation:masitoSpin .8s linear infinite}
+@keyframes masitoSpin{to{transform:rotate(360deg)}}
+.plate-item.roulette-win img,.drink-item.roulette-win img,.diamond-item.roulette-win img{animation:masitoWin .85s ease 2}
+@keyframes masitoWin{50%{filter:drop-shadow(0 0 16px rgba(56,102,65,.95)) brightness(1.14)}}
+@media(prefers-reduced-motion:reduce){#aib.want{animation:none}.masito-spin .sp{animation:none}.plate-item.roulette-win img,.drink-item.roulette-win img,.diamond-item.roulette-win img{animation:none}.masito-card{animation:none}}
+@media(max-width:400px){.chat.masito .m{max-height:40vh}}
+</style><style id="auth">
+.auth-box{display:flex;align-items:center;gap:8px}
+.auth-box .g_id_signin{display:flex;align-items:center}
+.user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);border-radius:99px;padding:3px 6px 3px 3px;color:#fff}
+.u-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:var(--cream);flex:none}
+.u-data{display:flex;flex-direction:column;line-height:1.05;min-width:0;max-width:132px}
+.u-name{font:600 .78rem var(--h);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-badge{font:600 .62rem var(--h);color:#ffd970;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.u-logout{background:transparent;border:0;color:rgba(255,255,255,.75);cursor:pointer;font-size:.85rem;line-height:1;padding:4px 6px;border-radius:50%;flex:none}
+.u-logout:hover{color:#fff;background:rgba(255,255,255,.14)}
+@media(max-width:759px){
+  nav .w{height:auto;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:10px}
+  nav b{margin-right:auto}
+  .auth-box{order:9;flex-basis:100%;justify-content:center;margin-top:2px}
+  .user-pill{max-width:100%}
+}
+#modal-privacidad{border:0;border-radius:20px;max-width:min(92vw,460px);padding:26px 24px;background:var(--cream);color:var(--ink);box-shadow:0 24px 60px rgba(64,32,26,.4)}
+#modal-privacidad::backdrop{background:rgba(64,32,26,.55);backdrop-filter:blur(4px)}
+#modal-privacidad h3{margin:0 0 10px;font:600 1.35rem var(--h);color:var(--dk)}
+#modal-privacidad p{margin:0 0 18px;font-size:.95rem;line-height:1.5}
+#modal-privacidad form{text-align:right;margin:0}
+footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:2px;font-weight:600}
 </style></head>
 <body>
-<nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
+<nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div id="auth-box" class="auth-box"><div id="g_id_onload" data-client_id="589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com" data-callback="handleGoogleLogin" data-auto_prompt="false" data-auto_select="false"></div><div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="signin_with" data-shape="pill"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto de perfil"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
@@ -882,10 +954,17 @@ html.lock{overflow:hidden}
 
 <section class="cta"><div class="w"><h2>¿Listo para comer el auténtico sabor maracucho?</h2><a class="btn t" style="font-size:1.15rem;padding:15px 32px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Hacer pedido por WhatsApp</a></div></section>
 
-<footer>Masafácil · El Maracucho © 2024. Tradición zuliana en La Esmeralda, San Diego, Carabobo.</footer>
+<footer>Masafácil · El Maracucho © 2024. Tradición zuliana en La Esmeralda, San Diego, Carabobo. · <a href="#" id="privacidad-link">Privacidad y Club Masafácil</a></footer>
 
-<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false">💬 Asistente</button>
-<div class="chat" id="ch" role="dialog" aria-label="Asistente de Masafácil"><header><span>Asistente de Masafácil</span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm"><p>¡Hola! Soy el asistente virtual de Masafácil. ¿En qué te ayudo hoy?</p></div><div class="q" id="cq"></div><small>Respuestas automáticas con información del negocio.</small></div>
+<dialog id="modal-privacidad" aria-labelledby="privacidad-titulo">
+  <h3 id="privacidad-titulo">Privacidad y Club Masafácil</h3>
+  <p>Masafácil recopila tu nombre y correo a través de Google únicamente para reconocer tus pedidos, premiar tu fidelidad con descuentos exclusivos y darte atención personalizada por WhatsApp. No compartimos tus datos con terceros ni almacenamos contraseñas.</p>
+  <form method="dialog"><button class="btn" type="submit">Entendido</button></form>
+</dialog>
+
+<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito.png" alt="" onerror="this.onerror=null;this.src='assets/img/masito.svg'"></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
+<div class="masito-teaser" id="masito-teaser" role="status" aria-live="polite" hidden></div>
+<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito.png" alt="" onerror="this.onerror=null;this.src='assets/img/masito.svg'"></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
 
 <script>
 const IM = {
@@ -1187,32 +1266,7 @@ $('tb').innerHTML = ks.map(k => '<button>' + k + '</button>').join('');
 $('tb').onclick = e => { if (e.target.tagName == 'BUTTON') show(e.target.textContent); };
 show(ks[0]);
 
-const QA = [
-  ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
-  ['¿Hacen delivery y cuánto cuesta?', 'Sí, delivery activo por zonas ($1 por km): La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. Retiro en local (Pick Up) gratis.'],
-  ['¿Cuánto cuestan los pastelitos y qué promos hay?', 'Los tradicionales cuestan $0,65 c/u con PROMO especial de 2 por $1,00 (ahorras 23%). Los especiales caseros cuestan $1,10 y los gourmet (camarón y champiñón) $1,99.'],
-  ['¿Venden masas crudas y congelados?', '¡Sí! Vendemos paquetes de 12, 24 y 50 discos de masa fácil, bandejas de 25 y 50 tequeños congelados y kilo de masa lista para preparar en casa.'],
-  ['¿Cómo freír las masas congeladas?', 'En abundante aceite a 180°C durante 3 a 4 minutos hasta dorar. En freidora de aire a 190°C por 8 minutos con una pizca de aceite.'],
-  ['¿Qué métodos de pago aceptan?', 'Efectivo en dólares ($), Pago Móvil (a tasa oficial BCV), Zelle y Punto de Venta en el local.'],
-  ['¿Dónde están ubicados?', 'En La Esmeralda, San Diego, Carabobo (a pocos metros de la vía principal).']
-];
-
-$('aib').onclick = () => {
-  const o = $('ch').classList.toggle('on');
-  $('aib').setAttribute('aria-expanded', o);
-};
-$('cx_ai').onclick = () => {
-  $('ch').classList.remove('on');
-  $('aib').setAttribute('aria-expanded', false);
-};
-$('cq').innerHTML = QA.map((x, i) => '<button data-i="' + i + '">' + x[0] + '</button>').join('');
-$('cq').onclick = e => {
-  const i = e.target.dataset.i;
-  if (i == null) return;
-  const m = $('cm');
-  m.innerHTML += '<p class="u">' + QA[i][0] + '</p><p>' + QA[i][1] + '</p>';
-  m.scrollTop = m.scrollHeight;
-};
+/* La lógica del asistente vive en el módulo Masito (al final del documento). */
 
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) {
@@ -1306,6 +1360,7 @@ function LB(sel) {
 (function(){
   const $ = i => document.getElementById(i), WA = 'https://wa.me/584244099610', C = {}, m = n => '$' + n.toFixed(2).replace('.', ','), RM = matchMedia('(prefers-reduced-motion:reduce)'), buzz = n => { try { navigator.vibrate && navigator.vibrate(n); } catch(e) {} };
   let selectedZonaIdx = 0;
+  const mfApi = {};
 
   const nv = document.querySelector('nav .w'), cb = document.createElement('button');
   cb.className = 'cart-b';
@@ -1615,6 +1670,7 @@ function LB(sel) {
         addBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
       }
     }
+    mfApi.pickSandwich = pick;
 
     cards.forEach((c, i) => {
       c.addEventListener('mouseenter', () => pick(i));
@@ -1776,6 +1832,7 @@ function LB(sel) {
         if (ind) ind.textContent = active ? '● Seleccionado' : 'Ver plato';
       });
     };
+    mfApi.pickPanini = pick;
 
     plates.forEach((p, i) => p.addEventListener('click', () => pick(i)));
     cards.forEach((k, i) => k.addEventListener('click', e => {
@@ -1853,6 +1910,50 @@ function LB(sel) {
       }
       rows.forEach((r, j) => r.classList.toggle('plate-focus', j === idx));
     }
+    mfApi.selectEntrada = selectEntrada;
+
+    function spinDiamond(targetIdx, duration) {
+      return new Promise(resolve => {
+        if (targetIdx < 0 || targetIdx >= N) { resolve(); return; }
+        if (RM.matches) { selectEntrada(targetIdx); resolve(); return; }
+        duration = duration || 4200;
+        const isDesktop = matchMedia('(min-width: 800px)').matches;
+        const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : (isDesktop ? 520 : 320);
+        const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(115, stageW * 0.36);
+        const canonical = (isDesktop ? 0 : 90) - targetIdx * 90;
+        const start = diamondWheelAngle;
+        const end = start + (3 + Math.floor(Math.random() * 3)) * 360 + ((((canonical - start) % 360) + 360) % 360);
+        const dur = duration + 'ms';
+        const ez = 'cubic-bezier(.15,.85,.25,1)';
+        if (wheel) wheel.style.transition = 'transform ' + dur + ' ' + ez;
+        items.forEach((item, i) => {
+          item.style.transition = 'transform ' + dur + ' ' + ez;
+          const img = item.querySelector('img');
+          if (img) img.style.transition = 'transform ' + dur + ' ' + ez;
+          const slotAngle = i * 90;
+          item.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + (-slotAngle) + 'deg)';
+          item.classList.remove('is-protagonist');
+          item.classList.add('is-secondary');
+          if (img) img.style.transform = 'rotate(' + (-end) + 'deg) scale(0.90)';
+        });
+        if (wheel) wheel.style.transform = 'rotate(' + end + 'deg)';
+        diamondWheelAngle = end;
+        setTimeout(() => {
+          if (wheel) wheel.style.transition = '';
+          items.forEach(item => {
+            item.style.transition = '';
+            const img = item.querySelector('img');
+            if (img) { img.style.transition = ''; img.style.transform = ''; }
+          });
+          selectEntrada(targetIdx);
+          const win = items[targetIdx];
+          if (win) { win.classList.add('roulette-win'); setTimeout(() => win.classList.remove('roulette-win'), 1700); }
+          buzz(20);
+          resolve();
+        }, duration + 60);
+      });
+    }
+    mfApi.spinEntradas = spinDiamond;
 
     items.forEach((item, i) => {
       item.addEventListener('click', () => selectEntrada(i));
@@ -2022,7 +2123,7 @@ function LB(sel) {
     'Pastelito Pepperoni',
     'Pastelito Mortadela'
   ]);
-  let und = null, ut = 0, bt = 0;
+  let und = null, ut = 0, bt = 0, lastTotals = {};
   function draw() {
     const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
     const subtotalBruto = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0);
@@ -2036,9 +2137,30 @@ function LB(sel) {
     const tradAhorro = tradPairs * 0.30;
     const subtotal = Math.max(0, subtotalBruto - tradAhorro);
 
+    // Fidelización Club Masafácil (descuento dinámico definido en Turso)
+    const cliente = window.CURRENT_CLIENTE;
+    const descPct = (cliente && cliente.porcentaje_descuento) ? Number(cliente.porcentaje_descuento) : 0;
+    let fidelidadAhorro = 0;
+    if (descPct > 0 && subtotal > 0) {
+      fidelidadAhorro = Number((subtotal * (descPct / 100)).toFixed(2));
+    }
+    const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro);
+
     const zona = ZONAS_DELIVERY[selectedZonaIdx] || ZONAS_DELIVERY[0];
     const deliveryCosto = zona.p || 0;
-    const total = subtotal + deliveryCosto;
+    const total = subtotalFinal + deliveryCosto;
+
+    lastTotals = {
+      subtotalBruto: subtotalBruto,
+      tradAhorro: tradAhorro,
+      fidelidadAhorro: fidelidadAhorro,
+      descPct: descPct,
+      deliveryCosto: deliveryCosto,
+      subtotalFinal: subtotalFinal,
+      total: total,
+      zonaNombre: zona.n,
+      tieneCliente: !!(cliente && cliente.id)
+    };
 
     $('cn').textContent = n;
     $('cli').innerHTML = ks.length ? ks.map(k => '<div class="cl"><b>' + k + (TRAD_ITEMS.has(k) ? ' <span class="badge-promo-tag" style="font-size:0.65rem;padding:1px 6px">Promo 2x$1</span>' : '') + '</b><b>' + (C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q)) + '</b><div class="q"><button data-a="-" data-k="' + k + '" aria-label="Quitar uno">−</button>' + C[k].q + '<button data-a="+" data-k="' + k + '" aria-label="Agregar uno">+</button><button class="rm" data-a="x" data-k="' + k + '">Quitar</button></div></div>').join('') : '<div class="cem">Tu pedido está vacío.<br>Toca + en el menú para agregar.</div>';
@@ -2048,6 +2170,9 @@ function LB(sel) {
     if (tradAhorro > 0) {
       cttHtml += '<div class="row" style="color:var(--sage);font-weight:700"><span>🎁 Promo 2x$1 (' + tradPairs + (tradPairs > 1 ? ' pares' : ' par') + '):</span><span>-' + m(tradAhorro) + '</span></div>';
     }
+    if (fidelidadAhorro > 0) {
+      cttHtml += '<div class="row" style="color:var(--sage);font-weight:700"><span>⭐ Descuento Club Masafácil (' + descPct + '%):</span><span>-' + m(fidelidadAhorro) + '</span></div>';
+    }
     cttHtml += '<div class="row"><span>Entrega (' + (deliveryCosto > 0 ? zona.n.split('(')[0].trim() : 'Pick Up') + '):</span><span>' + (zona.c ? 'Por cotizar' : (deliveryCosto === 0 ? 'Gratis' : m(deliveryCosto))) + '</span></div>' +
       '<div class="row total"><span>Total a pagar:</span><span>' + m(total) + (un || zona.c ? ' + consultar' : '') + '</span></div>';
     $('ctt').innerHTML = cttHtml;
@@ -2056,12 +2181,23 @@ function LB(sel) {
     $('cbar').classList.toggle('on', n > 0 && !want);
     document.body.classList.toggle('has-cart', n > 0);
 
-    let msg = 'Hola Masafácil, quiero hacer un pedido:\n\n' +
-      ks.map(k => '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q))).join('\n');
+    let msg = 'Hola Masafácil, quiero hacer un pedido:\n\n';
+    if (cliente && cliente.id) {
+      msg += '⭐ *Cliente Club Masafácil:* ' + cliente.nombre + '\n';
+      msg += '✉️ *Correo:* ' + cliente.email + '\n';
+      if (descPct > 0) {
+        msg += '🏷️ *Beneficio VIP:* ' + descPct + '% de descuento aplicado\n';
+      }
+      msg += '------------------------------------\n\n';
+    }
+    msg += ks.map(k => '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q))).join('\n');
     if (tradAhorro > 0) {
       msg += '\n\n🎉 Ahorro Promo Tradicionales (2x$1 en ' + tradQty + ' piezas): -' + m(tradAhorro);
     }
-    msg += '\n\nSubtotal productos: ' + m(subtotal) +
+    if (fidelidadAhorro > 0) {
+      msg += '\n⭐ *Descuento Fidelidad (' + descPct + '%):* -' + m(fidelidadAhorro);
+    }
+    msg += '\n\nSubtotal productos: ' + m(subtotalFinal) +
       '\nEntrega: ' + zona.n + (deliveryCosto > 0 ? ' (' + m(deliveryCosto) + ')' : '') +
       '\nTotal a pagar: ' + m(total) + (un || zona.c ? ' (más consultar)' : '') +
       ($('cnt').value ? '\n\nNotas/Dirección: ' + $('cnt').value : '');
@@ -2092,6 +2228,7 @@ function LB(sel) {
       $('cbar').textContent = 'Agregado: ' + k;
       bt = setTimeout(() => { bt = 0; draw(); }, 1400);
       draw();
+      window.dispatchEvent(new CustomEvent('mf:cart-add', { detail: { k: k, u: u, q: C[k].q } }));
       const c = $('cn');
       c.classList.remove('bump');
       void c.offsetWidth;
@@ -2116,6 +2253,7 @@ function LB(sel) {
         C[k].q += a == '+' ? 1 : -1;
       }
       draw();
+      window.dispatchEvent(new CustomEvent('mf:cart-remove', { detail: { k: k } }));
       return;
     }
     if (e.target.closest('#cwa')) {
@@ -2123,6 +2261,17 @@ function LB(sel) {
       const w = $('cwa');
       w.textContent = 'Abriendo WhatsApp…';
       setTimeout(() => w.textContent = 'Enviar pedido por WhatsApp', 3000);
+      if (window.MFAuth && window.MFAuth.registrarPedido && lastTotals.tieneCliente) {
+        window.MFAuth.registrarPedido({
+          items: C,
+          subtotalBruto: lastTotals.subtotalBruto || 0,
+          descuento: (lastTotals.fidelidadAhorro || 0) + (lastTotals.tradAhorro || 0),
+          delivery: lastTotals.deliveryCosto || 0,
+          total: lastTotals.total || 0,
+          zona: lastTotals.zonaNombre || '',
+          notas: $('cnt').value || ''
+        });
+      }
       return;
     }
     if (e.target.closest('#cb,#cbar')) openSh();
@@ -2157,5 +2306,708 @@ function LB(sel) {
       if (!RM.matches) im.animate([{ transform: dl(from.getBoundingClientRect(), im.getBoundingClientRect()), opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 380, easing: ez });
     }));
   }
+
+  /* ---- Masito: motores de ruleta (reutilizan las animaciones existentes) ---- */
+  const SPIN_EASE = 'cubic-bezier(.15,.85,.25,1)';
+  const spinLaps = () => 3 + Math.floor(Math.random() * 3);
+  const forwardDelta = (canonical, start) => (((canonical - start) % 360) + 360) % 360;
+
+  function spinPastelitos(targetIdx, duration) {
+    return new Promise(resolve => {
+      if (targetIdx < 0 || targetIdx >= PASTELITOS_LIST.length) { resolve(); return; }
+      if (RM.matches) { selectPastelito(targetIdx); resolve(); return; }
+      duration = duration || 4200;
+      const isDesktop = matchMedia('(min-width: 800px)').matches;
+      const wheel = document.getElementById('plate-wheel');
+      const items = [...document.querySelectorAll('#plate-slots .plate-item')];
+      if (!wheel || !items.length) { selectPastelito(targetIdx); resolve(); return; }
+      const N = PASTELITOS_LIST.length;
+      const canonical = isDesktop ? (-targetIdx * PLATE_STEP) : (90 - targetIdx * PLATE_STEP);
+      const start = plateWheelAngle;
+      const end = start + spinLaps() * 360 + forwardDelta(canonical, start);
+      const dur = duration + 'ms';
+      const radius = getDynamicRadius();
+      wheel.style.transition = 'transform ' + dur + ' ' + SPIN_EASE;
+      items.forEach((el, i) => {
+        el.style.transition = 'transform ' + dur + ' ' + SPIN_EASE + ', opacity 300ms ease';
+        const img = el.querySelector('img');
+        if (img) img.style.transition = 'transform ' + dur + ' ' + SPIN_EASE;
+        const slotAngle = i * PLATE_STEP;
+        const isProto = (i === targetIdx);
+        if (isDesktop) {
+          let off = (i - targetIdx) % N;
+          if (off > N / 2) off -= N;
+          if (off < -N / 2) off += N;
+          const absAngle = off * PLATE_STEP;
+          el.style.transform = 'rotate(' + (absAngle - end) + 'deg) translate(' + radius + 'px) rotate(' + (-absAngle) + 'deg)';
+        } else {
+          const r = isProto ? (radius + 12) : radius;
+          el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + (-slotAngle) + 'deg)';
+          if (img) img.style.transform = 'rotate(' + (-end) + 'deg) scale(' + (isProto ? 1.30 : 0.92) + ')';
+        }
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'none';
+      });
+      wheel.style.transform = 'translate(-50%, -50%) rotate(' + end + 'deg)';
+      plateWheelAngle = end;
+      setTimeout(() => {
+        wheel.style.transition = '';
+        items.forEach(el => {
+          el.style.transition = '';
+          const img = el.querySelector('img');
+          if (img) { img.style.transition = ''; img.style.transform = ''; }
+        });
+        selectPastelito(targetIdx);
+        const win = items[targetIdx];
+        if (win) { win.classList.add('roulette-win'); setTimeout(() => win.classList.remove('roulette-win'), 1700); }
+        buzz(20);
+        resolve();
+      }, duration + 60);
+    });
+  }
+
+  function spinDrinks(targetIdx, duration) {
+    return new Promise(resolve => {
+      if (targetIdx < 0 || targetIdx >= DRINKS.length) { resolve(); return; }
+      if (RM.matches) { selectDrink(targetIdx); resolve(); return; }
+      duration = duration || 4200;
+      const isDesktop = matchMedia('(min-width: 800px)').matches;
+      const wheel = document.getElementById('drinks-wheel');
+      const items = [...document.querySelectorAll('#drinks-slots .drink-item')];
+      if (!wheel || !items.length) { selectDrink(targetIdx); resolve(); return; }
+      const canonical = isDesktop ? (-targetIdx * DRINKS_STEP) : (90 - targetIdx * DRINKS_STEP);
+      const start = drinksWheelAngle;
+      const end = start + spinLaps() * 360 + forwardDelta(canonical, start);
+      const dur = duration + 'ms';
+      const radius = getDynamicDrinksRadius();
+      wheel.style.transition = 'transform ' + dur + ' ' + SPIN_EASE;
+      items.forEach((el, i) => {
+        el.style.transition = 'transform ' + dur + ' ' + SPIN_EASE;
+        const img = el.querySelector('img');
+        if (img) img.style.transition = 'transform ' + dur + ' ' + SPIN_EASE;
+        const slotAngle = i * DRINKS_STEP;
+        const isActive = (i === targetIdx);
+        const r = (!isDesktop && isActive) ? (radius + 12) : radius;
+        el.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + r + 'px) rotate(' + (-(end + slotAngle)) + 'deg)';
+        el.style.opacity = '1';
+        el.style.pointerEvents = 'none';
+        if (img && !isDesktop) img.style.transform = (isActive ? 'scale(1.28)' : 'scale(0.92)');
+      });
+      wheel.style.transform = 'translate(-50%, -50%) rotate(' + end + 'deg)';
+      drinksWheelAngle = end;
+      setTimeout(() => {
+        wheel.style.transition = '';
+        items.forEach(el => {
+          el.style.transition = '';
+          const img = el.querySelector('img');
+          if (img) { img.style.transition = ''; img.style.transform = ''; }
+        });
+        selectDrink(targetIdx);
+        const win = items[targetIdx];
+        if (win) { win.classList.add('roulette-win'); setTimeout(() => win.classList.remove('roulette-win'), 1700); }
+        buzz(20);
+        resolve();
+      }, duration + 60);
+    });
+  }
+
+  mfApi.spinPastelitos = spinPastelitos;
+  mfApi.spinDrinks = spinDrinks;
+  mfApi.show = show;
+  mfApi.selectPastelito = selectPastelito;
+  mfApi.selectDrink = selectDrink;
+  mfApi.getCart = () => C;
+  mfApi.redraw = draw;
+  mfApi.buzz = buzz;
+  mfApi.addToCart = function (k, u) {
+    if (!k) return;
+    C[k] = C[k] || { q: 0, u: (u === '' || u == null ? null : u) };
+    C[k].q++;
+    draw();
+    const c = $('cn');
+    if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); }
+    const bar = $('cbar');
+    if (bar) bar.textContent = 'Agregado: ' + k;
+    clearTimeout(bt);
+    bt = setTimeout(() => { bt = 0; draw(); }, 1400);
+    window.dispatchEvent(new CustomEvent('mf:cart-add', { detail: { k: k, u: C[k].u, q: C[k].q } }));
+    buzz(8);
+  };
+  mfApi.isDrink = function (k) {
+    if (!k) return false;
+    return /(latte|americano|cappuccino|mocca|caramel|vainilla|cinnamon|coconut|bomb[oó]n|chocolate caliente|jugo|nestea|refresco|bebida|caf[eé])/i.test(k);
+  };
+  mfApi.catalog = { pastelitos: PASTELITOS_LIST, drinks: DRINKS };
+  mfApi.menu = M;
+  mfApi.imgs = IMGS;
+  mfApi.slides = SLIDES_CATS;
+  window.MFapi = mfApi;
+})();
+</script>
+<script>
+/* ---- Autenticación Google (GIS) + Fidelización Turso ---- */
+(function(){
+  'use strict';
+
+  // ==== Credenciales activas ====
+  var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
+  var TURSO_URL = "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io";
+  var TURSO_AUTH_TOKEN = "***REMOVED_TURSO_TOKEN***";
+
+  window.CURRENT_CLIENTE = null;
+  var tursoClient = null;
+  var SESSION_KEY = 'mf_user_session';
+  var $ = function(id){ return document.getElementById(id); };
+
+  function getTursoClient() {
+    if (tursoClient) return tursoClient;
+    try {
+      if (window.libsql && TURSO_URL && TURSO_AUTH_TOKEN) {
+        tursoClient = window.libsql.createClient({ url: TURSO_URL, authToken: TURSO_AUTH_TOKEN });
+      }
+    } catch (e) {
+      console.warn("Turso no configurado todavía o modo offline:", e);
+    }
+    return tursoClient;
+  }
+  getTursoClient();
+
+  // ==== Tarea 3.2: Decodificador JWT ligero (sin dependencias) ====
+  function parseJwt(token) {
+    try {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    } catch (err) {
+      console.error("Error al decodificar credencial de Google:", err);
+      return null;
+    }
+  }
+
+  function guardarSesion(u) { try { localStorage.setItem(SESSION_KEY, JSON.stringify(u)); } catch (e) {} }
+  function leerSesion() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { return null; } }
+  function borrarSesion() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
+
+  // ==== Sincronización con Turso ====
+  async function sincronizarClienteTurso(u) {
+    var client = getTursoClient();
+    if (!client) {
+      window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+      return window.CURRENT_CLIENTE;
+    }
+    try {
+      var res = await client.execute({ sql: "SELECT * FROM clientes WHERE id = ?", args: [u.id] });
+      if (res.rows && res.rows.length > 0) {
+        var row = res.rows[0];
+        window.CURRENT_CLIENTE = {
+          id: row.id,
+          email: row.email,
+          nombre: row.nombre,
+          avatar: row.avatar_url,
+          telefono: row.telefono_whatsapp,
+          porcentaje_descuento: Number(row.porcentaje_descuento || 0),
+          nivel_fidelizacion: row.nivel_fidelizacion || 'Frecuente',
+          total_pedidos: Number(row.total_pedidos || 0)
+        };
+      } else {
+        await client.execute({
+          sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion) VALUES (?, ?, ?, ?, 0.0, 'Nuevo')",
+          args: [u.id, u.email, u.nombre, u.avatar || '']
+        });
+        window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+      }
+    } catch (err) {
+      console.error("Error al sincronizar con Turso:", err);
+      window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+    }
+    return window.CURRENT_CLIENTE;
+  }
+
+  // ==== UI ====
+  function actualizarUIUsuario() {
+    var c = window.CURRENT_CLIENTE;
+    var pill = $('user-pill');
+    var signin = document.querySelector('.g_id_signin');
+    if (!pill) return;
+    if (c && c.id) {
+      if (signin) signin.style.display = 'none';
+      pill.style.display = '';
+      var av = $('u-avatar');
+      if (av) { av.src = c.avatar || 'assets/img/logo_masafacil.png'; av.alt = 'Foto de ' + (c.nombre || 'cliente'); }
+      var nm = $('u-name');
+      if (nm) nm.textContent = String(c.nombre || 'Cliente').split(' ')[0];
+      var bd = $('u-badge');
+      if (bd) {
+        bd.style.display = '';
+        bd.textContent = (c.porcentaje_descuento > 0)
+          ? '⭐ ' + c.porcentaje_descuento + '% · ' + (c.nivel_fidelizacion || '')
+          : (c.nivel_fidelizacion || 'Nuevo');
+      }
+    } else {
+      if (signin) signin.style.display = '';
+      pill.style.display = 'none';
+    }
+  }
+
+  function redibujarCarrito() {
+    if (window.MFapi && window.MFapi.redraw) window.MFapi.redraw();
+  }
+
+  window.handleGoogleLogin = async function(response) {
+    var payload = parseJwt(response.credential);
+    if (!payload) return;
+    var googleUser = {
+      id: payload.sub,
+      email: payload.email,
+      nombre: payload.name || payload.given_name || 'Cliente',
+      avatar: payload.picture || ''
+    };
+    guardarSesion(googleUser);
+    window.CURRENT_CLIENTE = Object.assign({}, googleUser, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+    actualizarUIUsuario();
+    await sincronizarClienteTurso(googleUser);
+    actualizarUIUsuario();
+    redibujarCarrito();
+  };
+
+  async function restaurarSesion() {
+    var u = leerSesion();
+    if (!u || !u.id) { actualizarUIUsuario(); return; }
+    window.CURRENT_CLIENTE = Object.assign({}, u, { porcentaje_descuento: 0, nivel_fidelizacion: 'Nuevo', total_pedidos: 0 });
+    actualizarUIUsuario();
+    await sincronizarClienteTurso(u);
+    actualizarUIUsuario();
+    redibujarCarrito();
+  }
+
+  function cerrarSesion() {
+    borrarSesion();
+    window.CURRENT_CLIENTE = null;
+    actualizarUIUsuario();
+    try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
+    redibujarCarrito();
+  }
+
+  // ==== Tarea 3.6: Registro asíncrono del pedido ====
+  function registrarPedido(d) {
+    var c = window.CURRENT_CLIENTE;
+    var client = getTursoClient();
+    if (!c || !c.id || !client || !d) return;
+    var pedId = 'ped_' + Date.now();
+    client.batch([
+      {
+        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        args: [pedId, c.id, c.nombre, c.email, c.telefono || '', JSON.stringify(d.items || {}), d.subtotalBruto || 0, d.descuento || 0, d.delivery || 0, d.total || 0, d.zona || '', d.notas || '']
+      },
+      {
+        sql: "UPDATE clientes SET total_pedidos = total_pedidos + 1, total_gastado = total_gastado + ?, updated_at = datetime('now') WHERE id = ?",
+        args: [d.total || 0, c.id]
+      }
+    ]).then(function() {
+      if (window.CURRENT_CLIENTE) window.CURRENT_CLIENTE.total_pedidos = (window.CURRENT_CLIENTE.total_pedidos || 0) + 1;
+    }).catch(function(err) {
+      console.warn("No se pudo registrar pedido en Turso:", err);
+    });
+  }
+
+  window.MFAuth = {
+    parseJwt: parseJwt,
+    sincronizarClienteTurso: sincronizarClienteTurso,
+    actualizarUIUsuario: actualizarUIUsuario,
+    cerrarSesion: cerrarSesion,
+    registrarPedido: registrarPedido,
+    get cliente() { return window.CURRENT_CLIENTE; },
+    get turso() { return tursoClient; }
+  };
+
+  // Reintentar cuando el cliente libSQL termine de cargar (script module diferido)
+  window.addEventListener('mf:libsql-ready', function() {
+    getTursoClient();
+    var u = leerSesion();
+    if (u && u.id) restaurarSesion();
+  });
+
+  // ==== Interfaz: logout y modal de privacidad ====
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('#u-logout')) { cerrarSesion(); return; }
+    var link = e.target.closest('#privacidad-link');
+    if (link) {
+      e.preventDefault();
+      var d = $('modal-privacidad');
+      if (d && d.showModal) d.showModal();
+    }
+  });
+
+  restaurarSesion();
+})();
+</script>
+<script>
+(function(){
+  var MFapi = window.MFapi;
+  if (!MFapi) return;
+  var $ = function(i){ return document.getElementById(i); };
+  var ch = $('ch'), cm = $('cm'), cq = $('cq'), aib = $('aib'), cx = $('cx_ai'), teaser = $('masito-teaser'), form = $('masito-form'), text = $('masito-text');
+  var RM = matchMedia('(prefers-reduced-motion:reduce)');
+  var rand = function(n){ return Math.floor(Math.random() * n); };
+  var wait = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
+  var norm = function(s){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+  var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
+  var priceToU = function(p){ var v = parseFloat(String(p).replace(/[^\d,]/g, '').replace(',', '.')); return isNaN(v) ? null : v; };
+  var keyFor = function(cat, n){ return cat === 'Pastelitos' ? 'Pastelito ' + n : (cat === 'Paninis' ? 'Panini ' + n : n); };
+
+  var CATS = [
+    { k: 'Pastelitos', label: 'Pastelitos', emoji: '🥟' },
+    { k: 'Entradas', label: 'Entradas', emoji: '🍟' },
+    { k: 'Paninis', label: 'Paninis', emoji: '🥪' },
+    { k: 'Sándwich y Burger', label: 'Sándwich y Burger', emoji: '🍔' }
+  ];
+
+  var QA = [
+    ['¿Qué me recomiendas?', '¡Depende de tu antojo! Salado y crujiente: pastelito de queso o tequeños. Con hambre de verdad: un panini Italiano con burrata. Dulce: tequeños de chocolate. ¿Te giro la ruleta? 🎡'],
+    ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
+    ['¿Hacen delivery y cuánto cuesta?', 'Sí, delivery por zonas ($1/km): La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. Retiro en local (Pick Up) gratis.'],
+    ['¿Cuánto cuestan los pastelitos y qué promos hay?', 'Tradicionales $0,65 c/u con PROMO 2 por $1,00. Especiales caseros $1,10 y gourmet (camarón y champiñón) $1,99.'],
+    ['¿Venden masas crudas y congeladas?', '¡Sí! Paquetes de 12, 24 y 50 discos, bandejas de 25 y 50 tequeños congelados y kilo de masa lista para preparar en casa.'],
+    ['¿Cómo frío las masas congeladas?', 'En abundante aceite a 180°C durante 3 a 4 minutos sin descongelar. En freidora de aire a 190°C por 8 minutos volteando a mitad.'],
+    ['¿Qué métodos de pago aceptan?', 'Efectivo en dólares ($), Pago Móvil (a tasa oficial BCV), Zelle y Punto de Venta en el local.'],
+    ['¿Dónde están ubicados?', 'En La Esmeralda, San Diego, Carabobo, a pocos metros de la vía principal.']
+  ];
+
+  var busy = false, selCats = new Set(), randomPick = false, idleTimer = null, upsellTimer = null;
+  var IDLE_MS = 120000;
+
+  function scroll(){ cm.scrollTop = cm.scrollHeight; }
+  function addMsg(html, who){
+    var p = document.createElement('p');
+    p.className = who === 'u' ? 'u' : 'bot';
+    p.innerHTML = html;
+    cm.appendChild(p);
+    scroll();
+    return p;
+  }
+  function addSpinNote(txt){
+    var d = document.createElement('div');
+    d.className = 'masito-spin';
+    d.innerHTML = '<span class="sp"></span><span>' + esc(txt) + '</span>';
+    cm.appendChild(d);
+    scroll();
+    return d;
+  }
+  function setChips(list){
+    cq.innerHTML = '';
+    list.forEach(function(c){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = c.t;
+      if (c.primary) b.classList.add('sel');
+      b.onclick = function(){ c.fn(b); };
+      cq.appendChild(b);
+    });
+  }
+  function clearChips(){ cq.innerHTML = ''; }
+
+  function addCard(item){
+    var wrap = document.createElement('div');
+    wrap.className = 'masito-card';
+    wrap.innerHTML = '<img src="' + (item.img || 'assets/img/logo_masafacil.png') + '" alt="">' +
+      '<div class="mc-info"><b>' + esc(item.name) + '</b><span>' + esc(item.price || '') + '</span><small>' + esc(item.desc || 'Recomendado por Masito') + '</small></div>' +
+      '<button type="button" class="mc-add">+ Añadir</button>';
+    var btn = wrap.querySelector('.mc-add');
+    btn.onclick = function(){
+      MFapi.addToCart(item.key, item.u);
+      btn.textContent = '✓ Añadido';
+      btn.classList.add('ok');
+      btn.disabled = true;
+    };
+    cm.appendChild(wrap);
+    scroll();
+  }
+
+  /* ---------- Ruleta / tragamonedas ---------- */
+  function slotMachine(pickFn, count, duration){
+    return new Promise(function(resolve){
+      var target = rand(count);
+      if (RM.matches || !pickFn || count < 2){ if (pickFn) pickFn(target); resolve(target); return; }
+      duration = duration || 3000;
+      var t0 = performance.now(), i = 0;
+      (function step(){
+        pickFn(i % count);
+        i++;
+        var t = (performance.now() - t0) / duration;
+        if (t >= 1){ pickFn(target); resolve(target); return; }
+        setTimeout(step, 60 + Math.pow(t, 2) * 380);
+      })();
+    });
+  }
+
+  function runRoulette(cat){
+    MFapi.show(cat);
+    return wait(480).then(function(){
+      var note = addSpinNote('Girando la ruleta de ' + cat + '…');
+      var p;
+      if (cat === 'Pastelitos'){
+        var t = rand(MFapi.catalog.pastelitos.length);
+        p = MFapi.spinPastelitos(t, 4200).then(function(){
+          var it = MFapi.catalog.pastelitos[t];
+          return { name: it.n, price: it.p, u: it.u, img: it.img, desc: 'Frito al momento, crujiente y dorado', key: 'Pastelito ' + it.n };
+        });
+      } else if (cat === 'Entradas'){
+        var rows = MFapi.menu['Entradas'].g[0].r, te = rand(rows.length);
+        p = MFapi.spinEntradas(te, 4200).then(function(){
+          var r = rows[te];
+          return { name: r.n, price: r.p, u: priceToU(r.p), img: MFapi.imgs.entradas[te], desc: r.d, key: r.n };
+        });
+      } else if (cat === 'Paninis'){
+        var pr = MFapi.menu['Paninis'].g[0].r;
+        p = slotMachine(MFapi.pickPanini, pr.length, 3000).then(function(ti){
+          var r = pr[ti];
+          return { name: r.n, price: r.p, u: priceToU(r.p), img: MFapi.imgs.paninis[ti], desc: r.d, key: 'Panini ' + r.n };
+        });
+      } else if (cat === 'Sándwich y Burger'){
+        var sr = MFapi.menu['Sándwich y Burger'].g[0].r;
+        p = slotMachine(MFapi.pickSandwich, sr.length, 3000).then(function(ti){
+          var r = sr[ti];
+          return { name: r.n, price: r.p, u: priceToU(r.p), img: MFapi.imgs.sandwiches[ti], desc: r.d, key: r.n };
+        });
+      } else if (cat === 'Bebidas'){
+        var di = rand(MFapi.catalog.drinks.length);
+        p = MFapi.spinDrinks(di, 4200).then(function(){
+          var d = MFapi.catalog.drinks[di];
+          return { name: d.n, price: d.p, u: d.u, img: d.img, desc: 'Bebida recomendada por Masito', key: d.n };
+        });
+      } else {
+        p = Promise.resolve(null);
+      }
+      return p.then(function(item){ note.remove(); return item; });
+    });
+  }
+
+  /* ---------- Flujo de ayuda por indecisión ---------- */
+  function renderCategoryPicker(){
+    selCats.clear(); randomPick = false;
+    var chips = CATS.map(function(c){
+      return { t: c.emoji + ' ' + c.label, fn: function(b){
+        if (selCats.has(c.k)){ selCats.delete(c.k); b.classList.remove('sel'); }
+        else { selCats.add(c.k); b.classList.add('sel'); }
+      } };
+    });
+    chips.push({ t: '🤷 No sé, sorpréndeme', fn: function(b){ randomPick = !randomPick; b.classList.toggle('sel', randomPick); } });
+    chips.push({ t: '▶ Confirmar', primary: true, fn: confirmCats });
+    setChips(chips);
+  }
+  function confirmCats(){
+    if (busy) return;
+    var queue;
+    if (randomPick || selCats.size === 0){
+      queue = [CATS[rand(CATS.length)].k];
+      addMsg('¡Listo! Elijo por ti 🎲', 'bot');
+    } else {
+      queue = CATS.filter(function(c){ return selCats.has(c.k); }).map(function(c){ return c.k; });
+    }
+    addMsg('Perfecto: ' + queue.map(function(c){ return '<b>' + esc(c) + '</b>'; }).join(', ') + '. ¡Vamos! 🎡', 'bot');
+    clearChips();
+    runQueue(queue);
+  }
+  function runQueue(queue){
+    busy = true;
+    var i = 0;
+    (function next(){
+      if (i >= queue.length){
+        busy = false;
+        addMsg('¿Quieres girar otra categoría o añado algo más a tu pedido? 😊', 'bot');
+        setChips([
+          { t: '🎡 Girar otra vez', fn: function(){ startHelpFlow(); } },
+          { t: '🥤 Ver bebidas', fn: function(){ surpriseDrink(); } },
+          { t: '🛒 Ver mi pedido', fn: function(){ var b = document.getElementById('cb') || document.getElementById('cbar'); if (b) b.click(); } }
+        ]);
+        return;
+      }
+      var cat = queue[i++];
+      addMsg('Vamos a girar la ruleta de <b>' + esc(cat) + '</b>…', 'bot');
+      runRoulette(cat).then(function(item){
+        if (!item){ next(); return; }
+        addMsg('¡Te tocó! 🎉', 'bot');
+        addCard(item);
+        setTimeout(next, 600);
+      });
+    })();
+  }
+  function startHelpFlow(){
+    if (busy) return;
+    ensureOpen(false);
+    addMsg('Veo que estás pensando qué elegir 🤔. <b>¿Qué te llama la atención?</b> Puedes marcar varias o dejar que decida por ti.', 'bot');
+    renderCategoryPicker();
+  }
+
+  /* ---------- Upsell de bebida ---------- */
+  function hasDrink(){ var c = MFapi.getCart(); return Object.keys(c).some(function(k){ return MFapi.isDrink(k); }); }
+  function cartCount(){ var c = MFapi.getCart(); return Object.keys(c).reduce(function(a, k){ return a + c[k].q; }, 0); }
+  function scheduleUpsell(){
+    if (sessionStorage.getItem('masito_upsell_shown')) return;
+    clearTimeout(upsellTimer);
+    upsellTimer = setTimeout(fireUpsell, 15000 + Math.random() * 15000);
+  }
+  function fireUpsell(){
+    if (sessionStorage.getItem('masito_upsell_shown')) return;
+    if (hasDrink() || cartCount() === 0) return;
+    if (document.documentElement.classList.contains('lock')){ upsellTimer = setTimeout(fireUpsell, 6000); return; }
+    sessionStorage.setItem('masito_upsell_shown', '1');
+    ensureOpen(false);
+    addMsg('Noté que no añadiste ninguna bebida… 🥤 ¡Estos deliciosos pastelitos no se pueden comer sin algo que los acompañe!', 'bot');
+    showDrinkChips();
+  }
+  function showDrinkChips(){
+    var chips = MFapi.catalog.drinks.map(function(d){
+      return { t: d.n + ' ' + d.p, fn: function(b){
+        MFapi.addToCart(d.n, d.u);
+        b.textContent = '✓ ' + d.n;
+        b.classList.add('sel');
+      } };
+    });
+    chips.push({ t: '🎡 Sorpréndeme', fn: surpriseDrink });
+    chips.push({ t: 'No, gracias', fn: function(){ clearChips(); addMsg('¡Listo! Cualquier cosa aquí estoy 😊', 'bot'); } });
+    setChips(chips);
+  }
+  function surpriseDrink(){
+    if (busy) return;
+    busy = true; clearChips();
+    addMsg('¡Giro la bandeja de bebidas! 🥤🎡', 'bot');
+    runRoulette('Bebidas').then(function(item){
+      busy = false;
+      if (item){ addMsg('¡Te tocó! 🎉', 'bot'); addCard(item); }
+    });
+  }
+
+  /* ---------- Cerebro de reglas + texto libre ---------- */
+  function findItem(t){
+    var best = null;
+    Object.keys(MFapi.menu).forEach(function(cat){
+      MFapi.menu[cat].g.forEach(function(g){
+        g.r.forEach(function(r){
+          var n = norm(r.n);
+          if (n.length >= 4 && (t.indexOf(n) !== -1 || n.indexOf(t) !== -1)){
+            if (!best || n.length > norm(best.row.n).length) best = { cat: cat, row: r };
+          }
+        });
+      });
+    });
+    return best;
+  }
+  function respond(v){
+    var t = norm(v);
+    if (/ruleta|elegir|antojo|no se|indecis|ayudame|sorprend|recomiend|que como|que pido/.test(t)){ startHelpFlow(); return; }
+    var found = findItem(t);
+    if (found){
+      var u = priceToU(found.row.p);
+      addMsg('<b>' + esc(found.row.n) + '</b> — ' + esc(found.row.p) + (found.row.d ? '. ' + esc(found.row.d) : '') + '. ¿Lo añado?', 'bot');
+      setChips([{ t: '+ Añadir ' + found.row.n, fn: function(b){ MFapi.addToCart(keyFor(found.cat, found.row.n), u); b.textContent = '✓ Añadido'; b.classList.add('sel'); } }]);
+      return;
+    }
+    var rules = [
+      [/horario|hora|abren|cierran|abierto|cerrado/, QA[1][1]],
+      [/delivery|envio|domicilio|traer|reparto|zona/, QA[2][1]],
+      [/promo|promocion|2x1|oferta|descuento/, QA[3][1]],
+      [/pago|zelle|movil|tarjeta|punto de venta|efectivo/, QA[6][1]],
+      [/masa|congelad|freir|freidora|air fryer/, QA[5][1]],
+      [/ubicad|direccion|donde|llegar/, QA[7][1]],
+      [/precio|cuanto cuesta|cuanto vale|cost/, 'Dime qué producto te interesa y te digo el precio exacto 😊'],
+      [/dulce|chocolate/, 'Si quieres algo dulce, los <b>tequeños de chocolate</b> ($2,20) son una delicia 🍫.'],
+      [/salado|crujiente/, 'Para lo salado y crujiente: <b>pastelitos</b> y <b>tequeños</b> 🥟.'],
+      [/bebida|jugo|cafe|latte|refresco|nestea/, 'Tenemos café de especialidad, jugos naturales, Nestea y refrescos helados 🥤. ¿Te muestro bebidas?']
+    ];
+    for (var i = 0; i < rules.length; i++){ if (rules[i][0].test(t)){ addMsg(rules[i][1], 'bot'); return; } }
+    addMsg('No estoy seguro de eso 🤔, pero puedo ayudarte a elegir con la ruleta 🎡.', 'bot');
+    renderCategoryPicker();
+  }
+  function showQAchips(){
+    var chips = QA.slice(0, 4).map(function(q){
+      return { t: q[0], fn: function(){ addMsg(esc(q[0]), 'u'); addMsg(q[1], 'bot'); } };
+    });
+    chips.push({ t: '🎡 Ayúdame a elegir', fn: startHelpFlow });
+    setChips(chips);
+  }
+
+  /* ---------- Abrir / cerrar ---------- */
+  function ensureOpen(greet){
+    if (!ch.classList.contains('on')){
+      ch.classList.add('on');
+      aib.setAttribute('aria-expanded', 'true');
+    }
+    aib.classList.remove('want');
+    hideTeaser();
+    resetIdle();
+    if (greet !== false && !cm.dataset.greeted){
+      cm.dataset.greeted = '1';
+      addMsg('¡Hola! Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. Puedo responderte dudas o girarte la ruleta para elegir. ¿En qué te ayudo?', 'bot');
+      showQAchips();
+    }
+  }
+  function closeChat(){
+    ch.classList.remove('on');
+    aib.setAttribute('aria-expanded', 'false');
+  }
+  function showTeaser(t){
+    teaser.textContent = t;
+    teaser.hidden = false;
+    aib.classList.add('want');
+  }
+  function hideTeaser(){
+    teaser.hidden = true;
+    aib.classList.remove('want');
+  }
+
+  aib.addEventListener('click', function(){ ch.classList.contains('on') ? closeChat() : ensureOpen(true); });
+  cx.addEventListener('click', closeChat);
+  teaser.addEventListener('click', function(){ ensureOpen(false); startHelpFlow(); });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = text.value.trim();
+    if (!v) return;
+    text.value = '';
+    addMsg(esc(v), 'u');
+    respond(v);
+  });
+
+  /* ---------- Timers ---------- */
+  function resetIdle(){
+    clearTimeout(idleTimer);
+    if (sessionStorage.getItem('masito_help_shown')) return;
+    idleTimer = setTimeout(fireIdle, IDLE_MS);
+  }
+  function fireIdle(force){
+    if (!force){
+      if (sessionStorage.getItem('masito_help_shown')) return;
+      if (document.hidden || ch.classList.contains('on') || document.documentElement.classList.contains('lock')){
+        idleTimer = setTimeout(fireIdle, 20000);
+        return;
+      }
+    }
+    sessionStorage.setItem('masito_help_shown', '1');
+    startHelpFlow();
+  }
+
+  window.addEventListener('mf:cart-add', function(e){
+    resetIdle();
+    var k = e.detail && e.detail.k;
+    if (MFapi.isDrink(k)){ clearTimeout(upsellTimer); upsellTimer = null; }
+    else if (!hasDrink()){ scheduleUpsell(); }
+  });
+  window.addEventListener('mf:cart-remove', function(){ resetIdle(); });
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden){ clearTimeout(idleTimer); }
+    else { resetIdle(); if (upsellTimer) scheduleUpsell(); }
+  });
+
+  MFapi.debug = {
+    triggerIdle: function(){ fireIdle(true); },
+    triggerUpsell: function(){ fireUpsell(); },
+    spin: function(cat){ return runRoulette(cat); },
+    open: function(){ ensureOpen(true); }
+  };
+
+  resetIdle();
 })();
 </script></body></html>
