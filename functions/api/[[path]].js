@@ -1,6 +1,6 @@
 // API de Masafácil — toda la autorización y el cállo de datos ocurre aquí,
 // en el servidor. El navegador nunca recibe credenciales de Turso.
-import { getDb, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST } from "../_db.js";
+import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST } from "../_db.js";
 import { optionalUser, requireUser, requireAdmin } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
 
@@ -49,6 +49,7 @@ export async function onRequest(context) {
   const route = "/" + (params.path || []).join("/");
   const method = request.method;
   const db = getDb(env);
+  await ensureSchema(db);
 
   try {
     // ---------- Público ----------
@@ -135,9 +136,20 @@ export async function onRequest(context) {
       const body = await readBody(request);
       const pct = Math.max(0, Math.min(100, num(body.porcentaje_descuento, 0)));
       const niv = NIVELES.includes(body.nivel_fidelizacion) ? body.nivel_fidelizacion : "Nuevo";
+      const sets = ["porcentaje_descuento = ?", "nivel_fidelizacion = ?", "updated_at = datetime('now')"];
+      const args = [pct, niv];
+      if (body.total_gastado !== undefined) {
+        sets.push("total_gastado = ?");
+        args.push(Math.max(0, Math.min(1000000, num(body.total_gastado, 0))));
+      }
+      if (body.total_pedidos !== undefined) {
+        sets.push("total_pedidos = ?");
+        args.push(Math.max(0, Math.min(100000, Math.round(num(body.total_pedidos, 0)))));
+      }
+      args.push(str(mCli[1], 80));
       await db.execute({
-        sql: "UPDATE clientes SET porcentaje_descuento = ?, nivel_fidelizacion = ?, updated_at = datetime('now') WHERE id = ?",
-        args: [pct, niv, str(mCli[1], 80)],
+        sql: "UPDATE clientes SET " + sets.join(", ") + " WHERE id = ?",
+        args,
       });
       return json({ ok: true });
     }

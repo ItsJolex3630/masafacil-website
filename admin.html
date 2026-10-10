@@ -237,6 +237,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
   function setGate(html){ var g=$('gate'); if(html) g.innerHTML=html; g.style.display=''; $('app').hidden=true; }
   function showApp(){ $('gate').style.display='none'; $('app').hidden=false; }
+  // Sesión expirada/inválida (401/403 tras login): limpiar y volver al gate de Google.
+  function handleAuth(e){ if(e && e.auth){ clearCred(); location.reload(); return true; } return false; }
 
   window.mfAdminLogin = function(resp){
     var p = parseJwt(resp.credential); if(!p) return;
@@ -302,8 +304,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
         return '<tr data-id="'+esc(c.id)+'">' +
           '<td><img class="avatar" src="'+esc(c.avatar_url||'assets/img/logo_masafacil.png')+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.png\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
           '<td><div>'+esc(c.email||'')+'</div><div class="muted">'+esc(c.telefono_whatsapp||'—')+'</div></td>' +
-          '<td>'+Number(c.total_pedidos||0)+'</td>' +
-          '<td>'+fmt(c.total_gastado)+'</td>' +
+          '<td><input class="num peds" type="number" min="0" step="1" value="'+Number(c.total_pedidos||0)+'"></td>' +
+          '<td><input class="num gast" type="number" min="0" step="0.01" value="'+Number(c.total_gastado||0)+'"></td>' +
           '<td><select class="niv">'+['Nuevo','Frecuente','Plata','Oro','VIP'].map(function(n){return '<option'+(n===c.nivel_fidelizacion?' selected':'')+'>'+n+'</option>';}).join('')+'</select></td>' +
           '<td><input class="num pct" type="number" min="0" max="100" step="1" value="'+Number(c.porcentaje_descuento||0)+'"> %</td>' +
           '<td><button class="btn sm save-cli">Guardar</button></td>' +
@@ -314,13 +316,17 @@ textarea{width:100%;min-height:52px;resize:vertical}
         var tr = btn.closest('tr'); var id = tr.dataset.id;
         var pct = Number(tr.querySelector('.pct').value||0);
         var niv = tr.querySelector('.niv').value;
+        var body = { porcentaje_descuento: pct, nivel_fidelizacion: niv };
+        var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast');
+        if(peds) body.total_pedidos = Number(peds.value||0);
+        if(gast) body.total_gastado = Number(gast.value||0);
         try{
           await api('/api/admin/clientes/' + encodeURIComponent(id), {
             method: 'PUT',
-            body: JSON.stringify({ porcentaje_descuento: pct, nivel_fidelizacion: niv })
+            body: JSON.stringify(body)
           });
           toast('Cliente actualizado ✓');
-        }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
+        }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
       });
     });
   }
@@ -451,7 +457,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
         body: JSON.stringify({ estado: nuevo })
       });
       await loadVentas();
-    }catch(e){ toast('Error: '+(e.message||e), true); }
+      return true;
+    }catch(e){ if(!handleAuth(e)) toast('Error: '+(e.message||e), true); return false; }
   }
 
   async function deleteVenta(id){
@@ -462,7 +469,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       await api('/api/admin/pedidos/' + encodeURIComponent(id), { method: 'DELETE' });
       toast('Pedido eliminado');
       await loadVentas();
-    }catch(e){ toast('Error: '+(e.message||e), true); }
+    }catch(e){ if(!handleAuth(e)) toast('Error: '+(e.message||e), true); }
   }
 
   // Acciones de las tarjetas (delegación)
@@ -490,8 +497,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
     $('cf-q').innerHTML = '¿La compra del cliente <b>'+esc(p.nombre_cliente||'Cliente')+'</b> con el correo <b>'+esc(p.email_cliente||'—')+'</b> y teléfono <b>'+esc(p.telefono_whatsapp||'—')+'</b> por un total de <b>'+fmt(p.total_final)+'</b> fue concluida?';
     m.classList.add('on');
   }
-  $('cf-confirm').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; await setEstado(p.id, 'completado'); pendIndex++; showConfirmNext(); });
-  $('cf-dismiss').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; await setEstado(p.id, 'cancelado'); pendIndex++; showConfirmNext(); });
+  $('cf-confirm').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; if(await setEstado(p.id, 'completado')){ pendIndex++; showConfirmNext(); } });
+  $('cf-dismiss').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; if(await setEstado(p.id, 'cancelado')){ pendIndex++; showConfirmNext(); } });
   $('cf-later').addEventListener('click', function(){ $('modal-confirm').classList.remove('on'); renderVentas(); });
 
   // ---- Modal Nueva / Editar Venta ----
@@ -533,7 +540,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       }
       $('modal-venta').classList.remove('on');
       await loadVentas();
-    }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
+    }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
   }
   $('mv-save').addEventListener('click', saveVenta);
 

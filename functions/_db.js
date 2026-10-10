@@ -13,6 +13,27 @@ export function getDb(env) {
   return client;
 }
 
+// Migración defensiva e idempotente: asegura las columnas que el código
+// exige pero que el esquema original de Turso podría no tener. Los ALTER
+// duplicados fallan con "duplicate column" y se ignoran.
+let schemaReady = false;
+export async function ensureSchema(db) {
+  if (schemaReady) return;
+  const alters = [
+    "ALTER TABLE pedidos ADD COLUMN estado TEXT DEFAULT 'pendiente'",
+    "ALTER TABLE pedidos ADD COLUMN updated_at TEXT",
+    "ALTER TABLE clientes ADD COLUMN updated_at TEXT",
+  ];
+  for (const sql of alters) {
+    try {
+      await db.execute(sql);
+    } catch (e) {
+      if (!/duplicate column/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
+    }
+  }
+  schemaReady = true;
+}
+
 export class HttpError extends Error {
   constructor(status, message) {
     super(message);
