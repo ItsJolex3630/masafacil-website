@@ -50,8 +50,9 @@ export async function buildPedido(db, user, body) {
   // Cantidades saneadas (enteras 1-99; se ignoran entradas basura).
   const pedido = [];
   for (const k of nombres) {
-    const q = Math.max(1, Math.min(99, parseInt(rawItems[k], 10) || 0));
-    if (q > 0) pedido.push({ key: str(k, 120), q });
+    const n = parseInt(rawItems[k], 10);
+    const q = Number.isFinite(n) ? Math.min(99, n) : 0;
+    if (q >= 1) pedido.push({ key: str(k, 120), q });
   }
   if (!pedido.length) throw new HttpError(400, "El pedido está vacío");
 

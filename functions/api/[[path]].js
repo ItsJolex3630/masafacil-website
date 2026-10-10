@@ -111,8 +111,9 @@ export async function onRequest(context) {
     if (mProd && method === "PUT") {
       await requireAdmin(request, env);
       const body = await readBody(request);
-      const precio = Math.max(0, Math.min(10000, num(body.precio, -1)));
-      if (precio < 0) throw new HttpError(400, "Precio inválido");
+      const rawPrecio = num(body.precio, -1);
+      if (rawPrecio < 0 || rawPrecio > 10000) throw new HttpError(400, "Precio inválido");
+      const precio = Number(rawPrecio.toFixed(2));
       const disp = body.disponible ? 1 : 0;
       const tag = str(body.promo_tag, 40);
       const img = str(body.imagen_url, 300);

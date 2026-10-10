@@ -15,6 +15,9 @@ function extractToken(request) {
 async function verify(request, env) {
   const token = extractToken(request);
   if (!token) return null;
+  if (!env.GOOGLE_CLIENT_ID) {
+    throw new HttpError(500, "GOOGLE_CLIENT_ID no configurado en el servidor");
+  }
   try {
     const { payload } = await jwtVerify(token, JWKS, {
       audience: env.GOOGLE_CLIENT_ID,
