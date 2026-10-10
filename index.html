@@ -2320,7 +2320,7 @@ function LB(sel) {
       const w = $('cwa');
       w.textContent = 'Abriendo WhatsApp…';
       setTimeout(() => w.textContent = 'Enviar pedido por WhatsApp', 3000);
-      if (window.MFAuth && window.MFAuth.registrarPedido && lastTotals.tieneCliente) {
+      if (window.MFAuth && window.MFAuth.registrarPedido) {
         window.MFAuth.registrarPedido({
           items: C,
           subtotalBruto: lastTotals.subtotalBruto || 0,
@@ -2693,23 +2693,28 @@ function LB(sel) {
     redibujarCarrito();
   }
 
-  // ==== Tarea 3.6: Registro asíncrono del pedido ====
+  // ==== Registro asíncrono del pedido (estado 'pendiente', no suma al cliente) ====
   function registrarPedido(d) {
     var c = window.CURRENT_CLIENTE;
     var client = getTursoClient();
-    if (!c || !c.id || !client || !d) return;
+    if (!client || !d) return;
     var pedId = 'ped_' + Date.now();
-    client.batch([
-      {
-        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        args: [pedId, c.id, c.nombre, c.email, c.telefono || '', JSON.stringify(d.items || {}), d.subtotalBruto || 0, d.descuento || 0, d.delivery || 0, d.total || 0, d.zona || '', d.notas || '']
-      },
-      {
-        sql: "UPDATE clientes SET total_pedidos = total_pedidos + 1, total_gastado = total_gastado + ?, updated_at = datetime('now') WHERE id = ?",
-        args: [d.total || 0, c.id]
-      }
-    ]).then(function() {
-      if (window.CURRENT_CLIENTE) window.CURRENT_CLIENTE.total_pedidos = (window.CURRENT_CLIENTE.total_pedidos || 0) + 1;
+    client.execute({
+      sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')",
+      args: [
+        pedId,
+        (c && c.id) ? c.id : null,
+        (c && c.nombre) ? c.nombre : 'Invitado',
+        (c && c.email) ? c.email : '',
+        (c && c.telefono) ? c.telefono : '',
+        JSON.stringify(d.items || {}),
+        d.subtotalBruto || 0,
+        d.descuento || 0,
+        d.delivery || 0,
+        d.total || 0,
+        d.zona || '',
+        d.notas || ''
+      ]
     }).catch(function(err) {
       console.warn("No se pudo registrar pedido en Turso:", err);
     });

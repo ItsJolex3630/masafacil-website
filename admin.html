@@ -77,6 +77,19 @@ textarea{width:100%;min-height:52px;resize:vertical}
 .tag{display:inline-block;background:rgba(56,102,65,.14);color:var(--sage);border-radius:99px;padding:1px 9px;font:600 .72rem var(--h);margin-left:6px}
 .muted{color:#8a7a72;font-size:.82rem}
 .empty{padding:26px;text-align:center;color:#8a7a72}
+.badge-estado{display:inline-block;border-radius:99px;padding:2px 10px;font:600 .72rem var(--h);margin-left:6px}
+.badge-estado.pendiente{background:#f6e3b0;color:#7a5a12}
+.badge-estado.completado{background:#d7ecd9;color:#1f5a2f}
+.badge-estado.cancelado{background:#f2d9d4;color:#8a2a1c}
+.venta .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(64,32,26,.55);backdrop-filter:blur(4px)}
+.modal.on{display:flex}
+.modal .box{background:var(--cream);border-radius:20px;max-width:540px;width:100%;padding:24px;box-shadow:0 24px 60px rgba(64,32,26,.42);max-height:90vh;overflow:auto}
+.modal .box h3{margin:0 0 12px;color:var(--dk);font:600 1.3rem var(--h)}
+.modal .box .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.modal .box label{font-size:.72rem;color:#6a5750;display:block;margin-bottom:3px}
+.modal .box .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+@media(max-width:640px){.modal .box .row{grid-template-columns:1fr}}
 #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--dk);color:#fff;padding:11px 20px;border-radius:99px;font:600 .9rem var(--h);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:50}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:#8a2a1c}
@@ -131,9 +144,57 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
     <section id="tab-ventas" hidden>
       <div class="kpis" id="ventas-kpis"></div>
+      <div class="toolbar">
+        <button class="btn sm" id="nueva-venta">+ Registrar Venta Manual</button>
+        <select id="venta-filter" style="margin-left:auto">
+          <option value="todos">Todos</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="completado">Completados</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+      </div>
       <div id="ventas-list"></div>
     </section>
   </main>
+</div>
+
+<!-- Modal: confirmación de pedidos pendientes -->
+<div class="modal" id="modal-confirm">
+  <div class="box">
+    <h3>Confirmar pedido <span class="muted" id="cf-count"></span></h3>
+    <p id="cf-q" style="font-size:1rem;line-height:1.5"></p>
+    <div class="actions">
+      <button class="btn ghost sm" id="cf-later">Más tarde</button>
+      <button class="btn ghost sm" id="cf-dismiss">Descartar</button>
+      <button class="btn sm" id="cf-confirm">✓ Concluida</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: nueva / editar venta -->
+<div class="modal" id="modal-venta">
+  <div class="box">
+    <h3 id="mv-title">Registrar Venta Manual</h3>
+    <input type="hidden" id="mv-id">
+    <div class="row">
+      <div><label>Nombre del cliente</label><input class="text" id="mv-nombre" placeholder="Ej: María González"></div>
+      <div><label>Teléfono (WhatsApp)</label><input class="text" id="mv-tel" placeholder="+58 424…"></div>
+    </div>
+    <div class="row">
+      <div><label>Correo (opcional)</label><input class="text" id="mv-email" placeholder="cliente@correo.com"></div>
+      <div><label>Total ($ USD)</label><input class="num" id="mv-total" type="number" step="0.01" min="0" style="width:100%"></div>
+    </div>
+    <div><label>Descripción / productos</label><textarea id="mv-items" placeholder="Ej: 6 pastelitos, 2 cafés, 1 panini"></textarea></div>
+    <div class="row">
+      <div><label>Zona / método</label><input class="text" id="mv-zona" placeholder="Tienda física / Delivery"></div>
+      <div><label>Estado</label><select id="mv-estado"><option value="completado">Completado</option><option value="pendiente">Pendiente</option><option value="cancelado">Cancelado</option></select></div>
+    </div>
+    <div><label>Notas</label><input class="text" id="mv-notas" placeholder="Notas internas (opcional)"></div>
+    <div class="actions">
+      <button class="btn ghost sm" id="mv-cancel">Cancelar</button>
+      <button class="btn sm" id="mv-save">Guardar</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast"></div>
@@ -239,6 +300,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       document.querySelectorAll('.tabs button').forEach(function(x){ x.classList.remove('is-active'); });
       b.classList.add('is-active');
       ['clientes','productos','ventas'].forEach(function(t){ $('tab-'+t).hidden = (t !== b.dataset.tab); });
+      if(b.dataset.tab === 'ventas'){ loadVentas().then(checkPendientes); }
     });
   });
   $('logout').addEventListener('click', function(){
@@ -348,34 +410,185 @@ textarea{width:100%;min-height:52px;resize:vertical}
   $('prod-search').addEventListener('input', function(e){ prodFilter = e.target.value; renderProductos(); });
 
   // ---- Ventas ----
+  var ventaFilter = 'todos';
+
+  function itemsToText(ij){
+    try{ var o = JSON.parse(ij||'{}'); var ks = Object.keys(o); if(!ks.length) return '';
+      return ks.map(function(k){ var q = o[k] && o[k].q; return (q && q > 1 ? q + ' x ' : '') + k; }).join(', ');
+    }catch(e){ return ''; }
+  }
+  function estadoBadge(e){
+    e = e || 'pendiente';
+    var label = e === 'completado' ? 'Completado' : (e === 'cancelado' ? 'Cancelado' : 'Pendiente');
+    return '<span class="badge-estado '+e+'">'+label+'</span>';
+  }
+  async function adjustCliente(id, dCount, dSpend){
+    var d = getDb(); if(!d || !id) return;
+    await d.execute({ sql: "UPDATE clientes SET total_pedidos = MAX(0, total_pedidos + ?), total_gastado = MAX(0, total_gastado + ?), updated_at = datetime('now') WHERE id = ?", args: [dCount, dSpend, id] });
+  }
+
   async function loadVentas(){
-    var d = getDb(); var list = $('ventas-list'); var kp = $('ventas-kpis'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
+    var d = getDb(); var list = $('ventas-list'); if(!d){ list.innerHTML='<div class="empty">Sin conexión.</div>'; return; }
     list.innerHTML = '<div class="empty">Cargando pedidos…</div>';
     try{
       var r = await d.execute("SELECT * FROM pedidos ORDER BY datetime(created_at) DESC, id DESC");
-      var rows = r.rows||[];
-      var totalIngresos = rows.reduce(function(a,x){ return a + Number(x.total_final||0); }, 0);
-      var totalDesc = rows.reduce(function(a,x){ return a + Number(x.descuento_aplicado||0); }, 0);
-      kp.innerHTML =
-        '<div class="kpi"><b>'+rows.length+'</b><span>Pedidos registrados</span></div>' +
-        '<div class="kpi"><b>'+fmt(totalIngresos)+'</b><span>Ventas brutas</span></div>' +
-        '<div class="kpi"><b>'+fmt(totalDesc)+'</b><span>Descuentos otorgados</span></div>' +
-        '<div class="kpi"><b>'+fmt(rows.length? totalIngresos/rows.length : 0)+'</b><span>Ticket promedio</span></div>';
-      if(!rows.length){ list.innerHTML='<div class="empty">Aún no hay pedidos registrados.</div>'; return; }
-      list.innerHTML = rows.map(function(x){
-        var items = []; try{ var it = JSON.parse(x.items_json||'{}'); Object.keys(it).forEach(function(k){ items.push('• '+it[k].q+' x '+k); }); }catch(e){}
-        var tel = digits(x.telefono_whatsapp);
-        var wa = tel ? '<a class="btn sm tan" target="_blank" rel="noopener" href="https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+(x.nombre_cliente||'')+', te escribimos de Masafácil sobre tu pedido.')+'">💬 WhatsApp</a>' : '<span class="muted">Sin teléfono</span>';
-        var guest = x.cliente_id ? '' : '<span class="tag">Invitado</span>';
-        return '<div class="venta">' +
-          '<div class="top"><div><b>'+esc(x.nombre_cliente||'Cliente')+'</b> '+guest+'<div class="muted">'+esc(x.email_cliente||'')+' · '+esc(x.created_at||'')+'</div></div><div class="tot">'+fmt(x.total_final)+'</div></div>' +
-          '<div class="items">'+esc(items.join('\n'))+'</div>' +
-          '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
-          '<div style="margin-top:10px">'+wa+'</div>' +
-        '</div>';
-      }).join('');
+      window._pedidos = r.rows || [];
+      renderVentas();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar pedidos: '+esc(e.message||e)+'</div>'; }
   }
+
+  function renderVentas(){
+    var all = window._pedidos || [];
+    var comp = all.filter(function(x){ return (x.estado||'pendiente') === 'completado'; });
+    var pend = all.filter(function(x){ return (x.estado||'pendiente') === 'pendiente'; });
+    var ingresos = comp.reduce(function(a,x){ return a + Number(x.total_final||0); }, 0);
+    var desc = comp.reduce(function(a,x){ return a + Number(x.descuento_aplicado||0); }, 0);
+    $('ventas-kpis').innerHTML =
+      '<div class="kpi"><b>'+all.length+'</b><span>Pedidos totales</span></div>' +
+      '<div class="kpi"><b>'+pend.length+'</b><span>Pendientes por confirmar</span></div>' +
+      '<div class="kpi"><b>'+fmt(ingresos)+'</b><span>Ventas confirmadas</span></div>' +
+      '<div class="kpi"><b>'+fmt(comp.length ? ingresos/comp.length : 0)+'</b><span>Ticket promedio</span></div>' +
+      '<div class="kpi"><b>'+fmt(desc)+'</b><span>Descuentos otorgados</span></div>';
+
+    var rows = all.filter(function(x){ return ventaFilter === 'todos' || (x.estado||'pendiente') === ventaFilter; });
+    var list = $('ventas-list');
+    if(!rows.length){ list.innerHTML = '<div class="empty">No hay pedidos en este filtro.</div>'; return; }
+    list.innerHTML = rows.map(function(x){
+      var est = x.estado || 'pendiente';
+      var items = itemsToText(x.items_json);
+      var tel = digits(x.telefono_whatsapp);
+      var wa = tel ? '<a class="btn sm tan" target="_blank" rel="noopener" href="https://wa.me/'+tel+'?text='+encodeURIComponent('Hola '+(x.nombre_cliente||'')+', te escribimos de Masafácil sobre tu pedido.')+'">💬 WhatsApp</a>' : '';
+      var guest = x.cliente_id ? '' : '<span class="tag">Invitado</span>';
+      var actions = '';
+      if(est === 'pendiente'){
+        actions += '<button class="btn sm" data-act="confirmar" data-id="'+esc(x.id)+'">✓ Concluida</button>' +
+                   '<button class="btn ghost sm" data-act="descartar" data-id="'+esc(x.id)+'">Descartar</button>';
+      }
+      actions += '<button class="btn ghost sm" data-act="editar" data-id="'+esc(x.id)+'">Editar</button>' +
+                 '<button class="btn ghost sm" data-act="eliminar" data-id="'+esc(x.id)+'">Eliminar</button>';
+      return '<div class="venta" data-id="'+esc(x.id)+'">' +
+        '<div class="top"><div><b>'+esc(x.nombre_cliente||'Cliente')+'</b> '+estadoBadge(est)+' '+guest+'<div class="muted">'+esc(x.email_cliente||'')+(x.created_at? ' · '+esc(x.created_at):'')+'</div></div><div class="tot">'+fmt(x.total_final)+'</div></div>' +
+        (items ? '<div class="items">'+esc(items)+'</div>' : '') +
+        '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
+        '<div class="actions">'+wa+actions+'</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  $('venta-filter').addEventListener('change', function(e){ ventaFilter = e.target.value; renderVentas(); });
+
+  async function setEstado(id, nuevo){
+    var d = getDb(); if(!d) return;
+    var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
+    if(!p) return;
+    var old = p.estado || 'pendiente';
+    var dCount = 0, dSpend = 0;
+    if(old !== 'completado' && nuevo === 'completado'){ dCount = 1; dSpend = Number(p.total_final||0); }
+    else if(old === 'completado' && nuevo !== 'completado'){ dCount = -1; dSpend = -Number(p.total_final||0); }
+    await d.execute({ sql: "UPDATE pedidos SET estado = ? WHERE id = ?", args: [nuevo, id] });
+    if(p.cliente_id && (dCount || dSpend)) await adjustCliente(p.cliente_id, dCount, dSpend);
+    window._pedidos = (window._pedidos||[]).map(function(x){ return x.id === id ? Object.assign({}, x, { estado: nuevo }) : x; });
+    toast('Pedido marcado como ' + nuevo + ' ✓');
+    renderVentas();
+  }
+
+  async function deleteVenta(id){
+    var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
+    if(!p) return;
+    if(!confirm('¿Eliminar definitivamente este pedido de '+(p.nombre_cliente||'Cliente')+'?')) return;
+    var d = getDb(); if(!d) return;
+    if((p.estado||'pendiente') === 'completado' && p.cliente_id) await adjustCliente(p.cliente_id, -1, -Number(p.total_final||0));
+    await d.execute({ sql: "DELETE FROM pedidos WHERE id = ?", args: [id] });
+    window._pedidos = (window._pedidos||[]).filter(function(x){ return x.id !== id; });
+    toast('Pedido eliminado');
+    renderVentas();
+  }
+
+  // Acciones de las tarjetas (delegación)
+  $('ventas-list').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-act]'); if(!btn) return;
+    var id = btn.dataset.id, act = btn.dataset.act;
+    if(act === 'confirmar') setEstado(id, 'completado');
+    else if(act === 'descartar') setEstado(id, 'cancelado');
+    else if(act === 'editar') openVentaModal((window._pedidos||[]).find(function(x){ return x.id === id; }));
+    else if(act === 'eliminar') deleteVenta(id);
+  });
+
+  // ---- Confirmación secuencial de pendientes ----
+  var pendQueue = [], pendIndex = 0;
+  function checkPendientes(){
+    pendQueue = (window._pedidos||[]).filter(function(x){ return (x.estado||'pendiente') === 'pendiente'; });
+    pendIndex = 0;
+    if(pendQueue.length) showConfirmNext();
+  }
+  function showConfirmNext(){
+    var m = $('modal-confirm');
+    if(pendIndex >= pendQueue.length){ m.classList.remove('on'); renderVentas(); return; }
+    var p = pendQueue[pendIndex];
+    $('cf-count').textContent = '(' + (pendIndex+1) + ' de ' + pendQueue.length + ')';
+    $('cf-q').innerHTML = '¿La compra del cliente <b>'+esc(p.nombre_cliente||'Cliente')+'</b> con el correo <b>'+esc(p.email_cliente||'—')+'</b> y teléfono <b>'+esc(p.telefono_whatsapp||'—')+'</b> por un total de <b>'+fmt(p.total_final)+'</b> fue concluida?';
+    m.classList.add('on');
+  }
+  $('cf-confirm').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; await setEstado(p.id, 'completado'); pendIndex++; showConfirmNext(); });
+  $('cf-dismiss').addEventListener('click', async function(){ var p = pendQueue[pendIndex]; await setEstado(p.id, 'cancelado'); pendIndex++; showConfirmNext(); });
+  $('cf-later').addEventListener('click', function(){ $('modal-confirm').classList.remove('on'); renderVentas(); });
+
+  // ---- Modal Nueva / Editar Venta ----
+  $('nueva-venta').addEventListener('click', function(){ openVentaModal(null); });
+  function openVentaModal(p){
+    $('mv-title').textContent = p ? 'Editar Venta' : 'Registrar Venta Manual';
+    $('mv-id').value = p ? p.id : '';
+    $('mv-nombre').value = p ? (p.nombre_cliente||'') : '';
+    $('mv-tel').value = p ? (p.telefono_whatsapp||'') : '';
+    $('mv-email').value = p ? (p.email_cliente||'') : '';
+    $('mv-total').value = p ? Number(p.total_final||0) : '';
+    $('mv-items').value = p ? itemsToText(p.items_json) : '';
+    $('mv-zona').value = p ? (p.zona_entrega||'') : '';
+    $('mv-estado').value = p ? (p.estado||'pendiente') : 'completado';
+    $('mv-notas').value = p ? (p.notas||'') : '';
+    $('modal-venta').classList.add('on');
+  }
+  $('mv-cancel').addEventListener('click', function(){ $('modal-venta').classList.remove('on'); });
+
+  async function saveVenta(){
+    var d = getDb(); if(!d) return;
+    var id = $('mv-id').value;
+    var nombre = $('mv-nombre').value.trim() || 'Cliente';
+    var tel = $('mv-tel').value.trim();
+    var email = $('mv-email').value.trim();
+    var total = Number($('mv-total').value || 0);
+    var zona = $('mv-zona').value.trim();
+    var estado = $('mv-estado').value;
+    var notas = $('mv-notas').value.trim();
+    var desc = $('mv-items').value.trim();
+    var items_json = JSON.stringify(desc ? (function(){ var o = {}; o[desc] = { q: 1, u: total }; return o; })() : {});
+
+    if(id){
+      var p = (window._pedidos||[]).find(function(x){ return x.id === id; });
+      if(!p) return;
+      var oldE = p.estado || 'pendiente', oldT = Number(p.total_final||0);
+      if(p.cliente_id){
+        var dC = 0, dS = 0;
+        if(oldE !== 'completado' && estado === 'completado'){ dC = 1; dS = total; }
+        else if(oldE === 'completado' && estado !== 'completado'){ dC = -1; dS = -oldT; }
+        else if(oldE === 'completado' && estado === 'completado'){ dS = total - oldT; }
+        if(dC || dS) await adjustCliente(p.cliente_id, dC, dS);
+      }
+      await d.execute({ sql: "UPDATE pedidos SET nombre_cliente=?, email_cliente=?, telefono_whatsapp=?, items_json=?, total_final=?, zona_entrega=?, notas=?, estado=? WHERE id=?", args: [nombre, email, tel, items_json, total, zona, notas, estado, id] });
+      toast('Venta actualizada ✓');
+    } else {
+      var newId = 'man_' + Date.now();
+      var clienteId = null;
+      if(email){ try{ var q = await d.execute({ sql: "SELECT id FROM clientes WHERE email = ?", args: [email] }); if(q.rows && q.rows.length) clienteId = q.rows[0].id; }catch(e){} }
+      await d.execute({ sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?,?,?,?,?,?,?,0,0,?,?,?,?)", args: [newId, clienteId, nombre, email, tel, items_json, total, total, zona, notas, estado] });
+      if(clienteId && estado === 'completado') await adjustCliente(clienteId, 1, total);
+      toast('Venta registrada ✓');
+    }
+    $('modal-venta').classList.remove('on');
+    await loadVentas();
+  }
+  $('mv-save').addEventListener('click', saveVenta);
+
 
   // ---- GIS ----
   var tries = 0;
@@ -395,6 +608,9 @@ textarea{width:100%;min-height:52px;resize:vertical}
     var s = getSavedUser();
     if(s && s.email){ adminEmail = s.email; verifyAdmin(); }
   })();
+
+  // Exponer utilidades (depuración/pruebas)
+  window.MFAdmin = { get db(){ return getDb(); }, get pedidos(){ return window._pedidos||[]; }, reload: loadVentas };
 })();
 </script>
 </body>
