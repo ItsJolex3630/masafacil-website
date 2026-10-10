@@ -868,10 +868,9 @@ html.lock{overflow:hidden}
 #aib{width:66px;height:66px;padding:0;border-radius:50%;background:linear-gradient(160deg,#f7c667,#cf7f2b);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 26px rgba(64,32,26,.34);display:grid;place-items:center;overflow:visible}
 #aib.want{animation:masitoPulse 1.7s ease-in-out infinite}
 @keyframes masitoPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
-.masito-ava{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 34%,#fff,#f4e8d2);border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
-.masito-ava img{width:100%;height:100%;object-fit:contain;object-position:50% 50%;padding:3px;display:block}
-.masito-ava.sm{width:38px;height:38px;border-width:2px}
-.masito-ava.sm img{padding:2px}
+.masito-ava{display:block;width:58px;height:58px;border-radius:50%;overflow:hidden;background:#fffdf8;border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
+.masito-ava img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.masito-ava.sm{width:36px;height:36px;border-width:2px}
 .masito-dot{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#d63b2b;border:2px solid #fff;display:none}
 #aib.want .masito-dot{display:block}
 .masito-teaser{position:fixed;left:14px;bottom:calc(158px + env(safe-area-inset-bottom,0px));z-index:16;max-width:min(250px,72vw);background:#fffdf8;color:#40201a;border:1.5px solid rgba(201,165,119,.6);border-radius:16px;padding:10px 13px;font:600 .84rem/1.3 var(--h);box-shadow:0 10px 28px rgba(64,32,26,.24);animation:hi 300ms var(--eo) both}
@@ -881,8 +880,8 @@ html.lock{overflow:hidden}
 .masito-toast.in{animation:masitoToastIn 520ms var(--ea) both}
 @keyframes masitoToastIn{from{opacity:0;transform:translateY(20px) scale(.85)}to{opacity:1;transform:none}}
 .masito-toast::after{content:"";position:absolute;left:30px;bottom:-9px;width:18px;height:18px;background:rgba(255,253,248,.97);border-right:1.5px solid rgba(201,165,119,.6);border-bottom:1.5px solid rgba(201,165,119,.6);transform:rotate(45deg)}
-.masito-toast .mt-ava{flex:none;width:54px;height:54px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 34%,#fff,#f4e8d2);border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
-.masito-toast .mt-ava img{width:100%;height:100%;object-fit:contain;padding:3px;display:block}
+.masito-toast .mt-ava{flex:none;width:54px;height:54px;border-radius:50%;overflow:hidden;background:#fffdf8;border:3px solid #fff;box-shadow:0 4px 12px rgba(64,32,26,.22)}
+.masito-toast .mt-ava img{width:100%;height:100%;object-fit:contain;object-position:center;display:block}
 .mt-body{flex:1;min-width:0;padding-right:20px}
 .mt-body>b{display:block;font:700 .95rem var(--h);color:var(--dk)}
 .mt-body>p{margin:3px 0 9px;font-size:.86rem;line-height:1.35;color:#4a332c}
@@ -901,7 +900,7 @@ html.lock{overflow:hidden}
 .chat.masito .m p{margin:0;padding:9px 12px;border-radius:14px;background:#f1e8d6;max-width:86%;position:relative}
 .chat.masito .m p.u{background:var(--md);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
 .chat.masito .m p.bot{border-bottom-left-radius:4px}
-.chat.masito .m p.bot::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-5px;border-radius:50%;background:url('assets/img/masito.svg') center/contain no-repeat #fff;border:1.5px solid rgba(201,165,119,.7)}
+.chat.masito .m p.bot::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-4px;border-radius:50%;background:url('assets/img/masito_avatar.webp') center/contain no-repeat #fff;border:1.5px solid rgba(201,165,119,.7)}
 .chat.masito .q{padding:2px 12px 10px;max-height:150px;overflow:auto}
 .chat.masito .q button.sel{background:var(--dk);color:#fff;border-color:var(--dk)}
 .masito-input{display:flex;gap:6px;padding:8px 12px 12px;border-top:1px dashed rgba(201,165,119,.5)}
@@ -990,10 +989,10 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
   <form method="dialog"><button class="btn" type="submit">Entendido</button></form>
 </dialog>
 
-<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito.svg" alt=""></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
+<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito_avatar.webp" alt="Masito, tu asistente" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
 <div class="masito-teaser" id="masito-teaser" role="status" aria-live="polite" hidden></div>
-<div class="masito-toast" id="masito-toast" role="status" aria-live="polite" hidden><span class="mt-ava"><img src="assets/img/masito.svg" alt=""></span><div class="mt-body"><b>Masito</b><p id="masito-toast-msg"></p><div class="mt-actions"><button type="button" class="mt-go" id="masito-toast-go">Abrir</button></div></div><button type="button" class="mt-x" id="masito-toast-x" aria-label="Cerrar notificación">×</button></div>
-<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito.svg" alt=""></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
+<div class="masito-toast" id="masito-toast" role="status" aria-live="polite" hidden><span class="mt-ava"><img src="assets/img/masito_avatar.webp" alt="Masito" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><div class="mt-body"><b>Masito</b><p id="masito-toast-msg"></p><div class="mt-actions"><button type="button" class="mt-go" id="masito-toast-go">Abrir</button></div></div><button type="button" class="mt-x" id="masito-toast-x" aria-label="Cerrar notificación">×</button></div>
+<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito_avatar.webp" alt="Masito" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
 
 <script>
 const IM = {
