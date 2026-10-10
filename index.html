@@ -903,17 +903,28 @@ html.lock{overflow:hidden}
 .masito-head{display:flex;align-items:center;gap:9px}
 .masito-head span span{display:flex;flex-direction:column;line-height:1.05}
 .masito-head b{font:700 1rem var(--h)}
-.masito-head small{font:500 .68rem/1 system-ui;opacity:.8;margin-top:2px}
+.masito-head small{font:500 .68rem/1 system-ui;opacity:.8;margin-top:2px;transition:color 180ms ease,opacity 180ms ease}
+.masito-head small.is-typing{color:#ffd970;font-style:italic;font-weight:600;opacity:1;animation:typingStatusPulse 1.2s ease-in-out infinite}
+@keyframes typingStatusPulse{0%,100%{opacity:.75}50%{opacity:1}}
 .chat.masito .m{max-height:min(46vh,340px);display:flex;flex-direction:column;gap:8px;padding:12px 12px 4px}
 .chat.masito .m p{margin:0;padding:9px 12px;border-radius:14px;background:#f1e8d6;max-width:86%;position:relative}
 .chat.masito .m p.u{background:var(--md);color:#fff;margin-left:auto;border-bottom-right-radius:4px}
 .chat.masito .m p.bot{border-bottom-left-radius:4px}
 .chat.masito .m p.bot::before{content:"";display:inline-block;width:22px;height:22px;margin-right:6px;vertical-align:-4px;border-radius:50%;background:url('assets/img/masito_avatar.webp') center/contain no-repeat #fff;border:1.5px solid rgba(201,165,119,.7)}
-.chat.masito .q{padding:2px 12px 10px;max-height:150px;overflow:auto}
+.chat.masito .m p.bot.masito-typing{width:fit-content;max-width:fit-content;display:inline-flex;align-items:center;gap:3px;padding:8px 14px 8px 10px;animation:typingFadeIn 220ms ease}
+.chat.masito .m p.bot.masito-typing .typing-dots{display:inline-flex;align-items:center;gap:4px;padding-left:2px;height:18px}
+.chat.masito .m p.bot.masito-typing .t-dot{width:6.5px;height:6.5px;border-radius:50%;background:var(--md);opacity:.35;animation:masitoTypingBounce 1.25s infinite ease-in-out}
+.chat.masito .m p.bot.masito-typing .t-dot:nth-child(1){animation-delay:0s}
+.chat.masito .m p.bot.masito-typing .t-dot:nth-child(2){animation-delay:.18s}
+.chat.masito .m p.bot.masito-typing .t-dot:nth-child(3){animation-delay:.36s}
+@keyframes masitoTypingBounce{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-4.5px);opacity:1}}
+@keyframes typingFadeIn{from{opacity:0;transform:translateY(5px) scale(.95)}to{opacity:1;transform:none}}
+.chat.masito .q{padding:2px 12px 10px;max-height:150px;overflow:auto;transition:opacity 180ms ease}
 .chat.masito .q button.sel{background:var(--dk);color:#fff;border-color:var(--dk)}
 .masito-input{display:flex;gap:6px;padding:8px 12px 12px;border-top:1px dashed rgba(201,165,119,.5)}
 .masito-input input{flex:1;min-width:0;font:15px system-ui;padding:9px 12px;border:1.5px solid var(--tan);border-radius:99px;background:#fffdf9;color:var(--ink)}
 .masito-input button{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--md);color:#fff;font-size:1.1rem;cursor:pointer}
+.masito-input.is-typing button{opacity:.6;cursor:not-allowed}
 .masito-card{display:flex;gap:10px;align-items:center;background:#fffdf9;border:1.5px solid rgba(201,165,119,.55);border-radius:16px;padding:9px 11px;margin-top:2px;animation:panCardFade 250ms ease}
 .masito-card img{width:56px;height:56px;object-fit:contain;flex:none;filter:drop-shadow(0 6px 10px rgba(64,32,26,.22))}
 .masito-card .mc-info{flex:1;min-width:0}
@@ -927,7 +938,7 @@ html.lock{overflow:hidden}
 @keyframes masitoSpin{to{transform:rotate(360deg)}}
 .plate-item.roulette-win img,.drink-item.roulette-win img,.diamond-item.roulette-win img{animation:masitoWin .85s ease 2}
 @keyframes masitoWin{50%{filter:drop-shadow(0 0 16px rgba(56,102,65,.95)) brightness(1.14)}}
-@media(prefers-reduced-motion:reduce){#aib.want{animation:none}.masito-spin .sp{animation:none}.plate-item.roulette-win img,.drink-item.roulette-win img,.diamond-item.roulette-win img{animation:none}.masito-card{animation:none}}
+@media(prefers-reduced-motion:reduce){#aib.want{animation:none}.masito-spin .sp{animation:none}.plate-item.roulette-win img,.drink-item.roulette-win img,.diamond-item.roulette-win img{animation:none}.masito-card{animation:none}.masito-head small.is-typing{animation:none}.chat.masito .m p.bot.masito-typing{animation:none}.chat.masito .m p.bot.masito-typing .t-dot{animation:none;opacity:.8}}
 @media(max-width:400px){.chat.masito .m{max-height:40vh}}
 </style><style id="auth">
 /* ===== NAVBAR SLIM: marca, acciones, auth y botones compactos ===== */
@@ -1007,7 +1018,7 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 <a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito_avatar.webp" alt="Masito, tu asistente" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
 <div class="masito-teaser" id="masito-teaser" role="status" aria-live="polite" hidden></div>
 <div class="masito-toast" id="masito-toast" role="status" aria-live="polite" hidden><span class="mt-ava"><img src="assets/img/masito_avatar.webp" alt="Masito" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><div class="mt-body"><b>Masito</b><p id="masito-toast-msg"></p><div class="mt-actions"><button type="button" class="mt-go" id="masito-toast-go">Abrir</button></div></div><button type="button" class="mt-x" id="masito-toast-x" aria-label="Cerrar notificación">×</button></div>
-<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito_avatar.webp" alt="Masito" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
+<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito_avatar.webp" alt="Masito" onerror="this.onerror=null;this.src='assets/img/masito_avatar.png'"></span><span><b>Masito</b><small id="masito-status">Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
 
 <script>
 const IM = {
@@ -2820,6 +2831,8 @@ function LB(sel) {
   if (!MFapi) return;
   var $ = function(i){ return document.getElementById(i); };
   var ch = $('ch'), cm = $('cm'), cq = $('cq'), aib = $('aib'), cx = $('cx_ai'), teaser = $('masito-teaser'), form = $('masito-form'), text = $('masito-text');
+  var statusEl = $('masito-status') || ch.querySelector('.masito-head small');
+  var isTyping = false;
   var toast = $('masito-toast'), toastMsg = $('masito-toast-msg'), toastGo = $('masito-toast-go'), toastX = $('masito-toast-x');
   var RM = matchMedia('(prefers-reduced-motion:reduce)');
   var rand = function(n){ return Math.floor(Math.random() * n); };
@@ -2883,6 +2896,62 @@ function LB(sel) {
     cm.appendChild(p);
     scroll();
     return p;
+  }
+  function botTyping(contentOrFn, followUpFn, forcedDelay){
+    if (isTyping) return Promise.resolve();
+    isTyping = true;
+    var prevStatus = statusEl ? statusEl.textContent : 'Tu asistente de Masa Fácil';
+    if (statusEl){
+      statusEl.textContent = 'escribiendo…';
+      statusEl.classList.add('is-typing');
+    }
+    cq.style.pointerEvents = 'none';
+    cq.style.opacity = '0.55';
+    form.classList.add('is-typing');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    var bubble = document.createElement('p');
+    bubble.className = 'bot masito-typing';
+    bubble.id = 'masito-typing';
+    bubble.setAttribute('role', 'status');
+    bubble.setAttribute('aria-label', 'Masito está escribiendo');
+    bubble.innerHTML = '<span class="typing-dots"><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span></span>';
+    cm.appendChild(bubble);
+    scroll();
+
+    var delay = forcedDelay || (function(){
+      if (RM.matches) return 180;
+      if (typeof contentOrFn === 'string'){
+        return Math.min(1250, Math.max(680, contentOrFn.length * 8.5));
+      }
+      return 850;
+    })();
+
+    return wait(delay).then(function(){
+      if (bubble.parentNode) bubble.remove();
+      if (statusEl){
+        statusEl.textContent = prevStatus;
+        statusEl.classList.remove('is-typing');
+      }
+      cq.style.pointerEvents = '';
+      cq.style.opacity = '';
+      form.classList.remove('is-typing');
+      if (submitBtn) submitBtn.disabled = false;
+      isTyping = false;
+
+      try {
+        if (typeof contentOrFn === 'string'){
+          addMsg(contentOrFn, 'bot');
+        } else if (typeof contentOrFn === 'function'){
+          contentOrFn();
+        }
+        if (followUpFn) followUpFn();
+      } catch (err){
+        console.error('Error in botTyping:', err);
+      }
+      scroll();
+    });
   }
   function addSpinNote(txt){
     var d = document.createElement('div');
@@ -2995,17 +3064,24 @@ function LB(sel) {
     setChips(chips);
   }
   function confirmCats(){
-    if (busy) return;
+    if (busy || isTyping) return;
     var queue;
     if (randomPick || selCats.size === 0){
       queue = [CATS[rand(CATS.length)].k];
-      addMsg('¡Listo! Elijo por ti 🎲', 'bot');
+      clearChips();
+      addMsg('Sorpréndeme 🎲', 'u');
+      botTyping('¡Listo! Elijo por ti 🎲', function(){
+        addMsg('Perfecto: <b>' + esc(queue[0]) + '</b>. ¡Vamos! 🎡', 'bot');
+        runQueue(queue);
+      }, 700);
     } else {
       queue = CATS.filter(function(c){ return selCats.has(c.k); }).map(function(c){ return c.k; });
+      clearChips();
+      addMsg('Confirmar selección', 'u');
+      botTyping('Perfecto: ' + queue.map(function(c){ return '<b>' + esc(c) + '</b>'; }).join(', ') + '. ¡Vamos! 🎡', function(){
+        runQueue(queue);
+      }, 750);
     }
-    addMsg('Perfecto: ' + queue.map(function(c){ return '<b>' + esc(c) + '</b>'; }).join(', ') + '. ¡Vamos! 🎡', 'bot');
-    clearChips();
-    runQueue(queue);
   }
   function runQueue(queue){
     busy = true;
@@ -3015,7 +3091,7 @@ function LB(sel) {
         busy = false;
         addMsg('¿Quieres girar otra categoría o añado algo más a tu pedido? 😊', 'bot');
         setChips([
-          { t: '🎡 Girar otra vez', fn: function(){ startHelpFlow(); } },
+          { t: '🎡 Girar otra vez', fn: function(){ startHelpFlow(true); } },
           { t: '🥤 Ver bebidas', fn: function(){ surpriseDrink(); } },
           { t: '🛒 Ver mi pedido', fn: function(){ var b = document.getElementById('cb') || document.getElementById('cbar'); if (b) b.click(); } }
         ]);
@@ -3031,11 +3107,15 @@ function LB(sel) {
       });
     })();
   }
-  function startHelpFlow(){
+  function startHelpFlow(fromUser){
     if (busy) return;
     ensureOpen(false);
-    addMsg('Veo que estás pensando qué elegir 🤔. <b>¿Qué te llama la atención?</b> Puedes marcar varias o dejar que decida por ti.', 'bot');
-    renderCategoryPicker();
+    if (fromUser){
+      botTyping('Veo que estás pensando qué elegir 🤔. <b>¿Qué te llama la atención?</b> Puedes marcar varias o dejar que decida por ti.', renderCategoryPicker);
+    } else {
+      addMsg('Veo que estás pensando qué elegir 🤔. <b>¿Qué te llama la atención?</b> Puedes marcar varias o dejar que decida por ti.', 'bot');
+      renderCategoryPicker();
+    }
   }
 
   /* ---------- Upsell de bebida ---------- */
@@ -3066,17 +3146,24 @@ function LB(sel) {
       } };
     });
     chips.push({ t: '🎡 Sorpréndeme', fn: surpriseDrink });
-    chips.push({ t: 'No, gracias', fn: function(){ clearChips(); addMsg('¡Listo! Cualquier cosa aquí estoy 😊', 'bot'); } });
+    chips.push({ t: 'No, gracias', fn: function(){
+      if (isTyping) return;
+      addMsg('No, gracias', 'u');
+      clearChips();
+      botTyping('¡Listo! Cualquier cosa aquí estoy 😊', null, 650);
+    } });
     setChips(chips);
   }
   function surpriseDrink(){
-    if (busy) return;
+    if (busy || isTyping) return;
     busy = true; clearChips();
-    addMsg('¡Giro la bandeja de bebidas! 🥤🎡', 'bot');
-    runRoulette('Bebidas').then(function(item){
-      busy = false;
-      if (item){ addMsg('¡Te tocó! 🎉', 'bot'); addCard(item); }
-    });
+    addMsg('Sorpréndeme con una bebida 🥤', 'u');
+    botTyping('¡Giro la bandeja de bebidas! 🥤🎡', function(){
+      runRoulette('Bebidas').then(function(item){
+        busy = false;
+        if (item){ addMsg('¡Te tocó! 🎉', 'bot'); addCard(item); }
+      });
+    }, 700);
   }
 
   /* ---------- Cerebro de reglas + texto libre ---------- */
@@ -3097,34 +3184,36 @@ function LB(sel) {
   function respond(v){
     var t = norm(v);
     /* saludos */
-    if (/buenos dias|buen dia|buenos dia/.test(t)){ addMsg('¡Buenos días! ☀️ Soy <b>Masito</b>. Un cafecito y un pastelito recién frito arrancan el día perfecto. ¿Te ayudo a pedir?', 'bot'); showQAchips(); return; }
-    if (/buenas tardes|buena tarde/.test(t)){ addMsg('¡Buenas tardes! 🌤️ Soy <b>Masito</b>. ¿Qué se te antoja hoy? Te ayudo a elegir 🥟.', 'bot'); showQAchips(); return; }
-    if (/buenas noches|buena noche/.test(t)){ addMsg('¡Buenas noches! 🌙 Soy <b>Masito</b>. ¿Un antojito para cerrar el día? Aquí estoy 🥟.', 'bot'); showQAchips(); return; }
-    if (/(^|\b)(hola|holi|hey|hello|epale|saludos|buenas|que tal|que mas|quiubo|wenas)(\b|$)/.test(t)){ addMsg('¡Hola! 👋 Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. ¿Te ayudo a elegir o respondo alguna duda?', 'bot'); showQAchips(); return; }
+    if (/buenos dias|buen dia|buenos dia/.test(t)){ botTyping('¡Buenos días! ☀️ Soy <b>Masito</b>. Un cafecito y un pastelito recién frito arrancan el día perfecto. ¿Te ayudo a pedir?', showQAchips); return; }
+    if (/buenas tardes|buena tarde/.test(t)){ botTyping('¡Buenas tardes! 🌤️ Soy <b>Masito</b>. ¿Qué se te antoja hoy? Te ayudo a elegir 🥟.', showQAchips); return; }
+    if (/buenas noches|buena noche/.test(t)){ botTyping('¡Buenas noches! 🌙 Soy <b>Masito</b>. ¿Un antojito para cerrar el día? Aquí estoy 🥟.', showQAchips); return; }
+    if (/(^|\b)(hola|holi|hey|hello|epale|saludos|buenas|que tal|que mas|quiubo|wenas)(\b|$)/.test(t)){ botTyping('¡Hola! 👋 Soy <b>Masito</b>, tu asistente de Masa Fácil 🥟. ¿Te ayudo a elegir o respondo alguna duda?', showQAchips); return; }
     /* small talk */
-    if (/como estas|como andas|como va|que tal estas|todo bien|como te va/.test(t)){ addMsg('¡Feliz y recién fritito! 😄 ¿Y tú? Dime qué se te antoja y te ayudo.', 'bot'); showQAchips(); return; }
-    if (/quien eres|que eres|como te llamas|tu nombre|eres un bot|eres humano|eres real/.test(t)){ addMsg('Soy <b>Masito</b>, el asistente virtual de Masa Fácil 🥟. No como pastelitos (aunque quisiera), pero me sé todo el menú y te giro la ruleta para elegir 😄.', 'bot'); return; }
-    if (/que puedes hacer|en que me ayudas|ayudame con|opciones|funciones|para que sirves/.test(t)){ addMsg('Puedo contarte precios, promos, horarios, delivery y pagos; recomendarte platos; girar la ruleta para elegir 🎡 y armar tu pedido. ¿Por dónde empezamos?', 'bot'); showQAchips(); return; }
-    if (/gracias|gracia|te lo agradezco|mil gracias/.test(t)){ addMsg('¡Con gusto! 🥟 Para eso estoy. ¿Algo más para tu pedido?', 'bot'); return; }
-    if (/adios|chao|chau|hasta luego|nos vemos|bye|me voy|hasta pronto/.test(t)){ addMsg('¡Hasta pronto! 👋 Que disfrutes tus pastelitos. ¡Vuelve cuando quieras! 🥟', 'bot'); return; }
-    if (/chiste|cuentame algo|algo divertido|hazme reir|algo gracioso/.test(t)){ addMsg(JOKES[rand(JOKES.length)], 'bot'); return; }
-    if (/te quiero|te amo|eres el mejor|eres genial|me caes bien/.test(t)){ addMsg('¡Ay, qué dulce! 🥰 Tan dulce como los tequeños de chocolate. ¿Te añado unos? 🍫', 'bot'); return; }
+    if (/como estas|como andas|como va|que tal estas|todo bien|como te va/.test(t)){ botTyping('¡Feliz y recién fritito! 😄 ¿Y tú? Dime qué se te antoja y te ayudo.', showQAchips); return; }
+    if (/quien eres|que eres|como te llamas|tu nombre|eres un bot|eres humano|eres real/.test(t)){ botTyping('Soy <b>Masito</b>, el asistente virtual de Masa Fácil 🥟. No como pastelitos (aunque quisiera), pero me sé todo el menú y te giro la ruleta para elegir 😄.'); return; }
+    if (/que puedes hacer|en que me ayudas|ayudame con|opciones|funciones|para que sirves/.test(t)){ botTyping('Puedo contarte precios, promos, horarios, delivery y pagos; recomendarte platos; girar la ruleta para elegir 🎡 y armar tu pedido. ¿Por dónde empezamos?', showQAchips); return; }
+    if (/gracias|gracia|te lo agradezco|mil gracias/.test(t)){ botTyping('¡Con gusto! 🥟 Para eso estoy. ¿Algo más para tu pedido?'); return; }
+    if (/adios|chao|chau|hasta luego|nos vemos|bye|me voy|hasta pronto/.test(t)){ botTyping('¡Hasta pronto! 👋 Que disfrutes tus pastelitos. ¡Vuelve cuando quieras! 🥟'); return; }
+    if (/chiste|cuentame algo|algo divertido|hazme reir|algo gracioso/.test(t)){ botTyping(JOKES[rand(JOKES.length)]); return; }
+    if (/te quiero|te amo|eres el mejor|eres genial|me caes bien/.test(t)){ botTyping('¡Ay, qué dulce! 🥰 Tan dulce como los tequeños de chocolate. ¿Te añado unos? 🍫'); return; }
     /* intents de menú */
-    if (/mas barato|economico|barato|mas rendidor|poco dinero|no gastar mucho/.test(t)){ addMsg('Lo más económico: <b>pastelito tradicional de queso</b> a $0,65, y con la promo 2x$1,00 queda aún mejor 🥟. La ración de 6 tequeños ($1,70) también rinde.', 'bot'); return; }
-    if (/mas caro|gourmet|premium|lo mejor|mas fino|mas top/.test(t)){ addMsg('Lo más gourmet: <b>Panini Italiano</b> con burrata ($10,00) y el <b>Caprese</b> ($10,00). En pastelitos, camarón y champiñón a $1,99 🍤.', 'bot'); return; }
-    if (/nuevo|novedad|lo ultimo|recien llegado/.test(t)){ addMsg('¡Lo nuevo es el <b>Panini Caprese</b>: pesto artesanal, tomate fresco, mozzarella y jamón serrano o prosciutto. $10,00 🥪', 'bot'); return; }
-    if (/vegetarian|sin carne|veggie/.test(t)){ addMsg('Tenemos el <b>Sandwich Diet</b> (vegetales frescos y queso paisa, $5,00) y opciones sin carne como el pastelito de queso o de papa con queso 🧀.', 'bot'); return; }
-    if (/nino|cumple|fiesta|evento|reunion|pasapalo|celebraci/.test(t)){ addMsg('Para fiestas: <b>Combos Pasapalos</b> — Familiar (30 piezas) $10, Rumbero (60) $18 y Mega Fiesta (100) $28. ¡Encarga con 24 h de anticipación! 🎉', 'bot'); return; }
-    if (/picante|pica|aji/.test(t)){ addMsg('Nuestros platos no son picantes; las salsas de la casa van aparte para que las ajustes a tu gusto 🌶️.', 'bot'); return; }
-    if (/gluten|celiac|celiaqu/.test(t)){ addMsg('Trabajamos con harinas de trigo, así que no garantizamos 0 gluten. Mejor confírmalo por WhatsApp al +58 424-4099610 antes de pedir 🙏.', 'bot'); return; }
-    if (/wifi|internet|estacionamiento|parking|mesa|reserva|mascota|perro/.test(t)){ addMsg('Para wifi, mesas, estacionamiento o reservas, escríbenos por WhatsApp al +58 424-4099610 y te ayudan al instante 😊.', 'bot'); return; }
-    if (/mi pedido|rastrear|va en camino|estado del pedido|donde va|seguimiento/.test(t)){ addMsg('Tu pedido se confirma y sigue por WhatsApp con nuestro equipo; ellos te mantienen al tanto 🛵. ¿Quieres que te arme el mensaje del pedido?', 'bot'); return; }
-    if (/ruleta|elegir|antojo|no se|indecis|ayudame|sorprend|recomiend|que como|que pido/.test(t)){ startHelpFlow(); return; }
+    if (/mas barato|economico|barato|mas rendidor|poco dinero|no gastar mucho/.test(t)){ botTyping('Lo más económico: <b>pastelito tradicional de queso</b> a $0,65, y con la promo 2x$1,00 queda aún mejor 🥟. La ración de 6 tequeños ($1,70) también rinde.'); return; }
+    if (/mas caro|gourmet|premium|lo mejor|mas fino|mas top/.test(t)){ botTyping('Lo más gourmet: <b>Panini Italiano</b> con burrata ($10,00) y el <b>Caprese</b> ($10,00). En pastelitos, camarón y champiñón a $1,99 🍤.'); return; }
+    if (/nuevo|novedad|lo ultimo|recien llegado/.test(t)){ botTyping('¡Lo nuevo es el <b>Panini Caprese</b>: pesto artesanal, tomate fresco, mozzarella y jamón serrano o prosciutto. $10,00 🥪'); return; }
+    if (/vegetarian|sin carne|veggie/.test(t)){ botTyping('Tenemos el <b>Sandwich Diet</b> (vegetales frescos y queso paisa, $5,00) y opciones sin carne como el pastelito de queso o de papa con queso 🧀.'); return; }
+    if (/nino|cumple|fiesta|evento|reunion|pasapalo|celebraci/.test(t)){ botTyping('Para fiestas: <b>Combos Pasapalos</b> — Familiar (30 piezas) $10, Rumbero (60) $18 y Mega Fiesta (100) $28. ¡Encarga con 24 h de anticipación! 🎉'); return; }
+    if (/picante|pica|aji/.test(t)){ botTyping('Nuestros platos no son picantes; las salsas de la casa van aparte para que las ajustes a tu gusto 🌶️.'); return; }
+    if (/gluten|celiac|celiaqu/.test(t)){ botTyping('Trabajamos con harinas de trigo, así que no garantizamos 0 gluten. Mejor confírmalo por WhatsApp al +58 424-4099610 antes de pedir 🙏.'); return; }
+    if (/wifi|internet|estacionamiento|parking|mesa|reserva|mascota|perro/.test(t)){ botTyping('Para wifi, mesas, estacionamiento o reservas, escríbenos por WhatsApp al +58 424-4099610 y te ayudan al instante 😊.'); return; }
+    if (/mi pedido|rastrear|va en camino|estado del pedido|donde va|seguimiento/.test(t)){ botTyping('Tu pedido se confirma y sigue por WhatsApp con nuestro equipo; ellos te mantienen al tanto 🛵. ¿Quieres que te arme el mensaje del pedido?'); return; }
+    if (/ruleta|elegir|antojo|no se|indecis|ayudame|sorprend|recomiend|que como|que pido/.test(t)){ startHelpFlow(true); return; }
     var found = findItem(t);
     if (found){
       var u = priceToU(found.row.p);
-      addMsg('<b>' + esc(found.row.n) + '</b> — ' + esc(found.row.p) + (found.row.d ? '. ' + esc(found.row.d) : '') + '. ¿Lo añado?', 'bot');
-      setChips([{ t: '+ Añadir ' + found.row.n, fn: function(b){ MFapi.addToCart(keyFor(found.cat, found.row.n), u); b.textContent = '✓ Añadido'; b.classList.add('sel'); } }]);
+      var msg = '<b>' + esc(found.row.n) + '</b> — ' + esc(found.row.p) + (found.row.d ? '. ' + esc(found.row.d) : '') + '. ¿Lo añado?';
+      botTyping(msg, function(){
+        setChips([{ t: '+ Añadir ' + found.row.n, fn: function(b){ MFapi.addToCart(keyFor(found.cat, found.row.n), u); b.textContent = '✓ Añadido'; b.classList.add('sel'); } }]);
+      });
       return;
     }
     var rules = [
@@ -3139,18 +3228,30 @@ function LB(sel) {
       [/salado|crujiente/, 'Para lo salado y crujiente: <b>pastelitos</b> y <b>tequeños</b> 🥟.'],
       [/bebida|jugo|cafe|latte|refresco|nestea/, 'Tenemos café de especialidad, jugos naturales, Nestea y refrescos helados 🥤. ¿Te muestro bebidas?']
     ];
-    for (var i = 0; i < rules.length; i++){ if (rules[i][0].test(t)){ addMsg(rules[i][1], 'bot'); return; } }
-    addMsg('No estoy seguro de eso 🤔, pero puedo ayudarte a elegir con la ruleta 🎡.', 'bot');
-    renderCategoryPicker();
+    for (var i = 0; i < rules.length; i++){
+      if (rules[i][0].test(t)){
+        botTyping(rules[i][1]);
+        return;
+      }
+    }
+    botTyping('No estoy seguro de eso 🤔, pero puedo ayudarte a elegir con la ruleta 🎡.', renderCategoryPicker);
   }
   var qaPage = 0;
   function showQAchips(){
     var per = 4, pages = Math.ceil(QA.length / per), start = (qaPage % pages) * per;
     var chips = QA.slice(start, start + per).map(function(q){
-      return { t: q[0], fn: function(){ addMsg(esc(q[0]), 'u'); addMsg(q[1], 'bot'); } };
+      return { t: q[0], fn: function(){
+        if (isTyping) return;
+        addMsg(esc(q[0]), 'u');
+        botTyping(q[1]);
+      } };
     });
-    chips.push({ t: '🎡 Ayúdame a elegir', fn: startHelpFlow });
-    chips.push({ t: '➕ Más preguntas', fn: function(){ qaPage = (qaPage + 1) % pages; showQAchips(); } });
+    chips.push({ t: '🎡 Ayúdame a elegir', fn: function(){
+      if (isTyping) return;
+      addMsg('🎡 Ayúdame a elegir', 'u');
+      startHelpFlow(true);
+    } });
+    chips.push({ t: '➕ Más preguntas', fn: function(){ if (isTyping) return; qaPage = (qaPage + 1) % pages; showQAchips(); } });
     setChips(chips);
   }
 
@@ -3216,6 +3317,7 @@ function LB(sel) {
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !toast.hidden){ pending = null; hideToast(); aib.classList.remove('want'); } });
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    if (isTyping) return;
     var v = text.value.trim();
     if (!v) return;
     text.value = '';
