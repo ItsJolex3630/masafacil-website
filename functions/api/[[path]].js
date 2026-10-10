@@ -1,6 +1,6 @@
 // API de Masafácil — toda la autorización y el cállo de datos ocurre aquí,
 // en el servidor. El navegador nunca recibe credenciales de Turso.
-import { getDb, json, HttpError, readBody, str, num, IMG_ALLOWLIST } from "../_db.js";
+import { getDb, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST } from "../_db.js";
 import { optionalUser, requireUser, requireAdmin } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
 
@@ -61,6 +61,14 @@ export async function onRequest(context) {
     }
 
     if (route === "/pedidos" && method === "POST") {
+      const ip =
+        request.headers.get("CF-Connecting-IP") ||
+        (request.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+        "unknown";
+      const permitido = await rateLimit(db, "ped:" + ip, 10, 10 * 60 * 1000);
+      if (!permitido) {
+        return json({ error: "Demasiados pedidos. Intenta de nuevo en unos minutos." }, 429);
+      }
       // Invitado puede pedir; si hay credencial, se valida y se aplica fidelidad.
       const u = await optionalUser(request, env);
       const body = await readBody(request);

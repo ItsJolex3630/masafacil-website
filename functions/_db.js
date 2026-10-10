@@ -46,3 +46,37 @@ export function num(v, def = 0) {
   const n = Number(v);
   return Number.isFinite(n) ? n : def;
 }
+
+// ---------- Limitador de tasa (ventana fija) ----------
+let rateReady = false;
+async function ensureRateTable(db) {
+  if (rateReady) return;
+  await db.execute(
+    "CREATE TABLE IF NOT EXISTS rate_limits (k TEXT PRIMARY KEY, ws INTEGER NOT NULL, hits INTEGER NOT NULL)"
+  );
+  rateReady = true;
+}
+
+// Devuelve true si la petición está permitida. Falla "abierto" (permite) ante
+// errores de BD para no bloquear pedidos legítimos por un fallo del limitador.
+export async function rateLimit(db, key, limit, windowMs) {
+  try {
+    await ensureRateTable(db);
+    const ws = Math.floor(Date.now() / windowMs) * windowMs;
+    await db.execute({
+      sql:
+        "INSERT INTO rate_limits (k, ws, hits) VALUES (?, ?, 1) " +
+        "ON CONFLICT(k) DO UPDATE SET hits = CASE WHEN ws = excluded.ws THEN hits + 1 ELSE 1 END, ws = excluded.ws",
+      args: [key, ws],
+    });
+    const r = await db.execute({ sql: "SELECT hits FROM rate_limits WHERE k = ?", args: [key] });
+    const hits = Number(r.rows[0] ? r.rows[0].hits : 1);
+    if (Math.random() < 0.02) {
+      db.execute({ sql: "DELETE FROM rate_limits WHERE ws < ?", args: [ws - windowMs * 10] }).catch(() => {});
+    }
+    return hits <= limit;
+  } catch (e) {
+    console.error("rateLimit error:", e);
+    return true;
+  }
+}
