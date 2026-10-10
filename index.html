@@ -908,7 +908,7 @@ html.lock{overflow:hidden}
 @media(max-width:400px){.chat.masito .m{max-height:40vh}}
 </style><style id="auth">
 .auth-box{display:flex;align-items:center;gap:8px}
-.auth-box .g_id_signin{display:flex;align-items:center}
+.auth-box #g_signin{display:flex;align-items:center;min-height:40px}
 .user-pill{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);border-radius:99px;padding:3px 6px 3px 3px;color:#fff}
 .u-avatar{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #fff;background:var(--cream);flex:none}
 .u-data{display:flex;flex-direction:column;line-height:1.05;min-width:0;max-width:132px}
@@ -930,7 +930,7 @@ html.lock{overflow:hidden}
 footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:2px;font-weight:600}
 </style></head>
 <body>
-<nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div id="auth-box" class="auth-box"><div id="g_id_onload" data-client_id="589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com" data-callback="handleGoogleLogin" data-auto_prompt="false" data-auto_select="false"></div><div class="g_id_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="signin_with" data-shape="pill"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto de perfil"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
+<nav><div class="w"><img src="assets/img/logo_masafacil.png" alt="Masafácil · El Maracucho"><b>Masafácil</b><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="medium" data-theme="outline" data-text="signin_with" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto de perfil"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="btn t" style="padding:9px 18px;font-size:15px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café, siempre calientes</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
@@ -962,9 +962,9 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
   <form method="dialog"><button class="btn" type="submit">Entendido</button></form>
 </dialog>
 
-<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito.png" alt="" onerror="this.onerror=null;this.src='assets/img/masito.svg'"></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
+<a class="wf" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">WhatsApp</a><button class="ai" id="aib" aria-expanded="false" aria-label="Abrir a Masito, tu asistente"><span class="masito-ava"><img src="assets/img/masito.svg" alt=""></span><span class="masito-dot" id="masito-dot" aria-hidden="true"></span></button>
 <div class="masito-teaser" id="masito-teaser" role="status" aria-live="polite" hidden></div>
-<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito.png" alt="" onerror="this.onerror=null;this.src='assets/img/masito.svg'"></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
+<div class="chat masito" id="ch" role="dialog" aria-label="Masito, asistente de Masa Fácil"><header><span class="masito-head"><span class="masito-ava sm"><img src="assets/img/masito.svg" alt=""></span><span><b>Masito</b><small>Tu asistente de Masa Fácil</small></span></span><button id="cx_ai" aria-label="Cerrar asistente">×</button></header><div class="m" id="cm" aria-live="polite"></div><div class="q" id="cq"></div><form class="masito-input" id="masito-form"><input id="masito-text" type="text" placeholder="Escribe tu pregunta…" autocomplete="off" aria-label="Escribe tu pregunta"><button type="submit" aria-label="Enviar mensaje">➤</button></form></div>
 
 <script>
 const IM = {
@@ -2185,6 +2185,7 @@ function LB(sel) {
     if (cliente && cliente.id) {
       msg += '⭐ *Cliente Club Masafácil:* ' + cliente.nombre + '\n';
       msg += '✉️ *Correo:* ' + cliente.email + '\n';
+      msg += '🏅 *Nivel:* ' + (cliente.nivel_fidelizacion || 'Nuevo') + '\n';
       if (descPct > 0) {
         msg += '🏷️ *Beneficio VIP:* ' + descPct + '% de descuento aplicado\n';
       }
@@ -2459,6 +2460,14 @@ function LB(sel) {
   var SESSION_KEY = 'mf_user_session';
   var $ = function(id){ return document.getElementById(id); };
 
+  // ==== Tarea 3.1 (Plan 2): Validación preventiva de protocolo file:// ====
+  var FILE_PROTO_BLOCKED = (window.location.protocol === 'file:');
+  if (FILE_PROTO_BLOCKED) {
+    console.warn("⚠️ Google OAuth no funciona sobre el protocolo file://. Abre la página a través de un servidor HTTP local (ej: http://localhost:5500).");
+    var _authBox = $('auth-box');
+    if (_authBox) _authBox.title = "Abre la web desde http://localhost:5500 para probar el inicio de sesión";
+  }
+
   function getTursoClient() {
     if (tursoClient) return tursoClient;
     try {
@@ -2530,7 +2539,7 @@ function LB(sel) {
   function actualizarUIUsuario() {
     var c = window.CURRENT_CLIENTE;
     var pill = $('user-pill');
-    var signin = document.querySelector('.g_id_signin');
+    var signin = $('g_signin');
     if (!pill) return;
     if (c && c.id) {
       if (signin) signin.style.display = 'none';
@@ -2622,6 +2631,42 @@ function LB(sel) {
     get cliente() { return window.CURRENT_CLIENTE; },
     get turso() { return tursoClient; }
   };
+
+  // ==== Tarea 3.2 (Plan 2): Inicialización explícita de GIS con manejo de errores ====
+  var gsiAttempts = 0;
+  function initGoogle() {
+    if (FILE_PROTO_BLOCKED) return true; // No inicializar sobre file://
+    try {
+      if (!(window.google && window.google.accounts && window.google.accounts.id)) return false;
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: window.handleGoogleLogin,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+      var el = $('g_signin');
+      if (el && !el.getAttribute('data-rendered')) {
+        window.google.accounts.id.renderButton(el, {
+          type: 'standard',
+          size: 'medium',
+          theme: 'outline',
+          text: 'signin_with',
+          shape: 'pill',
+          logo_alignment: 'left'
+        });
+        el.setAttribute('data-rendered', '1');
+      }
+      return true;
+    } catch (err) {
+      console.warn("Google Identity Services no pudo inicializarse:", err);
+      return true; // Detener reintentos, no bloquear la interfaz
+    }
+  }
+  (function waitForGis() {
+    if (initGoogle()) return;
+    if (++gsiAttempts < 40) setTimeout(waitForGis, 250);
+    else console.warn("Google Identity Services no cargó (modo offline o bloqueado por red).");
+  })();
 
   // Reintentar cuando el cliente libSQL termine de cargar (script module diferido)
   window.addEventListener('mf:libsql-ready', function() {
