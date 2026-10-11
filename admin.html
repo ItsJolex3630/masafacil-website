@@ -299,7 +299,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     });
     var list = $('cli-list');
     if(!rows.length){ list.innerHTML='<div class="empty">No hay clientes registrados todavía.</div>'; return; }
-    list.innerHTML = '<div class="card" style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Nivel</th><th>Descuento %</th><th></th></tr></thead><tbody>' +
+    list.innerHTML = '<div class="card" style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Nivel</th><th>Tokens</th><th>Descuento %</th><th></th></tr></thead><tbody>' +
       rows.map(function(c){
         return '<tr data-id="'+esc(c.id)+'">' +
           '<td><img class="avatar" src="'+esc(c.avatar_url||'assets/img/logo_masafacil.png')+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.png\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
@@ -307,6 +307,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
           '<td><input class="num peds" type="number" min="0" step="1" value="'+Number(c.total_pedidos||0)+'"></td>' +
           '<td><input class="num gast" type="number" min="0" step="0.01" value="'+Number(c.total_gastado||0)+'"></td>' +
           '<td><select class="niv">'+['Nuevo','Frecuente','Plata','Oro','VIP'].map(function(n){return '<option'+(n===c.nivel_fidelizacion?' selected':'')+'>'+n+'</option>';}).join('')+'</select></td>' +
+          '<td><input class="num toks" type="number" min="0" step="1" value="'+Number(c.tokens_saldo||0)+'" title="🪙 '+Number(c.tokens_saldo||0)+' tokens = '+fmt(Number(c.tokens_saldo||0)*0.001)+'"></td>' +
           '<td><input class="num pct" type="number" min="0" max="100" step="1" value="'+Number(c.porcentaje_descuento||0)+'"> %</td>' +
           '<td><button class="btn sm save-cli">Guardar</button></td>' +
         '</tr>';
@@ -317,9 +318,10 @@ textarea{width:100%;min-height:52px;resize:vertical}
         var pct = Number(tr.querySelector('.pct').value||0);
         var niv = tr.querySelector('.niv').value;
         var body = { porcentaje_descuento: pct, nivel_fidelizacion: niv };
-        var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast');
+        var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast'), toks = tr.querySelector('.toks');
         if(peds) body.total_pedidos = Number(peds.value||0);
         if(gast) body.total_gastado = Number(gast.value||0);
+        if(toks) body.tokens_saldo = Number(toks.value||0);
         try{
           await api('/api/admin/clientes/' + encodeURIComponent(id), {
             method: 'PUT',
@@ -443,6 +445,9 @@ textarea{width:100%;min-height:52px;resize:vertical}
         '<div class="top"><div><b>'+esc(x.nombre_cliente||'Cliente')+'</b> '+estadoBadge(est)+' '+guest+'<div class="muted">'+esc(x.email_cliente||'')+(x.created_at? ' · '+esc(x.created_at):'')+'</div></div><div class="tot">'+fmt(x.total_final)+'</div></div>' +
         (items ? '<div class="items">'+esc(items)+'</div>' : '') +
         '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
+        ((Number(x.tokens_canjeados||0) > 0 || Number(x.tokens_ganados||0) > 0)
+          ? '<div class="muted">🪙 Tokens canjeados: '+Number(x.tokens_canjeados||0)+' · Tokens a acreditar: '+Number(x.tokens_ganados||0)+(est==='completado'? ' (acreditados)':'')+'</div>'
+          : '') +
         '<div class="actions">'+wa+actions+'</div>' +
       '</div>';
     }).join('');
@@ -452,11 +457,14 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
   async function setEstado(id, nuevo){
     try{
-      await api('/api/admin/pedidos/' + encodeURIComponent(id) + '/estado', {
+      var res = await api('/api/admin/pedidos/' + encodeURIComponent(id) + '/estado', {
         method: 'POST',
         body: JSON.stringify({ estado: nuevo })
       });
       await loadVentas();
+      if(nuevo === 'completado' && res && Number(res.tokensAcreditados) > 0){
+        toast('Pedido completado. +'+Number(res.tokensAcreditados)+' tokens acreditados al cliente ✓');
+      }
       return true;
     }catch(e){ if(!handleAuth(e)) toast('Error: '+(e.message||e), true); return false; }
   }

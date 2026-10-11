@@ -3,6 +3,7 @@
 import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST } from "../_db.js";
 import { optionalUser, requireUser, requireAdmin } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
+import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from "../_tokens.js";
 
 const NIVELES = ["Nuevo", "Frecuente", "Plata", "Oro", "VIP"];
 const ESTADOS = ["pendiente", "completado", "cancelado"];
@@ -42,7 +43,7 @@ async function seedAdmins(db) {
 }
 
 const CLIENTE_COLS =
-  "id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion";
+  "id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion,tokens_saldo,perfil_completo";
 
 export async function onRequest(context) {
   const { request, env, params } = context;
@@ -92,6 +93,43 @@ export async function onRequest(context) {
         porcentaje_descuento: Number(row.porcentaje_descuento || 0),
         nivel_fidelizacion: row.nivel_fidelizacion || "Nuevo",
         total_pedidos: Number(row.total_pedidos || 0),
+        tokens_saldo: Number(row.tokens_saldo || 0),
+        perfil_completo: Number(row.perfil_completo || 0),
+      });
+    }
+
+    // Completar perfil del Club Masafácil (nombre + WhatsApp). El correo lo
+    // aporta Google ya verificado: aquí no se acepta.
+    if (route === "/me/perfil" && method === "POST") {
+      const u = await requireUser(request, env);
+      const body = await readBody(request);
+      const nombre = str(body.nombre, 120);
+      const telefono = str(body.telefono, 40);
+      if (!nombre) throw new HttpError(400, "Indica tu nombre");
+      if (telefono.replace(/\D/g, "").length < 7) throw new HttpError(400, "Indica un teléfono de WhatsApp válido");
+      await db.execute({
+        sql: "UPDATE clientes SET nombre = ?, telefono_whatsapp = ?, perfil_completo = 1, updated_at = datetime('now') WHERE id = ?",
+        args: [nombre, telefono, String(u.sub)],
+      });
+      const r = await db.execute({
+        sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ?",
+        args: [String(u.sub)],
+      });
+      const row = r.rows[0] || {};
+      return json({
+        ok: true,
+        cliente: {
+          id: row.id,
+          email: row.email,
+          nombre: row.nombre,
+          avatar: row.avatar_url,
+          telefono: row.telefono_whatsapp,
+          porcentaje_descuento: Number(row.porcentaje_descuento || 0),
+          nivel_fidelizacion: row.nivel_fidelizacion || "Nuevo",
+          total_pedidos: Number(row.total_pedidos || 0),
+          tokens_saldo: Number(row.tokens_saldo || 0),
+          perfil_completo: Number(row.perfil_completo || 0),
+        },
       });
     }
 
@@ -108,10 +146,22 @@ export async function onRequest(context) {
       const u = await optionalUser(request, env);
       const body = await readBody(request);
       const pedido = await buildPedido(db, u, body);
-      await db.execute({
-        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente')",
+      const stmts = [{
+        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado, tokens_canjeados, tokens_ganados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)",
         args: pedido.args,
-      });
+      }];
+      // Canje inmediato de tokens (ledger + saldo) en la misma transacción del pedido.
+      if (pedido.tokens && pedido.tokens.canjeados > 0 && pedido.clienteId) {
+        stmts.push({
+          sql: "INSERT INTO tokens_movimientos (cliente_id, pedido_id, tipo, tokens, motivo) VALUES (?, ?, 'redeem', ?, ?)",
+          args: [pedido.clienteId, pedido.id, -pedido.tokens.canjeados, `Canje en pedido ${pedido.id}`],
+        });
+        stmts.push({
+          sql: "UPDATE clientes SET tokens_saldo = MAX(0, tokens_saldo - ?), updated_at = datetime('now') WHERE id = ?",
+          args: [pedido.tokens.canjeados, pedido.clienteId],
+        });
+      }
+      await db.batch(stmts, "write");
       return json(pedido.snapshot, 201);
     }
 
@@ -132,8 +182,9 @@ export async function onRequest(context) {
 
     const mCli = route.match(/^\/admin\/clientes\/(.+)$/);
     if (mCli && method === "PUT") {
-      await requireAdmin(request, env);
+      const admin = await requireAdmin(request, env);
       const body = await readBody(request);
+      const id = str(mCli[1], 80);
       const pct = Math.max(0, Math.min(100, num(body.porcentaje_descuento, 0)));
       const niv = NIVELES.includes(body.nivel_fidelizacion) ? body.nivel_fidelizacion : "Nuevo";
       const sets = ["porcentaje_descuento = ?", "nivel_fidelizacion = ?", "updated_at = datetime('now')"];
@@ -146,11 +197,17 @@ export async function onRequest(context) {
         sets.push("total_pedidos = ?");
         args.push(Math.max(0, Math.min(100000, Math.round(num(body.total_pedidos, 0)))));
       }
-      args.push(str(mCli[1], 80));
+      args.push(id);
       await db.execute({
         sql: "UPDATE clientes SET " + sets.join(", ") + " WHERE id = ?",
         args,
       });
+      // Ajuste manual del saldo de tokens con registro en el libro mayor.
+      if (body.tokens_saldo !== undefined) {
+        const cur = await db.execute({ sql: "SELECT tokens_saldo FROM clientes WHERE id = ?", args: [id] });
+        const actual = cur.rows.length ? Number(cur.rows[0].tokens_saldo || 0) : 0;
+        await ajustarSaldoTokens(db, id, num(body.tokens_saldo, actual), actual, admin.email);
+      }
       return json({ ok: true });
     }
 
@@ -254,7 +311,15 @@ export async function onRequest(context) {
         });
       }
       await db.batch(stmts, "write");
-      return json({ ok: true });
+
+      // Fidelización por tokens: acreditar al completar, revertir al descompletar.
+      let tokensAcreditados = 0;
+      if (old !== "completado" && nuevo === "completado") {
+        tokensAcreditados = await acreditarTokensPedido(db, p);
+      } else if (old === "completado" && nuevo !== "completado") {
+        await revertirTokensPedido(db, p);
+      }
+      return json({ ok: true, tokensAcreditados });
     }
 
     if (mPed && !mPed[2] && method === "PUT") {
@@ -314,6 +379,10 @@ export async function onRequest(context) {
       }
       stmts.push({ sql: "DELETE FROM pedidos WHERE id = ?", args: [id] });
       await db.batch(stmts, "write");
+      // Si el pedido estaba completado, revertir su efecto en el saldo de tokens.
+      if ((p.estado || "pendiente") === "completado") {
+        await revertirTokensPedido(db, p);
+      }
       return json({ ok: true });
     }
 

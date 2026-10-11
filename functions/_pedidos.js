@@ -1,6 +1,7 @@
 // Recálculo server-side de pedidos: la base de datos es la única fuente de la
 // verdad para precios, promo 2x$1, descuento de fidelidad y costo de entrega.
-import { HttpError, str } from "./_db.js";
+import { HttpError, str, num } from "./_db.js";
+import { calcularTokensGanados, calcularMaxTokensCanjeables, tokensADolares } from "./_tokens.js";
 
 // Pastelitos tradicionales con promo 2x$1 (ahorro de $0,30 por par).
 const TRAD_PRECIO = 0.65;
@@ -92,7 +93,7 @@ export async function buildPedido(db, user, body) {
   let descPct = 0, fidelidadAhorro = 0, cliente = null;
   if (user) {
     const cr = await db.execute({
-      sql: "SELECT id, email, nombre, telefono_whatsapp, porcentaje_descuento, nivel_fidelizacion FROM clientes WHERE id = ?",
+      sql: "SELECT id, email, nombre, telefono_whatsapp, porcentaje_descuento, nivel_fidelizacion, tokens_saldo FROM clientes WHERE id = ?",
       args: [String(user.sub)],
     });
     if (cr.rows.length) {
@@ -104,11 +105,25 @@ export async function buildPedido(db, user, body) {
     }
   }
 
+  // 3.1) Canje de tokens (Club Masafácil). El servidor es la única fuente de verdad:
+  // nunca confía en el descuento enviado por el navegador, solo en el saldo real de Turso.
+  let tokensCanjeados = 0, tokensGanados = 0, descuentoTokens = 0, saldoTokensCliente = 0;
+  if (cliente) {
+    saldoTokensCliente = Math.max(0, Math.floor(Number(cliente.tokens_saldo || 0)));
+    tokensGanados = calcularTokensGanados(subtotal, cliente.nivel_fidelizacion || "Nuevo");
+    const solicitados = Math.max(0, Math.floor(num(body.tokens_a_usar, 0)));
+    if (solicitados > 0) {
+      const maxCanje = calcularMaxTokensCanjeables(saldoTokensCliente, subtotal);
+      tokensCanjeados = Math.min(solicitados, maxCanje);
+      descuentoTokens = tokensADolares(tokensCanjeados);
+    }
+  }
+
   // 4) Entrega: la zona la dictaminan las tarifas del servidor.
   const zonaNombre = str(body.zona, 120) || ZONAS[0].n;
   const zona = ZONAS.find((z) => z.n === zonaNombre) || ZONAS[0];
   const deliveryCosto = zona.c ? 0 : zona.p;
-  const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro);
+  const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
   const total = Number((subtotalFinal + deliveryCosto).toFixed(2));
 
   const items_json = JSON.stringify(
@@ -129,6 +144,11 @@ export async function buildPedido(db, user, body) {
     .join("\n");
   if (tradAhorro > 0) msg += "\n\n🎉 Ahorro Promo Tradicionales (2x$1 en " + tradQty + " piezas): -" + fmt(tradAhorro);
   if (fidelidadAhorro > 0) msg += "\n⭐ *Descuento Fidelidad (" + descPct + "%):* -" + fmt(fidelidadAhorro);
+  if (cliente && (tokensCanjeados > 0 || tokensGanados > 0)) {
+    msg += "\n\n🪙 Tokens Club Masafácil:";
+    if (tokensCanjeados > 0) msg += "\n- Tokens canjeados: " + tokensCanjeados + " (-" + fmt(descuentoTokens) + ")";
+    if (tokensGanados > 0) msg += "\n- Tokens que acumulará este pedido: +" + tokensGanados;
+  }
   msg += "\n\nSubtotal productos: " + fmt(subtotalFinal) +
     "\nEntrega: " + zona.n + (deliveryCosto > 0 ? " (" + fmt(deliveryCosto) + ")" : "") +
     "\nTotal a pagar: " + fmt(total) + ((sinPrecio || zona.c) ? " (más consultar)" : "");
@@ -155,13 +175,26 @@ export async function buildPedido(db, user, body) {
       total,
       zona.n,
       notas,
+      tokensCanjeados,
+      tokensGanados,
     ],
+    tokens: {
+      canjeados: tokensCanjeados,
+      ganados: tokensGanados,
+      descuento: descuentoTokens,
+      saldoCliente: saldoTokensCliente,
+      saldoRestante: Math.max(0, saldoTokensCliente - tokensCanjeados),
+    },
     snapshot: {
       id: pedId,
       subtotalBruto: Number(subtotalBruto.toFixed(2)),
       tradAhorro,
       fidelidadAhorro,
       descPct,
+      descuentoTokens,
+      tokensCanjeados,
+      tokensGanados,
+      saldoTokens: Math.max(0, saldoTokensCliente - tokensCanjeados),
       deliveryCosto,
       subtotalFinal,
       total,

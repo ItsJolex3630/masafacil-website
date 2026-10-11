@@ -983,7 +983,7 @@ nav .btn-pedir{background:var(--tan);color:var(--dk);font:600 .82rem var(--h);te
 footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:2px;font-weight:600}
 </style></head>
 <body>
-<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img src="assets/img/logo_masafacil.png" alt="Logo Masafácil"><b>Masafácil</b></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
+<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img src="assets/img/logo_masafacil.png" alt="Logo Masafácil"><b>Masafácil</b></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span><span id="u-tokens" class="u-tokens" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café recién hechos</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
@@ -1441,7 +1441,7 @@ function LB(sel) {
     actions.insertBefore(cb, pedir);
   }
 
-  document.body.insertAdjacentHTML('beforeend', '<button id="cbar" aria-live="polite"></button><div id="sc"></div><aside id="sh" role="dialog" aria-modal="true" aria-label="Mi pedido"><div class="grab" aria-hidden="true"></div><header><span>Mi pedido</span><button id="ccx" aria-label="Cerrar pedido">×</button></header><div id="und"></div><div id="cli"></div><div id="cft"><div class="sel-box"><label for="czona">Método de entrega:</label><select id="czona"></select></div><textarea id="cnt" rows="2" placeholder="Notas: dirección exacta, punto de referencia, sabor del jugo..."></textarea><div id="ctt"></div><a class="btn" id="cwa" href="#">Enviar pedido por WhatsApp</a></div></aside>');
+  document.body.insertAdjacentHTML('beforeend', '<button id="cbar" aria-live="polite"></button><div id="sc"></div><aside id="sh" role="dialog" aria-modal="true" aria-label="Mi pedido"><div class="grab" aria-hidden="true"></div><header><span>Mi pedido</span><button id="ccx" aria-label="Cerrar pedido">×</button></header><div id="und"></div><div id="cli"></div><div id="cft"><div class="sel-box"><label for="czona">Método de entrega:</label><select id="czona"></select></div><textarea id="cnt" rows="2" placeholder="Notas: dirección exacta, punto de referencia, sabor del jugo..."></textarea><div id="ctok"></div><div id="ctt"></div><a class="btn" id="cwa" href="#">Enviar pedido por WhatsApp</a></div></aside>');
 
   const hero = document.querySelector('.hero .ph');
   if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/logo_masafacil.png" alt="Masa Fácil"></div><div class="tg1">Promo Tradicionales<br><b>2 x $1,00</b><br><small style="font-size:0.75rem;opacity:.9;display:block;margin-top:2px">(o $0,65 c/u)</small></div>');
@@ -2213,7 +2213,12 @@ function LB(sel) {
     'Pastelito Pepperoni',
     'Pastelito Mortadela'
   ]);
+  // Club Masafácil: economía de tokens (espejo de functions/_tokens.js).
+  const TOKENS_POR_DOLAR = { Nuevo: 100, Frecuente: 120, Plata: 140, Oro: 160, VIP: 180 };
+  const VALOR_TOKEN = 0.001, MIN_CANJE = 5.0, TOPE_DESC_PCT = 0.25;
+  let useTokens = false;
   let und = null, ut = 0, bt = 0, lastTotals = {};
+  function fmtTokens(t) { return Number(t || 0).toLocaleString('es-VE'); }
   function draw() {
     const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
     const subtotalBruto = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0);
@@ -2234,7 +2239,19 @@ function LB(sel) {
     if (descPct > 0 && subtotal > 0) {
       fidelidadAhorro = Number((subtotal * (descPct / 100)).toFixed(2));
     }
-    const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro);
+
+    // Club Masafácil: tokens (solo clientes con sesión).
+    const esCliente = !!(cliente && cliente.id);
+    const nivel = esCliente ? (cliente.nivel_fidelizacion || 'Nuevo') : 'Nuevo';
+    const saldoTok = esCliente ? Math.max(0, Math.floor(Number(cliente.tokens_saldo || 0))) : 0;
+    const tokensGanados = esCliente ? Math.floor(subtotal * (TOKENS_POR_DOLAR[nivel] || 100)) : 0;
+    const puedeCanjear = esCliente && subtotal >= MIN_CANJE && saldoTok > 0;
+    const maxTokensCanje = puedeCanjear ? Math.min(saldoTok, Math.floor((subtotal * TOPE_DESC_PCT) / VALOR_TOKEN)) : 0;
+    if (!puedeCanjear) useTokens = false;
+    const tokensUsados = (puedeCanjear && useTokens) ? maxTokensCanje : 0;
+    const descuentoTokens = Number((tokensUsados * VALOR_TOKEN).toFixed(2));
+
+    const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
 
     const zona = ZONAS_DELIVERY[selectedZonaIdx] || ZONAS_DELIVERY[0];
     const deliveryCosto = zona.p || 0;
@@ -2245,11 +2262,14 @@ function LB(sel) {
       tradAhorro: tradAhorro,
       fidelidadAhorro: fidelidadAhorro,
       descPct: descPct,
+      descuentoTokens: descuentoTokens,
+      tokensUsados: tokensUsados,
+      tokensGanados: tokensGanados,
       deliveryCosto: deliveryCosto,
       subtotalFinal: subtotalFinal,
       total: total,
       zonaNombre: zona.n,
-      tieneCliente: !!(cliente && cliente.id)
+      tieneCliente: esCliente
     };
 
     $('cn').textContent = n;
@@ -2263,9 +2283,32 @@ function LB(sel) {
     if (fidelidadAhorro > 0) {
       cttHtml += '<div class="row" style="color:var(--sage);font-weight:700"><span>⭐ Descuento Club Masafácil (' + descPct + '%):</span><span>-' + m(fidelidadAhorro) + '</span></div>';
     }
+    if (descuentoTokens > 0) {
+      cttHtml += '<div class="row" style="color:var(--sage);font-weight:700"><span>🪙 Tokens canjeados (' + fmtTokens(tokensUsados) + '):</span><span>-' + m(descuentoTokens) + '</span></div>';
+    }
     cttHtml += '<div class="row"><span>Entrega (' + (deliveryCosto > 0 ? zona.n.split('(')[0].trim() : 'Pick Up') + '):</span><span>' + (zona.c ? 'Por cotizar' : (deliveryCosto === 0 ? 'Gratis' : m(deliveryCosto))) + '</span></div>' +
       '<div class="row total"><span>Total a pagar:</span><span>' + m(total) + (un || zona.c ? ' + consultar' : '') + '</span></div>';
     $('ctt').innerHTML = cttHtml;
+
+    // Panel de tokens del Club (canje + proyección de ganancia).
+    const ctok = $('ctok');
+    if (ctok) {
+      if (!esCliente || n === 0) {
+        ctok.innerHTML = '';
+      } else {
+        let tok = '';
+        if (saldoTok > 0 && subtotal < MIN_CANJE) {
+          tok += '<div class="tok-note">Tienes <b>' + fmtTokens(saldoTok) + ' tokens</b>. Canje disponible en pedidos desde $5,00.</div>';
+        } else if (puedeCanjear) {
+          tok += '<label class="tok-switch"><input type="checkbox" id="useTokens"' + (useTokens ? ' checked' : '') + '> <span>🪙 Usar mis Tokens Masafácil</span></label>' +
+            '<div class="tok-note">Tienes <b>' + fmtTokens(saldoTok) + ' tokens</b>. Puedes descontar hasta <b>' + m(maxTokensCanje * VALOR_TOKEN) + '</b> en este pedido.</div>';
+        }
+        if (tokensGanados > 0) {
+          tok += '<div class="tok-earn">Ganarás <b>+' + fmtTokens(tokensGanados) + ' tokens</b> con esta compra al completarse 🎉</div>';
+        }
+        ctok.innerHTML = tok;
+      }
+    }
 
     if (!bt) { $('cbar').textContent = 'Ver pedido · ' + n + ' · ' + m(total); }
     $('cbar').classList.toggle('on', n > 0 && !want);
@@ -2287,6 +2330,11 @@ function LB(sel) {
     }
     if (fidelidadAhorro > 0) {
       msg += '\n⭐ *Descuento Fidelidad (' + descPct + '%):* -' + m(fidelidadAhorro);
+    }
+    if (tokensUsados > 0 || tokensGanados > 0) {
+      msg += '\n\n🪙 Tokens Club Masafácil:';
+      if (tokensUsados > 0) msg += '\n- Tokens canjeados: ' + tokensUsados + ' (-' + m(descuentoTokens) + ')';
+      if (tokensGanados > 0) msg += '\n- Tokens que acumulará este pedido: +' + tokensGanados;
     }
     msg += '\n\nSubtotal productos: ' + m(subtotalFinal) +
       '\nEntrega: ' + zona.n + (deliveryCosto > 0 ? ' (' + m(deliveryCosto) + ')' : '') +
@@ -2359,7 +2407,8 @@ function LB(sel) {
         window.MFAuth.registrarPedido({
           items: items,
           zona: lastTotals.zonaNombre || '',
-          notas: $('cnt').value || ''
+          notas: $('cnt').value || '',
+          tokens_a_usar: lastTotals.tokensUsados || 0
         });
       } else {
         window.open(w.href, '_blank');
@@ -2371,6 +2420,9 @@ function LB(sel) {
   });
 
   $('cnt').addEventListener('input', draw);
+  document.addEventListener('change', e => {
+    if (e.target && e.target.id === 'useTokens') { useTokens = !!e.target.checked; draw(); }
+  });
   document.addEventListener('keydown', e => e.key == 'Escape' && want && closeSh());
   draw();
 
@@ -2585,6 +2637,56 @@ function LB(sel) {
   window.CURRENT_CLIENTE = null;
   var isAdmin = false;
   var $ = function(id){ return document.getElementById(id); };
+  var fmtUsd = function(v){ return '$' + Number(v || 0).toFixed(2).replace('.', ','); };
+
+  // ==== Estilos del Club Masafácil (banner, modal de perfil, tokens) ====
+  (function injectClubStyles(){
+    if (document.getElementById('club-styles')) return;
+    var css = document.createElement('style');
+    css.id = 'club-styles';
+    css.textContent = [
+      '.club-banner{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:45;width:min(560px,94vw);background:linear-gradient(135deg,#40201a,#6f3826);color:#fffdf8;border-radius:18px;padding:14px 16px;display:none;align-items:center;gap:12px;box-shadow:0 18px 44px rgba(64,32,26,.42)}',
+      '.club-banner.on{display:flex;animation:clubUp .45s cubic-bezier(.32,.72,0,1)}',
+      '@keyframes clubUp{from{opacity:0;transform:translate(-50%,20px)}to{opacity:1;transform:translate(-50%,0)}}',
+      '.club-banner .cb-txt{flex:1;font-size:.92rem;line-height:1.3;font-weight:600}',
+      '.club-banner .cb-txt small{display:block;font-weight:400;opacity:.85;font-size:.78rem;margin-top:2px}',
+      '.club-banner .cb-go{background:#fffdf8;color:#40201a;border:0;border-radius:99px;padding:10px 16px;font:600 .85rem var(--h,inherit);cursor:pointer;white-space:nowrap}',
+      '.club-banner .cb-x{background:transparent;border:0;color:#fffdf8;opacity:.7;font-size:1.2rem;cursor:pointer;padding:4px 6px;line-height:1}',
+      '.club-modal{border:0;border-radius:22px;max-width:min(92vw,460px);padding:26px 24px;background:#fffdf8;color:#40201a;box-shadow:0 24px 60px rgba(64,32,26,.4)}',
+      '.club-modal::backdrop{background:rgba(64,32,26,.6);backdrop-filter:blur(4px)}',
+      '.club-modal h3{margin:0 0 6px;font:600 1.4rem var(--h,inherit);color:#40201a}',
+      '.club-modal p.cm-sub{margin:0 0 18px;font-size:.92rem;line-height:1.45;color:#6a5750}',
+      '.club-modal label{display:block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#6f3826;margin:14px 0 5px}',
+      '.club-modal input{width:100%;box-sizing:border-box;border:2px solid #e6d4b0;border-radius:12px;padding:12px 14px;font:400 1rem inherit;background:#fff;color:#40201a}',
+      '.club-modal input:disabled{background:#f5ebd4;color:#8b7a6a;cursor:not-allowed}',
+      '.club-modal .cm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}',
+      '.club-modal .cm-actions button{border:0;border-radius:99px;padding:12px 22px;font:600 .95rem var(--h,inherit);cursor:pointer}',
+      '.club-modal .cm-save{background:#386641;color:#fffdf8}',
+      '.club-modal .cm-save:disabled{opacity:.6;cursor:wait}',
+      '.club-modal .cm-err{color:#8a2a1c;font-size:.85rem;margin-top:10px;min-height:1em}',
+      '.u-tokens{font:600 .7rem var(--h,inherit);opacity:.95}',
+      '#g_signin.club-hl{outline:3px solid #ffd469;outline-offset:4px;border-radius:99px;animation:clubHl 1s ease 2}',
+      '@keyframes clubHl{50%{outline-color:transparent}}',
+      '#ctok{margin:10px 0 4px}',
+      '#ctok .tok-switch{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #e6d4b0;border-radius:12px;padding:10px 12px;font:600 .9rem var(--h,inherit);color:#40201a;cursor:pointer}',
+      '#ctok .tok-switch input{width:18px;height:18px;accent-color:#386641}',
+      '#ctok .tok-note{font-size:.78rem;color:#6a5750;margin:6px 2px 0;line-height:1.35}',
+      '#ctok .tok-earn{font-size:.8rem;font-weight:700;color:#386641;margin:8px 2px 0}',
+      '#club-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:60;background:#386641;color:#fffdf8;padding:12px 20px;border-radius:99px;font:600 .9rem var(--h,inherit);box-shadow:0 12px 30px rgba(56,102,65,.4);transition:opacity .25s,transform .25s;max-width:90vw;text-align:center}',
+      '#club-toast.on{opacity:1;transform:translate(-50%,0)}',
+      '@media(prefers-reduced-motion:reduce){.club-banner.on{animation:none}}'
+    ].join('\n');
+    document.head.appendChild(css);
+  })();
+
+  function clubToast(msg){
+    var t = $('club-toast');
+    if (!t) { t = document.createElement('div'); t.id = 'club-toast'; document.body.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(t._t);
+    t._t = setTimeout(function(){ t.classList.remove('on'); }, 3400);
+  }
 
   // ==== Validación preventiva de protocolo file:// ====
   var FILE_PROTO_BLOCKED = (window.location.protocol === 'file:');
@@ -2642,6 +2744,7 @@ function LB(sel) {
       window.CURRENT_CLIENTE = me;
       actualizarUIUsuario();
       redibujarCarrito();
+      maybeShowPerfil();
       return me;
     }).catch(function(err){
       if (err.auth) {
@@ -2672,13 +2775,23 @@ function LB(sel) {
       var bd = $('u-badge');
       if (bd) {
         bd.style.display = '';
-        bd.textContent = (c.porcentaje_descuento > 0)
-          ? '⭐ ' + c.porcentaje_descuento + '% · ' + (c.nivel_fidelizacion || '')
-          : (c.nivel_fidelizacion || 'Nuevo');
+        bd.textContent = (c.nivel_fidelizacion || 'Nuevo');
       }
+      var tk = $('u-tokens');
+      if (tk) {
+        var saldo = Math.max(0, Math.floor(Number(c.tokens_saldo || 0)));
+        tk.style.display = saldo > 0 ? '' : 'none';
+        tk.textContent = '🪙 ' + saldo + ' (' + fmtUsd(saldo * 0.001) + ')';
+      }
+      ocultarBanner();
     } else {
       if (signin) signin.style.display = '';
       pill.style.display = 'none';
+      var tk2 = $('u-tokens');
+      if (tk2) tk2.style.display = 'none';
+      var hideBanner = false;
+      try { hideBanner = !!sessionStorage.getItem('mf_welcome_hide'); } catch (e) {}
+      if (!hideBanner) mostrarBanner();
     }
   }
 
@@ -2732,8 +2845,14 @@ function LB(sel) {
 
     api('/api/pedidos', {
       method: 'POST',
-      body: JSON.stringify({ items: d.items, zona: d.zona, notas: d.notas })
+      body: JSON.stringify({ items: d.items, zona: d.zona, notas: d.notas, tokens_a_usar: d.tokens_a_usar || 0 })
     }).then(function(snap){
+      // El canje ya se descontó del saldo real: reflejarlo en la interfaz.
+      if (snap && window.CURRENT_CLIENTE && snap.saldoTokens != null) {
+        window.CURRENT_CLIENTE.tokens_saldo = Number(snap.saldoTokens) || 0;
+        actualizarUIUsuario();
+        redibujarCarrito();
+      }
       if (snap && snap.waText) irA(WA + '?text=' + encodeURIComponent(snap.waText));
       else irA($('cwa') ? $('cwa').href : WA);
     }).catch(function(err){
@@ -2827,6 +2946,93 @@ function LB(sel) {
       if (d && d.showModal) d.showModal();
     }
   });
+
+  // ==== Club Masafácil: banner de bienvenida ====
+  function buildBanner(){
+    if ($('club-banner')) return;
+    var b = document.createElement('div');
+    b.id = 'club-banner';
+    b.className = 'club-banner';
+    b.innerHTML = '<div class="cb-txt">¿Quieres ganarte descuentos en nuestros platos con unos simples pasos? 🥟🪙' +
+      '<small>Únete al Club Masafácil y acumula tokens en cada compra.</small></div>' +
+      '<button class="cb-go" id="club-go">¡Sí, quiero descuentos!</button>' +
+      '<button class="cb-x" id="club-x" aria-label="Cerrar aviso">✕</button>';
+    document.body.appendChild(b);
+    $('club-go').addEventListener('click', function(){
+      try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.prompt(); } catch (e) {}
+      var el = $('g_signin');
+      if (el && el.scrollIntoView) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('club-hl');
+        setTimeout(function(){ el.classList.remove('club-hl'); }, 2200);
+      }
+    });
+    $('club-x').addEventListener('click', function(){
+      try { sessionStorage.setItem('mf_welcome_hide', '1'); } catch (e) {}
+      ocultarBanner();
+    });
+  }
+  function mostrarBanner(){ buildBanner(); var b = $('club-banner'); if (b) b.classList.add('on'); }
+  function ocultarBanner(){ var b = $('club-banner'); if (b) b.classList.remove('on'); }
+
+  // ==== Club Masafácil: modal para completar el perfil (post-login) ====
+  function buildProfileModal(){
+    if ($('club-modal-perfil')) return;
+    var d = document.createElement('dialog');
+    d.id = 'club-modal-perfil';
+    d.className = 'club-modal';
+    d.setAttribute('aria-labelledby', 'cm-title');
+    d.innerHTML =
+      '<h3 id="cm-title">Completa tu perfil para activar tus Tokens</h3>' +
+      '<p class="cm-sub">Solo necesitamos tu nombre y WhatsApp. Tu correo ya está verificado con Google.</p>' +
+      '<form id="cm-form" novalidate>' +
+        '<label for="cm-nombre">Nombre y apellido</label>' +
+        '<input id="cm-nombre" type="text" autocomplete="name" placeholder="Ej: María González" required>' +
+        '<label for="cm-tel">Teléfono de WhatsApp</label>' +
+        '<input id="cm-tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="Ej: 0424-4099610" required>' +
+        '<label for="cm-email">Correo electrónico</label>' +
+        '<input id="cm-email" type="email" disabled>' +
+        '<div class="cm-err" id="cm-err"></div>' +
+        '<div class="cm-actions"><button type="submit" class="cm-save" id="cm-save">Activar mi Club Masafácil</button></div>' +
+      '</form>';
+    document.body.appendChild(d);
+    $('cm-form').addEventListener('submit', submitPerfil);
+  }
+  function submitPerfil(e){
+    if (e) e.preventDefault();
+    var nombre = $('cm-nombre').value.trim();
+    var tel = $('cm-tel').value.trim();
+    var err = $('cm-err'), btn = $('cm-save');
+    err.textContent = '';
+    if (!nombre) { err.textContent = 'Escribe tu nombre y apellido.'; return false; }
+    if (tel.replace(/\D/g, '').length < 7) { err.textContent = 'Escribe un número de WhatsApp válido.'; return false; }
+    btn.disabled = true;
+    api('/api/me/perfil', { method: 'POST', body: JSON.stringify({ nombre: nombre, telefono: tel }) })
+      .then(function(res){
+        window.CURRENT_CLIENTE = (res && res.cliente) || window.CURRENT_CLIENTE;
+        actualizarUIUsuario();
+        redibujarCarrito();
+        var d = $('club-modal-perfil'); if (d && d.close) d.close();
+        clubToast('¡Bienvenido al Club Masafácil! Empiezas en nivel Nuevo 🪙');
+      })
+      .catch(function(err2){ err.textContent = (err2 && err2.message) || 'No se pudo guardar. Intenta de nuevo.'; })
+      .then(function(){ btn.disabled = false; });
+    return false;
+  }
+  function maybeShowPerfil(){
+    var c = window.CURRENT_CLIENTE;
+    if (!c || !c.id) return;
+    if (Number(c.perfil_completo) === 1 && c.telefono) return;
+    var existing = $('club-modal-perfil');
+    if (existing && existing.open) return;
+    buildProfileModal();
+    $('cm-nombre').value = c.nombre || '';
+    $('cm-email').value = c.email || '';
+    $('cm-tel').value = c.telefono || '';
+    $('cm-err').textContent = '';
+    var d = $('club-modal-perfil');
+    if (d && d.showModal) { try { d.showModal(); } catch (e) {} }
+  }
 
   restaurarSesion();
 })();

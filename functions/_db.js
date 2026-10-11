@@ -23,6 +23,11 @@ export async function ensureSchema(db) {
     "ALTER TABLE pedidos ADD COLUMN estado TEXT DEFAULT 'pendiente'",
     "ALTER TABLE pedidos ADD COLUMN updated_at TEXT",
     "ALTER TABLE clientes ADD COLUMN updated_at TEXT",
+    // Fidelización por tokens (Club Masafácil)
+    "ALTER TABLE clientes ADD COLUMN tokens_saldo INTEGER DEFAULT 0",
+    "ALTER TABLE clientes ADD COLUMN perfil_completo INTEGER DEFAULT 0",
+    "ALTER TABLE pedidos ADD COLUMN tokens_canjeados INTEGER DEFAULT 0",
+    "ALTER TABLE pedidos ADD COLUMN tokens_ganados INTEGER DEFAULT 0",
   ];
   for (const sql of alters) {
     try {
@@ -30,6 +35,28 @@ export async function ensureSchema(db) {
     } catch (e) {
       if (!/duplicate column/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
     }
+  }
+  // Libro mayor de tokens (auditoría). Cada transición de estado escribe una fila:
+  // 'earn' (acredita al completar), 'redeem' (canje al pedir), 'reversa' (revierte),
+  // 'bonus' (reintegro), 'ajuste' (corrección manual del administrador).
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS tokens_movimientos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cliente_id TEXT NOT NULL,
+        pedido_id TEXT,
+        tipo TEXT NOT NULL,
+        tokens INTEGER NOT NULL,
+        motivo TEXT,
+        admin_email TEXT,
+        created_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+    await db.execute(
+      "CREATE INDEX IF NOT EXISTS idx_tokens_cliente ON tokens_movimientos(cliente_id, created_at)"
+    );
+  } catch (e) {
+    console.error("ensureSchema tokens_movimientos:", e && e.message);
   }
   schemaReady = true;
 }
