@@ -2632,7 +2632,7 @@ function LB(sel) {
 
   var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
   var WA = 'https://wa.me/584244099610';
-  var CRED_KEY = 'mf_gis_cred'; // sessionStorage: credential JWT (vida ~1h). NUNCA localStorage.
+  var CRED_KEY = 'mf_gis_cred'; // localStorage: credential JWT (vida ~1h). Persistente entre sesiones; Google la renueva con auto_select.
 
   window.CURRENT_CLIENTE = null;
   var isAdmin = false;
@@ -2697,9 +2697,9 @@ function LB(sel) {
   }
 
   // ==== Cliente de API ====
-  function getCred(){ try{ return sessionStorage.getItem(CRED_KEY); }catch(e){ return null; } }
-  function setCred(t){ try{ sessionStorage.setItem(CRED_KEY, t); }catch(e){} }
-  function clearCred(){ try{ sessionStorage.removeItem(CRED_KEY); }catch(e){} }
+  function getCred(){ try{ return localStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function setCred(t){ try{ localStorage.setItem(CRED_KEY, t); }catch(e){} }
+  function clearCred(){ try{ localStorage.removeItem(CRED_KEY); }catch(e){} }
 
   function api(path, opts){
     opts = opts || {};
@@ -2881,7 +2881,7 @@ function LB(sel) {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: window.handleGoogleLogin,
-        auto_select: false,
+        auto_select: true,
         cancel_on_tap_outside: true
       });
       var el = $('g_signin');

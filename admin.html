@@ -198,7 +198,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
 (function(){
   'use strict';
   var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
-  var CRED_KEY = 'mf_gis_cred'; // sessionStorage: credential JWT de Google (vida ~1h). NUNCA localStorage.
+  var CRED_KEY = 'mf_gis_cred'; // localStorage: credential JWT de Google (vida ~1h). Persistente entre sesiones; Google la renueva con auto_select.
 
   var adminEmail = null;
   var cliSort = 'pedidos', cliFilter = '', prodFilter = '';
@@ -211,9 +211,9 @@ textarea{width:100%;min-height:52px;resize:vertical}
   function parseJwt(token){ try{ var b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''))); }catch(e){ return null; } }
 
   // ---- API del servidor (autorización real, verificada en Cloudflare) ----
-  function getCred(){ try{ return sessionStorage.getItem(CRED_KEY); }catch(e){ return null; } }
-  function setCred(t){ try{ sessionStorage.setItem(CRED_KEY, t); }catch(e){} }
-  function clearCred(){ try{ sessionStorage.removeItem(CRED_KEY); }catch(e){} }
+  function getCred(){ try{ return localStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function setCred(t){ try{ localStorage.setItem(CRED_KEY, t); }catch(e){} }
+  function clearCred(){ try{ localStorage.removeItem(CRED_KEY); }catch(e){} }
 
   async function api(path, opts){
     opts = opts || {};
@@ -557,7 +557,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
   function initGoogle(){
     try{
       if(!(window.google && google.accounts && google.accounts.id)) return false;
-      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: window.mfAdminLogin, auto_select: false, cancel_on_tap_outside: true });
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: window.mfAdminLogin, auto_select: true, cancel_on_tap_outside: true });
       var el = $('g_btn');
       if(el && !el.dataset.rendered){ google.accounts.id.renderButton(el, { type:'standard', size:'large', theme:'outline', text:'signin_with', shape:'pill', logo_alignment:'left', width:280 }); el.dataset.rendered='1'; }
       return true;
@@ -565,7 +565,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
   }
   (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
 
-  // ---- Restaurar sesión: solo si hay credencial Google vigente en sessionStorage ----
+  // ---- Restaurar sesión: solo si hay credencial Google vigente en localStorage ----
   (function restore(){
     var t = getCred();
     if(!t){ return; }
