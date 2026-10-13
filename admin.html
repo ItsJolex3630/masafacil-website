@@ -184,6 +184,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       <div><label>Zona / método</label><input class="text" id="mv-zona" placeholder="Tienda física / Delivery"></div>
       <div><label>Estado</label><select id="mv-estado"><option value="completado">Completado</option><option value="pendiente">Pendiente</option><option value="cancelado">Cancelado</option></select></div>
     </div>
+    <div><label>Método de pago</label><select id="mv-pago"><option>Efectivo</option><option>Pago Móvil</option><option>Punto de venta</option><option>Zelle</option></select></div>
     <div><label>Notas</label><input class="text" id="mv-notas" placeholder="Notas internas (opcional)"></div>
     <div class="actions">
       <button class="btn ghost sm" id="mv-cancel">Cancelar</button>
@@ -451,7 +452,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       return '<div class="venta" data-id="'+esc(x.id)+'">' +
         '<div class="top"><div><b>'+esc(x.nombre_cliente||'Cliente')+'</b> '+estadoBadge(est)+' '+guest+'<div class="muted">'+esc(x.email_cliente||'')+(x.created_at? ' · '+esc(x.created_at):'')+'</div></div><div class="tot">'+fmt(x.total_final)+'</div></div>' +
         (items ? '<div class="items">'+esc(items)+'</div>' : '') +
-        '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
+        '<div class="muted">Subtotal '+fmt(x.subtotal)+' · Desc. '+fmt(x.descuento_aplicado)+' · Delivery '+fmt(x.costo_delivery)+' · Zona: '+esc(x.zona_entrega||'—')+(x.metodo_pago? ' · Pago: '+esc(x.metodo_pago):'')+(x.notas? ' · Notas: '+esc(x.notas):'')+'</div>' +
         ((Number(x.tokens_canjeados||0) > 0 || Number(x.tokens_ganados||0) > 0)
           ? '<div class="muted">🪙 Tokens canjeados: '+Number(x.tokens_canjeados||0)+' · Tokens a acreditar: '+Number(x.tokens_ganados||0)+(est==='completado'? ' (acreditados)':'')+'</div>'
           : '') +
@@ -528,6 +529,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     $('mv-items').value = p ? itemsToText(p.items_json) : '';
     $('mv-zona').value = p ? (p.zona_entrega||'') : '';
     $('mv-estado').value = p ? (ESTADOS_OK[p.estado] ? p.estado : 'pendiente') : 'completado';
+    $('mv-pago').value = (p && p.metodo_pago) ? p.metodo_pago : 'Efectivo';
     $('mv-notas').value = p ? (p.notas||'') : '';
     $('modal-venta').classList.add('on');
   }
@@ -543,6 +545,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       items: $('mv-items').value.trim(),
       zona: $('mv-zona').value.trim(),
       estado: $('mv-estado').value,
+      metodo_pago: $('mv-pago').value,
       notas: $('mv-notas').value.trim()
     };
     try{

@@ -28,6 +28,7 @@ export async function ensureSchema(db) {
     "ALTER TABLE clientes ADD COLUMN perfil_completo INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN tokens_canjeados INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN tokens_ganados INTEGER DEFAULT 0",
+    "ALTER TABLE pedidos ADD COLUMN metodo_pago TEXT",
   ];
   for (const sql of alters) {
     try {

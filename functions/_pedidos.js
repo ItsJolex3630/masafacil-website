@@ -26,6 +26,11 @@ const ZONAS = [
 const norm = (s) =>
   String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
 
+// Nombre base de un ítem: quita el sufijo de sabor (" · Manzana") y el prefijo
+// "Pastelito "/"Panini " para encontrar el precio en la tabla productos.
+const baseOf = (k) =>
+  String(k).split(" · ")[0].replace(/^(Pastelito|Panini)\s+/i, "").trim();
+
 const fmt = (n) => "$" + Number(n || 0).toFixed(2).replace(".", ",");
 
 function matchProducto(map, key) {
@@ -53,7 +58,10 @@ export async function buildPedido(db, user, body) {
   for (const k of nombres) {
     const n = parseInt(rawItems[k], 10);
     const q = Number.isFinite(n) ? Math.min(99, n) : 0;
-    if (q >= 1) pedido.push({ key: str(k, 120), q });
+    if (q >= 1) {
+      const key = str(k, 120);
+      pedido.push({ key, base: baseOf(key), q });
+    }
   }
   if (!pedido.length) throw new HttpError(400, "El pedido está vacío");
 
@@ -61,14 +69,15 @@ export async function buildPedido(db, user, body) {
   const ph = pedido.map(() => "?").join(",");
   const r = await db.execute({
     sql: `SELECT nombre, precio FROM productos WHERE nombre IN (${ph})`,
-    args: pedido.map((p) => p.key.replace(/^(Pastelito|Panini)\s+/, "")),
+    args: pedido.map((p) => p.base),
   });
   const map = {};
   for (const row of r.rows) map[norm(row.nombre)] = { nombre: row.nombre, precio: Number(row.precio) };
   for (const p of pedido) {
-    const hit = matchProducto(map, p.key);
+    const hit = matchProducto(map, p.base);
     if (hit) {
-      p.nombre = hit.nombre;
+      // Si el cliente eligió un sabor (" · Manzana"), se conserva en el nombre mostrado.
+      p.nombre = p.key.indexOf(" · ") !== -1 ? p.key : hit.nombre;
       p.u = hit.precio;
     } else {
       // Producto fuera de catálogo: se conserva como "consultar" (precio 0),
@@ -126,6 +135,11 @@ export async function buildPedido(db, user, body) {
   const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
   const total = Number((subtotalFinal + deliveryCosto).toFixed(2));
 
+  // Método de pago elegido en el carrito (Efectivo, Pago Móvil, Punto de venta, Zelle).
+  const metodosPago = ["Efectivo", "Pago Móvil", "Punto de venta", "Zelle"];
+  const pagoRaw = str(body.pago, 40);
+  const pago = metodosPago.includes(pagoRaw) ? pagoRaw : "Efectivo";
+
   const items_json = JSON.stringify(
     Object.fromEntries(pedido.map((p) => [p.nombre, { q: p.q, u: p.u }]))
   );
@@ -151,7 +165,8 @@ export async function buildPedido(db, user, body) {
   }
   msg += "\n\nSubtotal productos: " + fmt(subtotalFinal) +
     "\nEntrega: " + zona.n + (deliveryCosto > 0 ? " (" + fmt(deliveryCosto) + ")" : "") +
-    "\nTotal a pagar: " + fmt(total) + ((sinPrecio || zona.c) ? " (más consultar)" : "");
+    "\nTotal a pagar: " + fmt(total) + ((sinPrecio || zona.c) ? " (más consultar)" : "") +
+    "\nMétodo de pago: " + pago;
   const notas = str(body.notas, 500);
   if (notas) msg += "\n\nNotas/Dirección: " + notas;
 
@@ -175,6 +190,7 @@ export async function buildPedido(db, user, body) {
       total,
       zona.n,
       notas,
+      pago,
       tokensCanjeados,
       tokensGanados,
     ],
@@ -199,6 +215,7 @@ export async function buildPedido(db, user, body) {
       subtotalFinal,
       total,
       zonaNombre: zona.n,
+      metodo_pago: pago,
       waText: msg,
     },
   };

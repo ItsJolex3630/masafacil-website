@@ -153,7 +153,7 @@ export async function onRequest(context) {
       const body = await readBody(request);
       const pedido = await buildPedido(db, u, body);
       const stmts = [{
-        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado, tokens_canjeados, tokens_ganados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)",
+        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, metodo_pago, estado, tokens_canjeados, tokens_ganados) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)",
         args: pedido.args,
       }];
       // Canje inmediato de tokens (ledger + saldo) en la misma transacción del pedido.
@@ -262,6 +262,7 @@ export async function onRequest(context) {
       const email = str(body.email, 160);
       const zona = str(body.zona, 120);
       const notas = str(body.notas, 500);
+      const metodo_pago = str(body.metodo_pago, 40);
       const descTxt = str(body.items, 300);
       const items_json = JSON.stringify(descTxt ? { [descTxt]: { q: 1, u: total } } : {});
 
@@ -272,8 +273,8 @@ export async function onRequest(context) {
       }
       const id = "man_" + Date.now();
       const stmts = [{
-        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, estado) VALUES (?,?,?,?,?,?,?,0,0,?,?,?,?)",
-        args: [id, clienteId, nombre, email, tel, items_json, total, total, zona, notas, estado],
+        sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, metodo_pago, estado) VALUES (?,?,?,?,?,?,?,0,0,?,?,?,?,?)",
+        args: [id, clienteId, nombre, email, tel, items_json, total, total, zona, notas, metodo_pago, estado],
       }];
       if (clienteId && estado === "completado") {
         stmts.push({
@@ -343,6 +344,7 @@ export async function onRequest(context) {
       const email = str(body.email, 160);
       const zona = str(body.zona, 120);
       const notas = str(body.notas, 500);
+      const metodo_pago = str(body.metodo_pago, 40);
       const descTxt = str(body.items, 300);
       const items_json = JSON.stringify(descTxt ? { [descTxt]: { q: 1, u: total } } : {});
 
@@ -362,8 +364,8 @@ export async function onRequest(context) {
         }
       }
       stmts.push({
-        sql: "UPDATE pedidos SET nombre_cliente=?, email_cliente=?, telefono_whatsapp=?, items_json=?, total_final=?, zona_entrega=?, notas=?, estado=?, updated_at=datetime('now') WHERE id=?",
-        args: [nombre, email, tel, items_json, total, zona, notas, estado, id],
+        sql: "UPDATE pedidos SET nombre_cliente=?, email_cliente=?, telefono_whatsapp=?, items_json=?, total_final=?, zona_entrega=?, notas=?, metodo_pago=?, estado=?, updated_at=datetime('now') WHERE id=?",
+        args: [nombre, email, tel, items_json, total, zona, notas, metodo_pago, estado, id],
       });
       await db.batch(stmts, "write");
       return json({ ok: true });
