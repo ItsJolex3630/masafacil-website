@@ -2735,7 +2735,10 @@ function LB(sel) {
     if (t) opts.headers['Authorization'] = 'Bearer ' + t;
     return fetch(path, opts).then(function(r){
       if (r.status === 401 || r.status === 403) {
-        clearCred();
+        // Solo una credencial inválida/expirada (401) cierra la sesión. Un 403
+        // (p. ej. /api/admin/me cuando el cliente no es admin) NO debe borrar
+        // la sesión de Google del cliente.
+        if (r.status === 401) clearCred();
         var err = new Error('HTTP ' + r.status); err.auth = true;
         throw err;
       }

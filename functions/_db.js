@@ -36,6 +36,20 @@ export async function ensureSchema(db) {
       if (!/duplicate column/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
     }
   }
+  // Tabla de administradores: fuente de verdad dinámica del panel. Se crea aquí
+  // para que requireAdmin nunca falle con 500 si la tabla no existe todavía.
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS administradores (
+        email TEXT PRIMARY KEY COLLATE NOCASE,
+        nombre TEXT,
+        activo INTEGER DEFAULT 1,
+        created_at TEXT DEFAULT (datetime('now'))
+      )
+    `);
+  } catch (e) {
+    console.error("ensureSchema administradores:", e && e.message);
+  }
   // Libro mayor de tokens (auditoría). Cada transición de estado escribe una fila:
   // 'earn' (acredita al completar), 'redeem' (canje al pedir), 'reversa' (revierte),
   // 'bonus' (reintegro), 'ajuste' (corrección manual del administrador).

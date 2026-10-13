@@ -253,6 +253,13 @@ textarea{width:100%;min-height:52px;resize:vertical}
     try {
       me = await api('/api/admin/me');
     } catch(e) {
+      // 401 = credencial ausente/expirada: volver al login de Google (el reload
+      // repinta el botón). 403 = cuenta sin permisos: mostrar "restringido".
+      if (e.status === 401) {
+        clearCred();
+        location.reload();
+        return;
+      }
       if (e.auth) {
         setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail || '')+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
         return;

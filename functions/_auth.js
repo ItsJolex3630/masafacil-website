@@ -49,6 +49,8 @@ const ADMIN_WHITELIST = new Set([
   "jolex3630@gmail.com",
   "masafacilelmaracucho@gmail.com",
   "somosvendo.ve@gmail.com",
+  "masafaciladminweb@gmail.com",
+  "maryorycastellano31@gmail.com",
 ]);
 
 // Administrador: identidad verificada + correo autorizado (lista blanca o tabla administradores).

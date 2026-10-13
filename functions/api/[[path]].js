@@ -12,6 +12,8 @@ const ESTADOS = ["pendiente", "completado", "cancelado"];
 const SEED_ADMINS = [
   ["masafacilelmaracucho@gmail.com", "Masa Fácil Maracucho"],
   ["somosvendo.ve@gmail.com", "Somos Vendo"],
+  ["masafaciladminweb@gmail.com", "Masa Fácil Admin Web"],
+  ["maryorycastellano31@gmail.com", "Maryory Castellano"],
 ];
 let adminsSeeded = false;
 async function seedAdmins(db) {
@@ -53,6 +55,10 @@ export async function onRequest(context) {
   await ensureSchema(db);
 
   try {
+    // Siembra los administradores base ANTES de cualquier verificación:
+    // si dependiera de requireAdmin, un correo nuevo nunca llegaría a la tabla.
+    await seedAdmins(db);
+
     // ---------- Público ----------
     if (route === "/health" && method === "GET") {
       return json({ ok: true, ts: Date.now() });
@@ -168,7 +174,6 @@ export async function onRequest(context) {
     // ---------- Administración (admin verificado en servidor) ----------
     if (route === "/admin/me" && method === "GET") {
       const u = await requireAdmin(request, env);
-      await seedAdmins(db);
       return json({ email: u.email, nombre: u.name || "", picture: u.picture || "" });
     }
 
