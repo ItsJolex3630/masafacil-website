@@ -1002,10 +1002,164 @@ nav .btn-pedir{background:var(--tan);color:var(--dk);font:600 .82rem var(--h);te
 #modal-privacidad p{margin:0 0 18px;font-size:.95rem;line-height:1.5}
 #modal-privacidad form{text-align:right;margin:0}
 footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text-underline-offset:2px;font-weight:600}
+/* ---- SECCIÓN EXCLUSIVA: PAN DE JAMÓN NAVIDEÑO ---- */
+.pdj-section{position:relative;background:radial-gradient(circle at 10% 20%,rgba(201,165,119,.15) 0%,transparent 45%),radial-gradient(circle at 90% 80%,rgba(56,102,65,.22) 0%,transparent 50%),linear-gradient(150deg,#371812 0%,#4a2118 45%,#27100b 100%);color:#fffdf8;padding:clamp(44px,7vw,70px) 0;border-block:4px solid var(--tan);box-shadow:inset 0 10px 28px rgba(0,0,0,.4),inset 0 -10px 28px rgba(0,0,0,.4);overflow:hidden}
+.pdj-section::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 50% 0%,rgba(255,217,112,.08) 0%,transparent 60%);pointer-events:none}
+.pdj-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:36px;align-items:center}
+@media(min-width:880px){.pdj-grid{grid-template-columns:1.14fr .86fr;gap:46px}}
+.pdj-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(255,217,112,.14);border:1.5px solid rgba(255,217,112,.4);color:#ffd970;font:700 .78rem var(--h);letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.pdj-headline{font:600 clamp(28px,4.3vw,44px)/1.08 var(--h);margin:0 0 16px;color:#fffdf8;letter-spacing:-.02em}
+.pdj-headline .pdj-highlight{color:#ffd970;display:inline-block;text-shadow:0 2px 14px rgba(255,217,112,.28)}
+.pdj-lead{font-size:1.05rem;line-height:1.62;margin:0 0 14px;color:rgba(255,253,248,.94)}
+.pdj-lead strong{color:#ffd970;font-weight:700}
+.pdj-lead em{font-style:normal;color:#fff;border-bottom:1.5px dotted var(--tan)}
+.pdj-lead-sub{font-size:1.01rem;line-height:1.58;margin:0 0 20px;color:rgba(255,253,248,.88)}
+.pdj-pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 22px}
+@media(max-width:520px){.pdj-pillars{grid-template-columns:1fr}}
+.pdj-pillar{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 12px}
+.pdj-pillar .p-icon{font-size:1.3rem;line-height:1;flex-shrink:0}
+.pdj-pillar strong{display:block;font:600 .88rem var(--h);color:#fff;margin-bottom:2px}
+.pdj-pillar span{color:rgba(255,253,248,.78);font-size:.8rem;line-height:1.32;display:block}
+.pdj-club-box{background:linear-gradient(135deg,rgba(201,165,119,.18),rgba(56,102,65,.28));border:1.5px solid rgba(255,217,112,.4);border-radius:16px;padding:14px 18px;margin-bottom:22px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.pdj-club-icon{font-size:2rem;line-height:1;flex-shrink:0}
+.pdj-club-text{flex:1;font-size:.88rem;line-height:1.35;color:#fffdf8}
+.pdj-club-text b{display:block;font:700 .96rem var(--h);color:#ffd970;margin-bottom:2px}
+.pdj-club-text span{font-size:.85rem;color:rgba(255,253,248,.92)}
+.pdj-club-btn{background:linear-gradient(160deg,#f8e0a1,#e6b23f);color:#40201a;border:0;border-radius:99px;font:700 .84rem var(--h);padding:10px 16px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(214,164,54,.35);transition:transform 160ms ease,filter 160ms ease;flex-shrink:0}
+.pdj-club-btn:hover{filter:brightness(1.08)}
+.pdj-club-btn:active{transform:scale(.96)}
+@media(max-width:580px){.pdj-club-box{flex-direction:column;align-items:flex-start;gap:10px}.pdj-club-btn{align-self:flex-start}}
+.pdj-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
+.pdj-btn-wa{background:#25d366;color:#0b3d1b;font:700 1.05rem var(--h);padding:13px 24px;border-radius:99px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(37,211,102,.35);transition:transform 160ms ease,filter 160ms ease}
+.pdj-btn-wa:hover{filter:brightness(1.08)}
+.pdj-btn-wa:active{transform:scale(.97)}
+.pdj-btn-add{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.3);font:600 .95rem var(--h);padding:12px 20px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:background .16s ease,transform .16s ease}
+.pdj-btn-add:hover{background:rgba(255,255,255,.24)}
+.pdj-btn-add:active{transform:scale(.97)}
+.pdj-urgency{font-size:.85rem;color:#f7d294;line-height:1.42;display:flex;align-items:center;gap:7px}
+.pdj-gallery{display:flex;flex-direction:column;gap:12px}
+.pdj-hero-frame{position:relative;border-radius:24px;overflow:hidden;border:3px solid var(--tan);box-shadow:0 16px 40px rgba(0,0,0,.45);background:#27100b;aspect-ratio:4/3.8}
+@media(max-width:600px){.pdj-hero-frame{aspect-ratio:1}}
+.pdj-hero-btn{width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in;display:block;position:relative}
+.pdj-hero-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 180ms ease,transform 350ms cubic-bezier(.32,.72,0,1)}
+.pdj-hero-btn:hover .pdj-hero-img{transform:scale(1.03)}
+.pdj-hero-badge{position:absolute;top:14px;left:14px;background:rgba(64,32,26,.88);backdrop-filter:blur(10px);color:#ffd970;font:700 .75rem var(--h);padding:4px 12px;border-radius:99px;border:1px solid rgba(255,217,112,.3);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.pdj-hero-caption{position:absolute;bottom:0;left:0;right:0;padding:26px 16px 12px;background:linear-gradient(to top,rgba(30,12,8,.95),transparent);color:#fffdf8;font:600 .86rem var(--h);display:flex;align-items:center;justify-content:space-between}
+.pdj-zoom-tip{font-size:.75rem;opacity:.85;font-family:system-ui,sans-serif;font-weight:500}
+.pdj-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:2px}
+.pdj-thumb{background:rgba(255,255,255,.07);border:2px solid transparent;border-radius:14px;padding:6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:border-color 180ms ease,transform 180ms ease,background 180ms ease;color:rgba(255,253,248,.85);font:600 .74rem var(--h);text-align:center}
+.pdj-thumb img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;display:block}
+.pdj-thumb span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.pdj-thumb:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+.pdj-thumb.is-active{border-color:#ffd970;background:rgba(255,217,112,.15);color:#ffd970}
+.nl-navidad{color:#ffd970!important;display:inline-flex;align-items:center;gap:4px;padding:2px 10px;background:rgba(255,217,112,.14);border-radius:99px;border:1px solid rgba(255,217,112,.32)}
+.nl-navidad:hover{background:rgba(255,217,112,.24)!important}
 </style></head>
 <body>
-<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img class="brand-wordmark" src="assets/img/logo_masafacil_wordmark.webp" alt="Masafácil"></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><button id="u-tokens" class="u-tokens" type="button" style="display:none" title="Tus Tokens Masafácil" aria-label="Tus Tokens Masafácil"><span class="ut-coin" aria-hidden="true">🪙</span><span class="ut-bal ut-full">0</span><span class="ut-bal ut-short">0</span><span class="ut-usd"></span></button><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
+<nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img class="brand-wordmark" src="assets/img/logo_masafacil_wordmark.webp" alt="Masafácil"></a><div class="nl"><a href="#pan-de-jamon" class="nl-navidad">🎄 Pan de Jamón</a><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><button id="u-tokens" class="u-tokens" type="button" style="display:none" title="Tus Tokens Masafácil" aria-label="Tus Tokens Masafácil"><span class="ut-coin" aria-hidden="true">🪙</span><span class="ut-bal ut-full">0</span><span class="ut-bal ut-short">0</span><span class="ut-usd"></span></button><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café recién hechos</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
+
+<!-- ================= SECCIÓN EXCLUSIVA: PAN DE JAMÓN NAVIDEÑO ================= -->
+<section id="pan-de-jamon" class="pdj-section">
+  <div class="w">
+    <div class="pdj-grid">
+      <!-- Columna 1: Marketing Copy, Puntos Fuertes & Club Masafácil -->
+      <div class="pdj-content">
+        <div class="pdj-tag"><span class="pdj-sparkle" aria-hidden="true">✨</span> Edición Limitada · Navidad 2024 / 2025</div>
+        <h2 class="pdj-headline">Se acerca diciembre…<br><span class="pdj-highlight">¿y todavía no sabes dónde comprar tu pan de jamón?</span></h2>
+        
+        <p class="pdj-lead">
+          En <strong>Masa Fácil</strong> entendemos que el pan de jamón es sagrado: es el verdadero corazón de la mesa navideña venezolana y no se improvisa. Por eso horneamos nuestra receta insignia con una masa dorada de enrejado artesanal, tierna, suave y aromática, generosamente rellena <em>de punta a punta</em> con abundante jamón ahumado de primera calidad, tocineta crujiente, uvas pasas dulces y aceitunas selectas. Cada rebanada guarda el balance perfecto entre lo dulce y lo salado, recién salido del horno en nuestro taller de La Esmeralda.
+        </p>
+
+        <p class="pdj-lead-sub">
+          Y porque la familia siempre merece lo mejor: si formas parte de nuestro <strong>Club Masafácil</strong>, ¡te lo llevas a un <strong>precio especial exclusivo</strong> y acumulas tokens de fidelidad en cada encargo! Asegura el centro de tu cena navideña con tiempo.
+        </p>
+
+        <div class="pdj-pillars">
+          <div class="pdj-pillar">
+            <span class="p-icon" aria-hidden="true">🥖</span>
+            <div>
+              <strong>Relleno de punta a punta</strong>
+              <span>Jamón ahumado premium y tocineta sin orillas vacías.</span>
+            </div>
+          </div>
+          <div class="pdj-pillar">
+            <span class="p-icon" aria-hidden="true">🍯</span>
+            <div>
+              <strong>Enrejado artesanal dorado</strong>
+              <span>Corteza crujiente con diseño único y miga esponjosa.</span>
+            </div>
+          </div>
+          <div class="pdj-pillar">
+            <span class="p-icon" aria-hidden="true">🎁</span>
+            <div>
+              <strong>Caja de regalo Masafácil</strong>
+              <span>Presentación de lujo lista para lucir o regalar.</span>
+            </div>
+          </div>
+          <div class="pdj-pillar">
+            <span class="p-icon" aria-hidden="true">⭐</span>
+            <div>
+              <strong>Precio especial para el Club</strong>
+              <span>Descuento directo exclusivo para miembros de la casa.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdj-club-box">
+          <div class="pdj-club-icon" aria-hidden="true">🪙</div>
+          <div class="pdj-club-text">
+            <b>Beneficio Exclusivo del Club Masafácil</b>
+            <span>Ahorro preferencial en tu pan de jamón y acumulación de tokens con tu cuenta registrada.</span>
+          </div>
+          <button type="button" class="pdj-club-btn" id="pdj-club-trigger">Activar mi beneficio</button>
+        </div>
+
+        <div class="pdj-actions">
+          <a class="pdj-btn-wa" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20reservar%20mi%20Pan%20de%20Jam%C3%B3n%20artesanal%20navide%C3%B1o.%20%C2%BFMe%20podr%C3%ADan%20indicar%20los%20precios%20y%20el%20descuento%20especial%20del%20Club%3F" target="_blank" rel="noopener">
+            <span aria-hidden="true">🎄</span> Reservar por WhatsApp
+          </a>
+          <button type="button" class="pdj-btn-add" id="pdj-add-to-cart" aria-label="Agregar Pan de Jamón al pedido">+ Agregar al pedido</button>
+        </div>
+
+        <div class="pdj-urgency">
+          <span aria-hidden="true">⏰</span>
+          <span><b>Cupos limitados por horneado diario:</b> reserva con anticipación tus fechas del 24 y 31 de diciembre.</span>
+        </div>
+      </div>
+
+      <!-- Columna 2: Vitrina Visual Interactiva (Fotos reales) -->
+      <div class="pdj-gallery">
+        <div class="pdj-hero-frame">
+          <button type="button" class="pdj-hero-btn" id="pdj-main-btn" aria-label="Ampliar fotografía de Pan de Jamón">
+            <img id="pdj-main-img" class="pdj-hero-img" src="assets/img/pan_jamon_caja.webp" alt="Pan de Jamón Masafácil en su caja de regalo con ambiente navideño" width="681" height="1024" loading="eager">
+            <div class="pdj-hero-badge">✨ Foto Real Masafácil</div>
+            <div class="pdj-hero-caption">
+              <span id="pdj-main-caption">Presentación en caja de regalo Masafácil</span>
+              <span class="pdj-zoom-tip">🔍 Toca para ampliar</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="pdj-thumbs" role="tablist" aria-label="Vistas del pan de jamón">
+          <button type="button" class="pdj-thumb is-active" data-src="assets/img/pan_jamon_caja.webp" data-alt="Pan de Jamón Masafácil en caja navideña" data-title="Presentación en caja de regalo Masafácil">
+            <img src="assets/img/pan_jamon_caja.webp" alt="Miniatura en caja" width="160" height="160" loading="lazy">
+            <span>En su caja</span>
+          </button>
+          <button type="button" class="pdj-thumb" data-src="assets/img/pan_jamon_entero.webp" data-alt="Pan de Jamón entero con enrejado artesanal dorado" data-title="Corteza dorada con enrejado artesanal tipo panal">
+            <img src="assets/img/pan_jamon_entero.webp" alt="Miniatura pan entero" width="160" height="160" loading="lazy">
+            <span>Enrejado entero</span>
+          </button>
+          <button type="button" class="pdj-thumb" data-src="assets/img/pan_jamon_rebanadas.webp" data-alt="Rebanadas de pan de jamón en tabla de madera con relleno abundante" data-title="Relleno abundante de extremo a extremo">
+            <img src="assets/img/pan_jamon_rebanadas.webp" alt="Miniatura rebanadas" width="160" height="160" loading="lazy">
+            <span>Rebanadas</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
 <div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Queso blanco pasteurizado suave y abundante que funde al primer mordisco.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
@@ -2261,6 +2415,8 @@ function LB(sel) {
   let useTokens = false;
   let und = null, ut = 0, bt = 0, lastTotals = {};
   function fmtTokens(t) { return Number(t || 0).toLocaleString('es-VE'); }
+  window.C = C;
+  window.drawCart = draw;
   function draw() {
     const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
     const subtotalBruto = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0);
@@ -3160,6 +3316,7 @@ function LB(sel) {
   ];
 
   var QA = [
+    ['¿Tienen pan de jamón para Navidad?', '¡Sí! Ya abrimos pedidos para nuestro exclusivo Pan de Jamón navideño artesanal con enrejado dorado tipo panal, relleno abundante de punta a punta en su caja de regalo Masafácil. ¡Y si eres del Club Masafácil tienes descuento especial y acumulas tokens! 🎄🥖'],
     ['¿Qué me recomiendas?', '¡Depende de tu antojo! Salado y crujiente: pastelito de queso o tequeños. Con hambre de verdad: un panini Italiano con burrata. Dulce: tequeños de chocolate. ¿Te giro la ruleta? 🎡'],
     ['¿Qué horario tienen?', 'Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm.'],
     ['¿Hacen delivery y cuánto cuesta?', 'Sí, delivery por zonas ($1/km): La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. Retiro en local (Pick Up) gratis.'],
@@ -3674,5 +3831,111 @@ function LB(sel) {
   };
 
   resetIdle();
+})();
+</script>
+<script>
+/* ---- Lógica Interactiva: Sección Exclusiva Pan de Jamón ---- */
+(function initPanDeJamon() {
+  var thumbs = document.querySelectorAll('.pdj-thumb');
+  var mainImg = document.getElementById('pdj-main-img');
+  var mainCap = document.getElementById('pdj-main-caption');
+  var mainBtn = document.getElementById('pdj-main-btn');
+
+  thumbs.forEach(function(th) {
+    th.addEventListener('click', function() {
+      var src = th.getAttribute('data-src');
+      var alt = th.getAttribute('data-alt');
+      var title = th.getAttribute('data-title');
+      if (mainImg && src) {
+        mainImg.style.opacity = '0.35';
+        setTimeout(function() {
+          mainImg.src = src;
+          if (alt) mainImg.alt = alt;
+          mainImg.style.opacity = '1';
+        }, 120);
+      }
+      if (mainCap && title) mainCap.textContent = title;
+      thumbs.forEach(function(t) { t.classList.remove('is-active'); });
+      th.classList.add('is-active');
+    });
+  });
+
+  if (mainBtn && mainImg) {
+    mainBtn.addEventListener('click', function() {
+      var lb = document.getElementById('lb');
+      if (lb) {
+        var im = lb.querySelector('img');
+        if (im) {
+          im.src = mainImg.src;
+          im.alt = mainImg.alt;
+        }
+        if (lb.showModal) lb.showModal();
+      }
+    });
+  }
+
+  var clubBtn = document.getElementById('pdj-club-trigger');
+  if (clubBtn) {
+    clubBtn.addEventListener('click', function() {
+      var toast = document.getElementById('club-toast');
+      if (window.CURRENT_CLIENTE && window.CURRENT_CLIENTE.id) {
+        var nombre = window.CURRENT_CLIENTE.nombre ? ' ' + window.CURRENT_CLIENTE.nombre.split(' ')[0] : '';
+        if (toast) {
+          toast.textContent = '⭐ ¡Hola' + nombre + '! Tu tarifa y tokens del Club Masafácil aplican en tu encargo.';
+          toast.classList.add('on');
+          setTimeout(function() { toast.classList.remove('on'); }, 3500);
+        } else {
+          alert('⭐ ¡Ya eres miembro del Club Masafácil! Tu descuento y tokens aplican en tu pedido.');
+        }
+        return;
+      }
+      try {
+        if (window.google && google.accounts && google.accounts.id) {
+          google.accounts.id.prompt();
+        }
+      } catch (e) {}
+      var el = document.getElementById('g_signin');
+      if (el && el.scrollIntoView) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('club-hl');
+        setTimeout(function() { el.classList.remove('club-hl'); }, 2200);
+      }
+      if (toast) {
+        toast.textContent = 'Inicia sesión con Google para activar tus descuentos del Club 🪙';
+        toast.classList.add('on');
+        setTimeout(function() { toast.classList.remove('on'); }, 3500);
+      }
+    });
+  }
+
+  var addBtn = document.getElementById('pdj-add-to-cart');
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      var k = 'Pan de Jamón Especial Masafácil';
+      if (window.C) {
+        window.C[k] = window.C[k] || { q: 0, u: null };
+        window.C[k].q++;
+        if (typeof window.drawCart === 'function') window.drawCart();
+        window.dispatchEvent(new CustomEvent('mf:cart-add', { detail: { k: k, u: null, q: window.C[k].q } }));
+        var c = document.getElementById('cn');
+        if (c) {
+          c.classList.remove('bump');
+          void c.offsetWidth;
+          c.classList.add('bump');
+        }
+        var cb = document.getElementById('cbar');
+        if (cb) {
+          cb.textContent = 'Agregado: ' + k;
+          setTimeout(function() { if (typeof window.drawCart === 'function') window.drawCart(); }, 1400);
+        }
+        addBtn.textContent = '✓ ¡Agregado al pedido!';
+        addBtn.style.background = 'rgba(56,102,65,.6)';
+        setTimeout(function() {
+          addBtn.textContent = '+ Agregar al pedido';
+          addBtn.style.background = '';
+        }, 1200);
+      }
+    });
+  }
 })();
 </script></body></html>
