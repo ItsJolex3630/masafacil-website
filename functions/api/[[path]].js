@@ -89,24 +89,47 @@ export async function onRequest(context) {
       return json(r.rows);
     }
 
-    // ---------- Cliente (Google verificado) ----------
+    // ---------- Cliente (Google verificado o sesión autorizada) ----------
     if (route === "/me" && method === "GET") {
       const u = await requireUser(request, env);
+      const email = String(u.email || "").toLowerCase().trim();
+      const sub = String(u.sub || ("usr:" + email));
+      const name = str(u.name || u.given_name || u.nombre, 120) || "Cliente";
+      const picture = str(u.picture || u.avatar || u.avatar_url, 300) || "";
+
+      if (!email) throw new HttpError(400, "El token no contiene un correo válido");
+
+      // Buscar si el cliente ya existe por id (Google sub) O por su correo electrónico
       let r = await db.execute({
-        sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ?",
-        args: [String(u.sub)],
+        sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+        args: [sub, email],
       });
+
       if (!r.rows.length) {
-        // Alta automática en el Club Masafácil (claims firmados por Google).
+        // Alta automática en el Club Masafácil (claims verificados por Google o token interno)
         await db.execute({
-          sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion) VALUES (?, ?, ?, ?, 0.0, 'Nuevo')",
-          args: [String(u.sub), String(u.email), str(u.name, 120) || "Cliente", str(u.picture, 300)],
+          sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion, tokens_saldo, total_pedidos, total_gastado, perfil_completo) VALUES (?, ?, ?, ?, 0.0, 'Nuevo', 0, 0, 0, 0)",
+          args: [sub, email, name, picture],
         });
         r = await db.execute({
-          sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ?",
-          args: [String(u.sub)],
+          sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+          args: [sub, email],
+        });
+      } else {
+        // Si ya existe: actualizar id (por si era provisional o de admin), avatar y nombre si no estaba personalizado
+        const existing = r.rows[0];
+        const updatedName = (!existing.nombre || existing.nombre === "Cliente" || existing.nombre === "Administrador") ? name : existing.nombre;
+        const updatedAvatar = picture || existing.avatar_url || "";
+        await db.execute({
+          sql: "UPDATE clientes SET id = ?, nombre = ?, avatar_url = ?, updated_at = datetime('now') WHERE id = ? OR lower(email) = ?",
+          args: [sub, updatedName, updatedAvatar, existing.id, email],
+        });
+        r = await db.execute({
+          sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+          args: [sub, email],
         });
       }
+
       const row = r.rows[0];
       return json({
         id: row.id,
@@ -126,6 +149,8 @@ export async function onRequest(context) {
     // aporta Google ya verificado: aquí no se acepta.
     if (route === "/me/perfil" && method === "POST") {
       const u = await requireUser(request, env);
+      const email = String(u.email || "").toLowerCase().trim();
+      const sub = String(u.sub || ("usr:" + email));
       const ip = getClientIp(request);
       const permitido = await rateLimit(db, "perfil:" + ip, 15, 5 * 60 * 1000);
       if (!permitido) {
@@ -137,12 +162,12 @@ export async function onRequest(context) {
       if (!nombre) throw new HttpError(400, "Indica tu nombre");
       if (telefono.replace(/\D/g, "").length < 7) throw new HttpError(400, "Indica un teléfono de WhatsApp válido");
       await db.execute({
-        sql: "UPDATE clientes SET nombre = ?, telefono_whatsapp = ?, perfil_completo = 1, updated_at = datetime('now') WHERE id = ?",
-        args: [nombre, telefono, String(u.sub)],
+        sql: "UPDATE clientes SET nombre = ?, telefono_whatsapp = ?, perfil_completo = 1, updated_at = datetime('now') WHERE id = ? OR lower(email) = ?",
+        args: [nombre, telefono, sub, email],
       });
       const r = await db.execute({
-        sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ?",
-        args: [String(u.sub)],
+        sql: "SELECT " + CLIENTE_COLS + " FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+        args: [sub, email],
       });
       const row = r.rows[0] || {};
       return json({
@@ -237,6 +262,23 @@ export async function onRequest(context) {
       const { createAdminToken } = await import("../_auth.js");
       const token = await createAdminToken(adminUser.email, adminUser.nombre, env);
 
+      // Asegurar que el administrador esté registrado en la tabla de clientes
+      try {
+        const sub = "admin:" + email;
+        const rCli = await db.execute({
+          sql: "SELECT id FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+          args: [sub, email]
+        });
+        if (!rCli.rows.length) {
+          await db.execute({
+            sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion, tokens_saldo, total_pedidos, total_gastado, perfil_completo) VALUES (?, ?, ?, '', 0.0, 'Admin', 0, 0, 0, 1)",
+            args: [sub, email, adminUser.nombre || "Administrador"]
+          });
+        }
+      } catch (eSync) {
+        console.warn("No se pudo registrar admin en clientes:", eSync && eSync.message);
+      }
+
       return json({
         ok: true,
         token,
@@ -255,6 +297,32 @@ export async function onRequest(context) {
 
     if (route === "/admin/me" && method === "GET") {
       const u = await requireAdmin(request, env);
+      const email = String(u.email || "").toLowerCase().trim();
+      const sub = String(u.sub || ("admin:" + email));
+      const name = str(u.name || u.nombre, 120) || "Administrador";
+      const picture = str(u.picture || u.avatar_url, 300) || "";
+
+      // Asegurar que el usuario autenticado como admin esté registrado en clientes
+      try {
+        const rCli = await db.execute({
+          sql: "SELECT id FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+          args: [sub, email]
+        });
+        if (!rCli.rows.length) {
+          await db.execute({
+            sql: "INSERT INTO clientes (id, email, nombre, avatar_url, porcentaje_descuento, nivel_fidelizacion, tokens_saldo, total_pedidos, total_gastado, perfil_completo) VALUES (?, ?, ?, ?, 0.0, 'Admin', 0, 0, 0, 1)",
+            args: [sub, email, name, picture]
+          });
+        } else if (picture) {
+          await db.execute({
+            sql: "UPDATE clientes SET avatar_url = CASE WHEN (avatar_url IS NULL OR avatar_url = '') THEN ? ELSE avatar_url END, updated_at = datetime('now') WHERE id = ? OR lower(email) = ?",
+            args: [picture, rCli.rows[0].id, email]
+          });
+        }
+      } catch (eSync) {
+        console.warn("No se pudo sincronizar admin en clientes:", eSync && eSync.message);
+      }
+
       return json({ email: u.email, nombre: u.name || "", picture: u.picture || "" });
     }
 

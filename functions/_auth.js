@@ -52,16 +52,18 @@ async function verify(request, env) {
   }
 
   // 2. Probar si es un token JWT de Google
-  if (env.GOOGLE_CLIENT_ID) {
-    try {
-      const { payload } = await jwtVerify(token, JWKS, {
-        audience: env.GOOGLE_CLIENT_ID,
-        issuer: ["https://accounts.google.com", "accounts.google.com"],
-      });
-      if (payload.sub && payload.email && payload.email_verified === true) {
-        return payload;
-      }
-    } catch (_) {}
+  const googleClientId = env.GOOGLE_CLIENT_ID || "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
+  try {
+    const { payload } = await jwtVerify(token, JWKS, {
+      audience: googleClientId,
+      issuer: ["https://accounts.google.com", "accounts.google.com"],
+    });
+    const verified = payload.email_verified === true || payload.email_verified === "true" || payload.email_verified == 1;
+    if (payload.sub && payload.email && verified) {
+      return payload;
+    }
+  } catch (errGoogle) {
+    console.warn("Fallo al validar token de Google:", errGoogle && errGoogle.message);
   }
 
   throw new HttpError(401, "Credencial de acceso inválida o expirada");

@@ -26,6 +26,13 @@ export async function ensureSchema(db) {
     // Fidelización por tokens (Club Masafácil)
     "ALTER TABLE clientes ADD COLUMN tokens_saldo INTEGER DEFAULT 0",
     "ALTER TABLE clientes ADD COLUMN perfil_completo INTEGER DEFAULT 0",
+    "ALTER TABLE clientes ADD COLUMN nombre TEXT",
+    "ALTER TABLE clientes ADD COLUMN avatar_url TEXT",
+    "ALTER TABLE clientes ADD COLUMN telefono_whatsapp TEXT",
+    "ALTER TABLE clientes ADD COLUMN total_pedidos INTEGER DEFAULT 0",
+    "ALTER TABLE clientes ADD COLUMN total_gastado REAL DEFAULT 0",
+    "ALTER TABLE clientes ADD COLUMN porcentaje_descuento REAL DEFAULT 0",
+    "ALTER TABLE clientes ADD COLUMN nivel_fidelizacion TEXT DEFAULT 'Nuevo'",
     "ALTER TABLE pedidos ADD COLUMN tokens_canjeados INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN tokens_ganados INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN metodo_pago TEXT",

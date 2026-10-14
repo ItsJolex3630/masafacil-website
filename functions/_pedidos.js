@@ -112,9 +112,11 @@ export async function buildPedido(db, user, body) {
   // 3) Descuento de fidelidad SOLO desde la BD y SOLO con identidad verificada.
   let descPct = 0, fidelidadAhorro = 0, cliente = null;
   if (user) {
+    const userEmail = String(user.email || "").toLowerCase().trim();
+    const userSub = String(user.sub || "");
     const cr = await db.execute({
-      sql: "SELECT id, email, nombre, telefono_whatsapp, porcentaje_descuento, nivel_fidelizacion, tokens_saldo FROM clientes WHERE id = ?",
-      args: [String(user.sub)],
+      sql: "SELECT id, email, nombre, telefono_whatsapp, porcentaje_descuento, nivel_fidelizacion, tokens_saldo FROM clientes WHERE id = ? OR lower(email) = ? LIMIT 1",
+      args: [userSub, userEmail],
     });
     if (cr.rows.length) {
       cliente = cr.rows[0];

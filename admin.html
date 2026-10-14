@@ -383,6 +383,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
       b.classList.add('is-active');
       ['clientes','productos','ventas'].forEach(function(t){ $('tab-'+t).hidden = (t !== b.dataset.tab); });
       if(b.dataset.tab === 'ventas'){ loadVentas().then(checkPendientes); }
+      if(b.dataset.tab === 'clientes'){ loadClientes(); }
+      if(b.dataset.tab === 'productos'){ loadProductos(); }
     });
   });
   $('logout').addEventListener('click', function(){
