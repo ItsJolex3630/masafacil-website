@@ -1,6 +1,6 @@
 // Recálculo server-side de pedidos: la base de datos es la única fuente de la
 // verdad para precios, promo 2x$1, descuento de fidelidad y costo de entrega.
-import { HttpError, str, num } from "./_db.js";
+import { HttpError, str, num, sanitizePlainText } from "./_db.js";
 import { calcularTokensGanados, calcularMaxTokensCanjeables, tokensADolares } from "./_tokens.js";
 
 // Pastelitos tradicionales con promo 2x$1 (ahorro de $0,30 por par).
@@ -59,7 +59,7 @@ export async function buildPedido(db, user, body) {
     const n = parseInt(rawItems[k], 10);
     const q = Number.isFinite(n) ? Math.min(99, n) : 0;
     if (q >= 1) {
-      const key = str(k, 120);
+      const key = sanitizePlainText(k, 120);
       pedido.push({ key, base: baseOf(key), q });
     }
   }
@@ -129,7 +129,7 @@ export async function buildPedido(db, user, body) {
   }
 
   // 4) Entrega: la zona la dictaminan las tarifas del servidor.
-  const zonaNombre = str(body.zona, 120) || ZONAS[0].n;
+  const zonaNombre = sanitizePlainText(body.zona, 120) || ZONAS[0].n;
   const zona = ZONAS.find((z) => z.n === zonaNombre) || ZONAS[0];
   const deliveryCosto = zona.c ? 0 : zona.p;
   const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
@@ -167,7 +167,7 @@ export async function buildPedido(db, user, body) {
     "\nEntrega: " + zona.n + (deliveryCosto > 0 ? " (" + fmt(deliveryCosto) + ")" : "") +
     "\nTotal a pagar: " + fmt(total) + ((sinPrecio || zona.c) ? " (más consultar)" : "") +
     "\nMétodo de pago: " + pago;
-  const notas = str(body.notas, 500);
+  const notas = sanitizePlainText(body.notas, 500);
   if (notas) msg += "\n\nNotas/Dirección: " + notas;
 
   const pedId = "ped_" + Date.now();

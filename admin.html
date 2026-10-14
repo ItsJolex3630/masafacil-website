@@ -212,7 +212,21 @@ textarea{width:100%;min-height:52px;resize:vertical}
   function parseJwt(token){ try{ var b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''))); }catch(e){ return null; } }
 
   // ---- API del servidor (autorización real, verificada en Cloudflare) ----
-  function getCred(){ try{ return localStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function getCred(){
+    try{
+      var t = localStorage.getItem(CRED_KEY);
+      if (!t) return null;
+      var payload = parseJwt(t);
+      // Si no es un JWT válido o expiró (con margen de 30 segundos), se descarta.
+      if (!payload || !payload.exp || (payload.exp * 1000) < (Date.now() + 30000)) {
+        clearCred();
+        return null;
+      }
+      return t;
+    } catch(e) {
+      return null;
+    }
+  }
   function setCred(t){ try{ localStorage.setItem(CRED_KEY, t); }catch(e){} }
   function clearCred(){ try{ localStorage.removeItem(CRED_KEY); }catch(e){} }
 

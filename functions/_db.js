@@ -102,7 +102,20 @@ export async function readBody(request) {
 export const IMG_ALLOWLIST = /^assets\/img\/[\w\-\/]+\.webp$/;
 
 export function str(v, max = 300) {
-  return String(v == null ? "" : v).slice(0, max).trim();
+  if (v == null) return "";
+  // Elimina caracteres nulos y de control no imprimibles (conserva \t \n \r).
+  const cleaned = String(v)
+    .replace(/\0/g, "")
+    .replace(/[\u0001-\u0008\u000B-\u001F\u007F]/g, "")
+    .trim();
+  return cleaned.slice(0, max);
+}
+
+// Saneamiento de campos de texto abierto (notas, nombres, zona): elimina
+// caracteres de control y neutraliza etiquetas HTML directas antes de guardar.
+export function sanitizePlainText(v, max = 500) {
+  if (v == null) return "";
+  return str(v, max).replace(/[<>]/g, "");
 }
 
 export function num(v, def = 0) {

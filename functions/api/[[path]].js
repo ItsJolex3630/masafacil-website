@@ -1,6 +1,6 @@
 // API de Masafácil — toda la autorización y el cállo de datos ocurre aquí,
 // en el servidor. El navegador nunca recibe credenciales de Turso.
-import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST } from "../_db.js";
+import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST, sanitizePlainText } from "../_db.js";
 import { optionalUser, requireUser, requireAdmin } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
 import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from "../_tokens.js";
@@ -8,39 +8,56 @@ import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from 
 const NIVELES = ["Nuevo", "Frecuente", "Plata", "Oro", "VIP"];
 const ESTADOS = ["pendiente", "completado", "cancelado"];
 
-// Auto-registro idempotente de administradores base en Turso (se ejecuta al verificar un admin).
-const SEED_ADMINS = [
-  ["masafacilelmaracucho@gmail.com", "Masa Fácil Maracucho"],
-  ["somosvendo.ve@gmail.com", "Somos Vendo"],
-  ["masafaciladminweb@gmail.com", "Masa Fácil Admin Web"],
-  ["maryorycastellano31@gmail.com", "Maryory Castellano"],
-];
+// Siembra idempotente de los administradores base en Turso. La lista se lee de la
+// variable de entorno segura `ADMIN_SEEDS` (no hardcodeada en el repo); solo si
+// está ausente se usa un respaldo local. SOLO inserta los que faltan y NUNCA
+// re-activa cuentas desactivadas (activo=0).
 let adminsSeeded = false;
-async function seedAdmins(db) {
+async function seedAdmins(db, env) {
   if (adminsSeeded) return;
-  try {
-    const values = SEED_ADMINS.map(() => "(?, ?, 1)").join(", ");
-    await db.execute({
-      sql: "INSERT INTO administradores (email, nombre, activo) VALUES " + values + " ON CONFLICT(email) DO UPDATE SET activo = 1",
-      args: SEED_ADMINS.flat(),
-    });
-    adminsSeeded = true;
-  } catch (e) {
-    // Fallback si la tabla no tiene restricción única en email: insertar solo los que falten.
-    console.error("seedAdmins ON CONFLICT falló, usando fallback:", e && e.message);
+
+  // Lista desde la variable de entorno o respaldo local.
+  let adminList = [];
+  if (env && env.ADMIN_SEEDS) {
     try {
-      for (const [email, nombre] of SEED_ADMINS) {
+      // Formato: "correo1@gmail.com:Nombre 1,correo2@gmail.com:Nombre 2"
+      adminList = env.ADMIN_SEEDS.split(",").map((item) => {
+        const parts = item.split(":");
+        return [parts[0].trim().toLowerCase(), (parts[1] || "Administrador").trim()];
+      }).filter(([email]) => email.includes("@"));
+    } catch (e) {
+      console.error("Error parseando env.ADMIN_SEEDS:", e);
+    }
+  }
+
+  if (!adminList.length) {
+    adminList = [
+      ["jolex3630@gmail.com", "Administrador Principal"],
+      ["masafacilelmaracucho@gmail.com", "Masa Fácil Maracucho"],
+      ["somosvendo.ve@gmail.com", "Somos Vendo"],
+      ["masafaciladminweb@gmail.com", "Masa Fácil Admin Web"],
+      ["maryorycastellano31@gmail.com", "Maryory Castellano"],
+    ];
+  }
+
+  try {
+    for (const [email, nombre] of adminList) {
+      try {
+        await db.execute({
+          sql: "INSERT INTO administradores (email, nombre, activo) VALUES (?, ?, 1) ON CONFLICT(email) DO NOTHING",
+          args: [email, nombre],
+        });
+      } catch (e) {
+        // Fallback si la tabla no tiene restricción única en email: insertar solo los que falten.
         const q = await db.execute({ sql: "SELECT 1 FROM administradores WHERE lower(email) = lower(?)", args: [email] });
-        if (q.rows.length) {
-          await db.execute({ sql: "UPDATE administradores SET activo = 1 WHERE lower(email) = lower(?)", args: [email] });
-        } else {
+        if (!q.rows.length) {
           await db.execute({ sql: "INSERT INTO administradores (email, nombre, activo) VALUES (?, ?, 1)", args: [email, nombre] });
         }
       }
-      adminsSeeded = true;
-    } catch (e2) {
-      console.error("seedAdmins fallback error:", e2);
     }
+    adminsSeeded = true;
+  } catch (e) {
+    console.error("seedAdmins fallback:", e && e.message);
   }
 }
 
@@ -57,7 +74,7 @@ export async function onRequest(context) {
   try {
     // Siembra los administradores base ANTES de cualquier verificación:
     // si dependiera de requireAdmin, un correo nuevo nunca llegaría a la tabla.
-    await seedAdmins(db);
+    await seedAdmins(db, env);
 
     // ---------- Público ----------
     if (route === "/health" && method === "GET") {
@@ -108,8 +125,16 @@ export async function onRequest(context) {
     // aporta Google ya verificado: aquí no se acepta.
     if (route === "/me/perfil" && method === "POST") {
       const u = await requireUser(request, env);
+      const ip =
+        request.headers.get("CF-Connecting-IP") ||
+        (request.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+        "unknown";
+      const permitido = await rateLimit(db, "perfil:" + ip, 15, 5 * 60 * 1000);
+      if (!permitido) {
+        return json({ error: "Demasiadas solicitudes de actualización. Intenta de nuevo en unos minutos." }, 429);
+      }
       const body = await readBody(request);
-      const nombre = str(body.nombre, 120);
+      const nombre = sanitizePlainText(body.nombre, 120);
       const telefono = str(body.telefono, 40);
       if (!nombre) throw new HttpError(400, "Indica tu nombre");
       if (telefono.replace(/\D/g, "").length < 7) throw new HttpError(400, "Indica un teléfono de WhatsApp válido");
@@ -257,13 +282,13 @@ export async function onRequest(context) {
       const body = await readBody(request);
       const estado = ESTADOS.includes(body.estado) ? body.estado : "completado";
       const total = Math.max(0, Math.min(100000, num(body.total, 0)));
-      const nombre = str(body.nombre, 120) || "Cliente";
+      const nombre = sanitizePlainText(body.nombre, 120) || "Cliente";
       const tel = str(body.telefono, 40);
       const email = str(body.email, 160);
-      const zona = str(body.zona, 120);
-      const notas = str(body.notas, 500);
+      const zona = sanitizePlainText(body.zona, 120);
+      const notas = sanitizePlainText(body.notas, 500);
       const metodo_pago = str(body.metodo_pago, 40);
-      const descTxt = str(body.items, 300);
+      const descTxt = sanitizePlainText(body.items, 300);
       const items_json = JSON.stringify(descTxt ? { [descTxt]: { q: 1, u: total } } : {});
 
       let clienteId = null;
@@ -339,13 +364,13 @@ export async function onRequest(context) {
 
       const estado = ESTADOS.includes(body.estado) ? body.estado : "pendiente";
       const total = Math.max(0, Math.min(100000, num(body.total, 0)));
-      const nombre = str(body.nombre, 120) || "Cliente";
+      const nombre = sanitizePlainText(body.nombre, 120) || "Cliente";
       const tel = str(body.telefono, 40);
       const email = str(body.email, 160);
-      const zona = str(body.zona, 120);
-      const notas = str(body.notas, 500);
+      const zona = sanitizePlainText(body.zona, 120);
+      const notas = sanitizePlainText(body.notas, 500);
       const metodo_pago = str(body.metodo_pago, 40);
-      const descTxt = str(body.items, 300);
+      const descTxt = sanitizePlainText(body.items, 300);
       const items_json = JSON.stringify(descTxt ? { [descTxt]: { q: 1, u: total } } : {});
 
       const stmts = [];
