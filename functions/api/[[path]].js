@@ -195,10 +195,6 @@ export async function onRequest(context) {
       return json(pedido.snapshot, 201);
     }
 
-    await db.batch(stmts, "write");
-      return json(pedido.snapshot, 201);
-    }
-
     // ---------- Endpoint de Login Universal para Administradores ----------
     if (route === "/admin/login" && method === "POST") {
       const ip = getClientIp(request);
