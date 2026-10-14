@@ -96,7 +96,28 @@ textarea{width:100%;min-height:52px;resize:vertical}
 <div id="gate">
   <img src="assets/img/logo_masafacil.png" alt="Masafácil">
   <h2>Panel de Administración</h2>
-  <p id="gate-msg">Inicia sesión con tu cuenta de administrador de Google.</p>
+  <p id="gate-msg">Ingresa con tu correo de administrador y PIN de seguridad.</p>
+
+  <!-- Formulario de Acceso Directo (Universal) -->
+  <form id="admin-login-form" style="margin-top:16px;text-align:left">
+    <div style="margin-bottom:12px">
+      <label style="font-size:.78rem;font-weight:700;color:var(--md);display:block;margin-bottom:4px">Correo de Administrador</label>
+      <input type="email" id="adm-email-input" class="text" placeholder="ejemplo@gmail.com" required style="width:100%;box-sizing:border-box">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:.78rem;font-weight:700;color:var(--md);display:block;margin-bottom:4px">PIN de Seguridad</label>
+      <input type="password" id="adm-pin-input" class="text" placeholder="Ingresa el PIN" maxlength="20" required style="width:100%;box-sizing:border-box" inputmode="numeric">
+    </div>
+    <button type="submit" id="adm-submit-btn" class="btn" style="width:100%;justify-content:center">Entrar al Panel</button>
+    <div id="adm-login-err" style="color:#8a2a1c;font-size:.82rem;margin-top:8px;text-align:center;display:none"></div>
+  </form>
+
+  <div style="display:flex;align-items:center;margin:18px 0;gap:10px">
+    <div style="flex:1;height:1px;background:var(--line)"></div>
+    <span style="font-size:.75rem;color:#8a7a72;text-transform:uppercase">O con Google</span>
+    <div style="flex:1;height:1px;background:var(--line)"></div>
+  </div>
+
   <div id="g_btn"></div>
   <p style="margin-top:16px"><a class="btn ghost sm" href="index.html">← Volver a la web</a></p>
 </div>
@@ -308,7 +329,17 @@ textarea{width:100%;min-height:52px;resize:vertical}
         return;
       }
       if (e.auth) {
-        setGate('<div class="denied"><img src="assets/img/logo_masafacil.png" alt=""><h2>Acceso restringido</h2><p>La cuenta <b>'+esc(adminEmail || '')+'</b> no tiene permisos de administrador.</p><a class="btn" href="index.html">Volver a la web</a></div>');
+        setGate(
+          '<div class="denied">' +
+            '<img src="assets/img/logo_masafacil.png" alt="">' +
+            '<h2>Acceso restringido</h2>' +
+            '<p>La cuenta <b>'+esc(adminEmail || '')+'</b> no tiene permisos de administrador.</p>' +
+            '<div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">' +
+              '<button class="btn sm" onclick="clearCred();location.reload();">Intentar con otra cuenta</button>' +
+              '<a class="btn ghost sm" href="index.html">Volver a la web</a>' +
+            '</div>' +
+          '</div>'
+        );
         return;
       }
       setGate('<img src="assets/img/logo_masafacil.png" alt=""><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos en este momento.</p><button class="btn sm" onclick="location.reload()" style="margin-top:12px">Reintentar</button>');
@@ -632,13 +663,44 @@ textarea{width:100%;min-height:52px;resize:vertical}
   function initGoogle(){
     try{
       if(!(window.google && google.accounts && google.accounts.id)) return false;
-      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: window.mfAdminLogin, auto_select: true, cancel_on_tap_outside: true });
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: window.mfAdminLogin, auto_select: false, cancel_on_tap_outside: true });
       var el = $('g_btn');
       if(el && !el.dataset.rendered){ google.accounts.id.renderButton(el, { type:'standard', size:'large', theme:'outline', text:'signin_with', shape:'pill', logo_alignment:'left', width:280 }); el.dataset.rendered='1'; }
       return true;
     }catch(e){ console.warn('GIS:', e); return true; }
   }
   (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
+
+  // ---- Formulario de Acceso Directo (Correo + PIN) ----
+  $('admin-login-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var errEl = $('adm-login-err');
+    errEl.style.display = 'none';
+    var email = $('adm-email-input').value.trim();
+    var pin = $('adm-pin-input').value.trim();
+    var btn = $('adm-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Verificando…';
+
+    try {
+      var res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, pin: pin })
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Credenciales inválidas');
+
+      setCred(data.token);
+      adminEmail = data.email;
+      verifyAdmin();
+    } catch (err) {
+      errEl.textContent = err.message || 'Error de conexión';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Entrar al Panel';
+    }
+  });
 
   // ---- Restaurar sesión: solo si hay credencial Google vigente en localStorage ----
   (function restore(){

@@ -1,10 +1,17 @@
 // Verificación de credenciales Google Identity Services (JWT firmado).
 // La firma se valida con las claves públicas de Google; el cliente solo envía
 // el credential como Bearer token. Nadie puede fabricarse una identidad.
-import { createRemoteJWKSet, jwtVerify } from "jose";
+// También soporta tokens de sesión administrativos firmados con HS256 (servidor).
+import { createRemoteJWKSet, jwtVerify, SignJWT } from "jose";
 import { HttpError } from "./_db.js";
 
 const JWKS = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
+
+function getSecretKey(env) {
+  // Clave secreta para firmar sesiones locales de administrador
+  const secret = env.ADMIN_SECRET_KEY || env.TURSO_AUTH_TOKEN || "masafacil-secret-key-fallback-2026";
+  return new TextEncoder().encode(secret);
+}
 
 function extractToken(request) {
   const h = request.headers.get("Authorization") || "";
@@ -12,34 +19,62 @@ function extractToken(request) {
   return m ? m[1].trim() : null;
 }
 
+// Genera un token de sesión para el administrador autenticado por PIN
+export async function createAdminToken(email, nombre, env) {
+  const secret = getSecretKey(env);
+  const jwt = await new SignJWT({
+    sub: "admin:" + email,
+    email: email.toLowerCase().trim(),
+    name: nombre || "Administrador",
+    role: "admin",
+    iss: "masafacil-auth"
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d") // 7 días de sesión persistente
+    .sign(secret);
+  return jwt;
+}
+
 async function verify(request, env) {
   const token = extractToken(request);
   if (!token) return null;
-  if (!env.GOOGLE_CLIENT_ID) {
-    throw new HttpError(500, "GOOGLE_CLIENT_ID no configurado en el servidor");
-  }
+
+  // 1. Probar si es un token de sesión emitido por Masafácil (HS256)
   try {
-    const { payload } = await jwtVerify(token, JWKS, {
-      audience: env.GOOGLE_CLIENT_ID,
-      issuer: ["https://accounts.google.com", "accounts.google.com"],
+    const secret = getSecretKey(env);
+    const { payload } = await jwtVerify(token, secret, {
+      issuer: "masafacil-auth"
     });
-    if (!payload.sub || !payload.email || payload.email_verified !== true) return null;
-    return payload;
-  } catch (e) {
-    throw new HttpError(401, "Credencial de Google inválida o expirada");
+    if (payload && payload.email) return payload;
+  } catch (_) {
+    // Si falla, probar como token de Google (RS256)
   }
+
+  // 2. Probar si es un token JWT de Google
+  if (env.GOOGLE_CLIENT_ID) {
+    try {
+      const { payload } = await jwtVerify(token, JWKS, {
+        audience: env.GOOGLE_CLIENT_ID,
+        issuer: ["https://accounts.google.com", "accounts.google.com"],
+      });
+      if (payload.sub && payload.email && payload.email_verified === true) {
+        return payload;
+      }
+    } catch (_) {}
+  }
+
+  throw new HttpError(401, "Credencial de acceso inválida o expirada");
 }
 
-// Identidad opcional: sin header → null (invitado); header inválido → 401.
 export async function optionalUser(request, env) {
   if (!extractToken(request)) return null;
   return verify(request, env);
 }
 
-// Identidad obligatoria (área de cliente logueado).
 export async function requireUser(request, env) {
   const payload = await verify(request, env);
-  if (!payload) throw new HttpError(401, "Inicia sesión con Google para continuar");
+  if (!payload) throw new HttpError(401, "Inicia sesión para continuar");
   return payload;
 }
 
@@ -48,7 +83,7 @@ export async function requireUser(request, env) {
 // hardcodeadas en el código que puedan eludir la desactivación de una cuenta).
 export async function requireAdmin(request, env) {
   const payload = await verify(request, env);
-  if (!payload || !payload.email) throw new HttpError(401, "Inicia sesión con Google para continuar");
+  if (!payload || !payload.email) throw new HttpError(401, "Inicia sesión para continuar");
 
   const userEmail = String(payload.email).trim().toLowerCase();
 

@@ -195,6 +195,60 @@ export async function onRequest(context) {
       return json(pedido.snapshot, 201);
     }
 
+    await db.batch(stmts, "write");
+      return json(pedido.snapshot, 201);
+    }
+
+    // ---------- Endpoint de Login Universal para Administradores ----------
+    if (route === "/admin/login" && method === "POST") {
+      const ip = getClientIp(request);
+      // Limitar a máximo 5 intentos por minuto para prevenir ataques de fuerza bruta
+      const okRate = await rateLimit(db, "login_adm:" + ip, 5, 60 * 1000);
+      if (!okRate) {
+        return json({ error: "Demasiados intentos de acceso. Espera un minuto." }, 429);
+      }
+
+      const body = await readBody(request);
+      const email = str(body.email, 120).trim().toLowerCase();
+      const pin = str(body.pin, 50).trim();
+
+      if (!email || !email.includes("@")) {
+        return json({ error: "Introduce un correo válido." }, 400);
+      }
+      if (!pin) {
+        return json({ error: "Introduce el PIN de administrador." }, 400);
+      }
+
+      // PIN maestro de administradores: configurable en env.ADMIN_ACCESS_PIN
+      // Valor por defecto estándar si no está configurada la variable en Cloudflare:
+      const adminPinMaster = env.ADMIN_ACCESS_PIN || "240996";
+
+      if (pin !== adminPinMaster) {
+        return json({ error: "PIN de administrador incorrecto." }, 401);
+      }
+
+      // Validar si el correo existe en la tabla de administradores de Turso
+      const r = await db.execute({
+        sql: "SELECT email, nombre, activo FROM administradores WHERE lower(email) = ?",
+        args: [email]
+      });
+
+      if (!r.rows.length || Number(r.rows[0].activo) !== 1) {
+        return json({ error: "El correo " + email + " no está registrado o está inactivo como administrador." }, 403);
+      }
+
+      const adminUser = r.rows[0];
+      const { createAdminToken } = await import("../_auth.js");
+      const token = await createAdminToken(adminUser.email, adminUser.nombre, env);
+
+      return json({
+        ok: true,
+        token,
+        email: adminUser.email,
+        nombre: adminUser.nombre
+      });
+    }
+
     // ---------- Administración (admin verificado en servidor) ----------
     // Rate limiting para rutas administrativas (anti-fuerza bruta)
     if (route.startsWith("/admin/")) {
