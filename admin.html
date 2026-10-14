@@ -9,6 +9,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+(function resetClientStorageOnce() {
+  var CURRENT_VERSION = 'mf_clean_20261014_v1';
+  var VERSION_KEY = 'mf_app_storage_ver';
+  try {
+    if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+      var cookies = document.cookie ? document.cookie.split(';') : [];
+      for (var i = 0; i < cookies.length; i++) {
+        var eqPos = cookies[i].indexOf('=');
+        var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
+        if (name) {
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + location.hostname + ';';
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + location.hostname.replace(/^www\./, '') + ';';
+        }
+      }
+      localStorage.clear();
+      sessionStorage.clear();
+      localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+    }
+  } catch (e) {}
+})();
+</script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{--bg:#f5ebd4;--k:#e6d4b0;--dk:#40201a;--md:#6f3826;--tan:#c9a577;--ink:#40201a;--sage:#386641;--cream:#fffdf8;--h:'Fredoka',sans-serif;--line:rgba(201,165,119,.45)}

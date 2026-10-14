@@ -4,6 +4,29 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+(function resetClientStorageOnce() {
+  var CURRENT_VERSION = 'mf_clean_20261014_v1';
+  var VERSION_KEY = 'mf_app_storage_ver';
+  try {
+    if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+      var cookies = document.cookie ? document.cookie.split(';') : [];
+      for (var i = 0; i < cookies.length; i++) {
+        var eqPos = cookies[i].indexOf('=');
+        var name = eqPos > -1 ? cookies[i].substr(0, eqPos).trim() : cookies[i].trim();
+        if (name) {
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=' + location.hostname + ';';
+          document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.' + location.hostname.replace(/^www\./, '') + ';';
+        }
+      }
+      localStorage.clear();
+      sessionStorage.clear();
+      localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+    }
+  } catch (e) {}
+})();
+</script>
 <!-- Google Identity Services (GIS) SDK Oficial -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -99,12 +122,12 @@ nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;back
 body.has-cart .wf,html.lock .wf,html.lock .ai{opacity:0;pointer-events:none}.wf,.ai{transition:transform 350ms var(--ea),opacity 200ms ease}
 .faq details{interpolate-size:allow-keywords}.faq details::details-content{block-size:0;overflow:clip;transition:block-size 300ms var(--ea),content-visibility 300ms allow-discrete}.faq details[open]::details-content{block-size:auto}
 html.lock{overflow:hidden}
-#sc{position:fixed;inset:0;background:rgb(40,20,14);opacity:0;pointer-events:none;z-index:39}
-#sh{position:fixed;top:0;right:0;bottom:0;width:min(430px,100vw);z-index:40;background:rgba(250,243,228,.9);backdrop-filter:blur(calc(var(--p,0)*32px)) saturate(180%);-webkit-backdrop-filter:blur(calc(var(--p,0)*32px)) saturate(180%);box-shadow:-20px 0 60px rgba(40,20,14,.28);border-left:1px solid rgba(255,255,255,.6);display:flex;flex-direction:column;visibility:hidden;will-change:transform;padding-bottom:env(safe-area-inset-bottom,0px)}
-#sh .grab{display:none}#sh.v{top:auto;left:0;right:0;width:100%;height:min(85dvh,680px);border-radius:28px 28px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.6);box-shadow:0 -10px 50px rgba(40,20,14,.3)}#sh.v .grab{display:block;width:2.5rem;height:5px;border-radius:3px;background:rgba(64,32,26,.3);margin:8px auto 0;touch-action:none}
+#sc{position:fixed;inset:0;background:rgb(40,20,14);opacity:0;pointer-events:none;z-index:39;will-change:opacity}
+#sh{position:fixed;top:0;right:0;bottom:0;width:min(430px,100vw);z-index:40;background:#faf3e4;background:rgba(250,243,228,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:-10px 0 30px rgba(40,20,14,.2);border-left:1px solid rgba(255,255,255,.6);display:flex;flex-direction:column;visibility:hidden;will-change:transform;contain:layout style;padding-bottom:env(safe-area-inset-bottom,0px)}
+#sh .grab{display:none}#sh.v{top:auto;left:0;right:0;width:100%;height:min(85dvh,680px);border-radius:24px 24px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.6);box-shadow:0 -8px 30px rgba(40,20,14,.22)}#sh.v .grab{display:block;width:2.5rem;height:5px;border-radius:3px;background:rgba(64,32,26,.3);margin:8px auto 0;touch-action:none}
 #sh>header{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:var(--dk);color:var(--bg);font:600 1.375rem var(--h);touch-action:pan-y;cursor:grab;user-select:none}#sh.v>header{touch-action:none;margin-top:8px}#sh>header button{background:none;border:0;color:var(--bg);font-size:1.9rem;cursor:pointer;min-width:2.75rem;min-height:2.75rem}
 #und{display:none;align-items:center;justify-content:space-between;gap:12px;background:var(--k);padding:10px 18px;font-weight:700;font-size:.94rem}#und.on{display:flex}#und button{background:none;border:0;font:600 1rem var(--h);color:var(--md);text-decoration:underline;cursor:pointer;min-height:2.5rem}
-#sh #cli{flex:1;overflow:auto;overscroll-behavior:contain;padding:6px 18px}#sh #cft{padding:14px 18px 18px;border-top:2px solid var(--tan)}
+#sh #cli{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 18px}#sh #cft{padding:14px 18px 18px;border-top:2px solid var(--tan)}
 #cbar{font-size:1rem}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){#sh{background:#faf3e4;backdrop-filter:none;-webkit-backdrop-filter:none}nav::after{display:none}}
 @media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms}.faq details::details-content{transition:none}}</style><style id="plate">
@@ -1663,7 +1686,7 @@ function LB(sel) {
 </script>
 <script>
 (function(){
-  const $ = i => document.getElementById(i), WA = 'https://wa.me/584244099610', C = {}, m = n => '$' + n.toFixed(2).replace('.', ','), RM = matchMedia('(prefers-reduced-motion:reduce)'), buzz = n => { try { navigator.vibrate && navigator.vibrate(n); } catch(e) {} };
+  const $ = i => document.getElementById(i), WA = 'https://api.whatsapp.com/send?phone=584244099610', C = {}, m = n => '$' + n.toFixed(2).replace('.', ','), RM = matchMedia('(prefers-reduced-motion:reduce)'), buzz = n => { try { navigator.vibrate && navigator.vibrate(n); } catch(e) {} };
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let selectedZonaIdx = 0;
   const mfApi = {};
@@ -2343,7 +2366,6 @@ function LB(sel) {
   function apply() {
     const p = Math.max(0, Math.min(1, 1 - x / size)), cl = x >= size - .5 && !drag;
     sh.style.transform = RM.matches ? 'none' : (vert ? 'translate3d(0,' + x + 'px,0)' : 'translate3d(' + x + 'px,0,0)');
-    sh.style.setProperty('--p', p);
     sh.style.opacity = RM.matches ? (cl ? 0 : 1) : 1;
     sc.style.opacity = p * .5;
     sc.style.pointerEvents = p > .02 ? 'auto' : 'none';
@@ -2399,9 +2421,11 @@ function LB(sel) {
     spring(size);
     draw();
   }
+  let dragRaf = 0;
   sh.addEventListener('pointerdown', e => {
     if (!e.target.closest('.grab,#sh>header') || e.target.closest('button')) return;
     cancelAnimationFrame(raf);
+    if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = 0; }
     drag = { id: e.pointerId, p0: vert ? e.clientY : e.clientX, x0: x, h: [], on: false };
     sh.setPointerCapture(e.pointerId);
   });
@@ -2416,9 +2440,15 @@ function LB(sel) {
     x = raw < 0 ? -rb(-raw, size) : raw;
     drag.h.push({ t: e.timeStamp, p });
     while (drag.h.length > 1 && e.timeStamp - drag.h[0].t > 100) drag.h.shift();
-    apply();
+    if (!dragRaf) {
+      dragRaf = requestAnimationFrame(() => {
+        dragRaf = 0;
+        apply();
+      });
+    }
   });
   function rel(cancel) {
+    if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = 0; }
     if (!drag) return;
     const d = drag, h = d.h;
     drag = null;
@@ -2585,7 +2615,9 @@ function LB(sel) {
       '\nMétodo de pago: ' + ($('cpago') ? $('cpago').value : 'Efectivo') +
       ($('cnt').value ? '\n\nNotas/Dirección: ' + $('cnt').value : '');
 
-    $('cwa').href = WA + '?text=' + encodeURIComponent(msg);
+    $('cwa').href = 'https://api.whatsapp.com/send?phone=584244099610&text=' + encodeURIComponent(msg);
+    $('cwa').target = '_blank';
+    $('cwa').rel = 'noopener noreferrer';
   }
 
   function showUndo(k, it) {
@@ -2645,23 +2677,40 @@ function LB(sel) {
       return;
     }
     if (e.target.closest('#cwa')) {
-      e.preventDefault(); // el destino final lo decide la respuesta del servidor
+      e.preventDefault();
       buzz(12);
       const w = $('cwa');
+      const prevText = w.textContent;
       w.textContent = 'Abriendo WhatsApp…';
-      setTimeout(() => w.textContent = 'Enviar pedido por WhatsApp', 3000);
+      setTimeout(() => { w.textContent = prevText; }, 3000);
+
+      const items = {};
+      Object.keys(C).forEach(k => { items[k] = C[k].q; });
+      const pedidoData = {
+        items: items,
+        zona: lastTotals.zonaNombre || '',
+        notas: $('cnt').value || '',
+        pago: $('cpago') ? $('cpago').value : 'Efectivo',
+        tokens_a_usar: lastTotals.tokensUsados || 0
+      };
+
+      // Registrar pedido en el servidor en segundo plano
       if (window.MFAuth && window.MFAuth.registrarPedido) {
-        const items = {};
-        Object.keys(C).forEach(k => { items[k] = C[k].q; });
-        window.MFAuth.registrarPedido({
-          items: items,
-          zona: lastTotals.zonaNombre || '',
-          notas: $('cnt').value || '',
-          pago: $('cpago') ? $('cpago').value : 'Efectivo',
-          tokens_a_usar: lastTotals.tokensUsados || 0
-        });
+        window.MFAuth.registrarPedido(pedidoData);
+      }
+
+      // Redirección directa y fiable a WhatsApp:
+      // En móvil se usa location.href para abrir la app de WhatsApp de forma directa sin pestañas en blanco.
+      // En escritorio se abre en pestaña nueva de forma síncrona sin disparar el bloqueador de popups.
+      const waUrl = (w.href && w.href.startsWith('http'))
+        ? w.href
+        : ('https://api.whatsapp.com/send?phone=584244099610&text=' + encodeURIComponent('Hola Masafácil, quiero hacer un pedido'));
+
+      const isMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+      if (isMobile) {
+        window.location.href = waUrl;
       } else {
-        window.open(w.href, '_blank', 'noopener,noreferrer');
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
       }
       return;
     }
@@ -2885,7 +2934,7 @@ function LB(sel) {
   'use strict';
 
   var GOOGLE_CLIENT_ID = "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com";
-  var WA = 'https://wa.me/584244099610';
+  var WA = 'https://api.whatsapp.com/send?phone=584244099610';
   var CRED_KEY = 'mf_gis_cred'; // localStorage: credential JWT (vida ~1h). Persistente entre sesiones; Google la renueva con auto_select.
 
   window.CURRENT_CLIENTE = null;
@@ -3114,18 +3163,12 @@ function LB(sel) {
     redibujarCarrito();
   }
 
-  // ==== Registro del pedido: el SERVIDOR recalcula precios, promo y descuento ====
+  // ==== Registro del pedido: el SERVIDOR recalcula precios, promo y descuento en segundo plano ====
   function registrarPedido(d) {
-    // Pestaña abierta desde el gesto del usuario (evita bloqueo de popups);
-    // su destino final lo dicta la respuesta del servidor.
-    var tab = null;
-    try { tab = window.open('about:blank', '_blank', 'noopener,noreferrer'); if (tab) tab.opener = null; } catch (e) {}
-
-    function irA(url){ if (tab) { tab.location.href = url; } else { window.location.href = url; } }
-
     api('/api/pedidos', {
       method: 'POST',
-      body: JSON.stringify({ items: d.items, zona: d.zona, notas: d.notas, tokens_a_usar: d.tokens_a_usar || 0 })
+      body: JSON.stringify({ items: d.items, zona: d.zona, notas: d.notas, pago: d.pago, tokens_a_usar: d.tokens_a_usar || 0 }),
+      keepalive: true
     }).then(function(snap){
       // El canje ya se descontó del saldo real: reflejarlo en la interfaz.
       if (snap && window.CURRENT_CLIENTE && snap.saldoTokens != null) {
@@ -3133,12 +3176,8 @@ function LB(sel) {
         actualizarUIUsuario();
         redibujarCarrito();
       }
-      if (snap && snap.waText) irA(WA + '?text=' + encodeURIComponent(snap.waText));
-      else irA($('cwa') ? $('cwa').href : WA);
     }).catch(function(err){
-      console.warn("No se pudo registrar el pedido en el servidor:", err);
-      var local = $('cwa');
-      irA(local && local.href ? local.href : WA); // mensaje generado localmente en draw()
+      console.warn("Aviso de registro de pedido en segundo plano:", err);
     });
   }
 
