@@ -1010,12 +1010,13 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 .pdj-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(255,217,112,.14);border:1.5px solid rgba(255,217,112,.4);color:#ffd970;font:700 .78rem var(--h);letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:99px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .pdj-headline{font:600 clamp(28px,4.3vw,44px)/1.08 var(--h);margin:0 0 16px;color:#fffdf8;letter-spacing:-.02em}
 .pdj-headline .pdj-highlight{color:#ffd970;display:inline-block;text-shadow:0 2px 14px rgba(255,217,112,.28)}
+.pdj-desktop-text{display:block}
+.pdj-mobile-text{display:none}
 .pdj-lead{font-size:1.05rem;line-height:1.62;margin:0 0 14px;color:rgba(255,253,248,.94)}
 .pdj-lead strong{color:#ffd970;font-weight:700}
 .pdj-lead em{font-style:normal;color:#fff;border-bottom:1.5px dotted var(--tan)}
 .pdj-lead-sub{font-size:1.01rem;line-height:1.58;margin:0 0 20px;color:rgba(255,253,248,.88)}
 .pdj-pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 22px}
-@media(max-width:520px){.pdj-pillars{grid-template-columns:1fr}}
 .pdj-pillar{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 12px}
 .pdj-pillar .p-icon{font-size:1.3rem;line-height:1;flex-shrink:0}
 .pdj-pillar strong{display:block;font:600 .88rem var(--h);color:#fff;margin-bottom:2px}
@@ -1028,7 +1029,6 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 .pdj-club-btn{background:linear-gradient(160deg,#f8e0a1,#e6b23f);color:#40201a;border:0;border-radius:99px;font:700 .84rem var(--h);padding:10px 16px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(214,164,54,.35);transition:transform 160ms ease,filter 160ms ease;flex-shrink:0}
 .pdj-club-btn:hover{filter:brightness(1.08)}
 .pdj-club-btn:active{transform:scale(.96)}
-@media(max-width:580px){.pdj-club-box{flex-direction:column;align-items:flex-start;gap:10px}.pdj-club-btn{align-self:flex-start}}
 .pdj-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
 .pdj-btn-wa{background:#25d366;color:#0b3d1b;font:700 1.05rem var(--h);padding:13px 24px;border-radius:99px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 20px rgba(37,211,102,.35);transition:transform 160ms ease,filter 160ms ease}
 .pdj-btn-wa:hover{filter:brightness(1.08)}
@@ -1039,7 +1039,6 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 .pdj-urgency{font-size:.85rem;color:#f7d294;line-height:1.42;display:flex;align-items:center;gap:7px}
 .pdj-gallery{display:flex;flex-direction:column;gap:12px}
 .pdj-hero-frame{position:relative;border-radius:24px;overflow:hidden;border:3px solid var(--tan);box-shadow:0 16px 40px rgba(0,0,0,.45);background:#27100b;aspect-ratio:4/3.8}
-@media(max-width:600px){.pdj-hero-frame{aspect-ratio:1}}
 .pdj-hero-btn{width:100%;height:100%;padding:0;border:0;background:transparent;cursor:zoom-in;display:block;position:relative}
 .pdj-hero-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 180ms ease,transform 350ms cubic-bezier(.32,.72,0,1)}
 .pdj-hero-btn:hover .pdj-hero-img{transform:scale(1.03)}
@@ -1054,6 +1053,39 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 .pdj-thumb.is-active{border-color:#ffd970;background:rgba(255,217,112,.15);color:#ffd970}
 .nl-navidad{color:#ffd970!important;display:inline-flex;align-items:center;gap:4px;padding:2px 10px;background:rgba(255,217,112,.14);border-radius:99px;border:1px solid rgba(255,217,112,.32)}
 .nl-navidad:hover{background:rgba(255,217,112,.24)!important}
+/* ---- MÓVIL / TELÉFONO: ULTRA-COMPACTO Y ABREVIADO ---- */
+@media(max-width:768px){
+  .pdj-section{padding:26px 0 22px!important}
+  .pdj-desktop-text{display:none!important}
+  .pdj-mobile-text{display:block!important}
+  .pdj-grid{gap:14px!important}
+  .pdj-tag{font-size:.68rem!important;padding:2px 9px!important;margin-bottom:6px!important;letter-spacing:.04em!important}
+  .pdj-headline{font-size:1.32rem!important;line-height:1.15!important;margin:0 0 8px!important}
+  .pdj-m-lead{font-size:.88rem!important;line-height:1.38!important;margin:0 0 5px!important;color:rgba(255,253,248,.92)!important}
+  .pdj-m-club{font-size:.85rem!important;line-height:1.3!important;margin:0 0 10px!important;color:#ffd970!important}
+  .pdj-pillars{grid-template-columns:1fr 1fr!important;gap:5px!important;margin:0 0 10px!important}
+  .pdj-pillar{padding:5px 7px!important;border-radius:9px!important;gap:5px!important;align-items:center!important}
+  .pdj-pillar .p-icon{font-size:1rem!important}
+  .pdj-pillar strong{font-size:.73rem!important;margin:0!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .pdj-pillar span{display:none!important}
+  .pdj-club-box{padding:7px 10px!important;margin-bottom:10px!important;border-radius:10px!important;gap:8px!important;flex-direction:row!important;align-items:center!important}
+  .pdj-club-icon{font-size:1.25rem!important}
+  .pdj-club-text b{font-size:.78rem!important;margin:0!important}
+  .pdj-club-text span{display:none!important}
+  .pdj-club-btn{padding:5px 10px!important;font-size:.72rem!important;align-self:center!important}
+  .pdj-actions{gap:6px!important;margin-bottom:8px!important}
+  .pdj-btn-wa{padding:9px 14px!important;font-size:.86rem!important;flex:1!important;justify-content:center!important}
+  .pdj-btn-add{padding:9px 12px!important;font-size:.8rem!important;justify-content:center!important}
+  .pdj-urgency{font-size:.72rem!important;line-height:1.2!important;gap:4px!important}
+  .pdj-gallery{gap:6px!important}
+  .pdj-hero-frame{aspect-ratio:16/10!important;border-radius:14px!important;border-width:2px!important}
+  .pdj-hero-badge{top:6px!important;left:6px!important;font-size:.62rem!important;padding:2px 7px!important}
+  .pdj-hero-caption{padding:14px 8px 6px!important;font-size:.72rem!important}
+  .pdj-zoom-tip{font-size:.65rem!important}
+  .pdj-thumbs{gap:5px!important}
+  .pdj-thumb{padding:3px!important;border-radius:8px!important;font-size:.65rem!important;gap:3px!important}
+  .pdj-thumb img{border-radius:5px!important}
+}
 </style></head>
 <body>
 <nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img class="brand-wordmark" src="assets/img/logo_masafacil_wordmark.webp" alt="Masafácil"></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#pan-de-jamon" class="nl-navidad">🎄 Pan de Jamón</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="assets/img/logo_masafacil.png" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><button id="u-tokens" class="u-tokens" type="button" style="display:none" title="Tus Tokens Masafácil" aria-label="Tus Tokens Masafácil"><span class="ut-coin" aria-hidden="true">🪙</span><span class="ut-bal ut-full">0</span><span class="ut-bal ut-short">0</span><span class="ut-usd"></span></button><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
@@ -1081,13 +1113,26 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
         <div class="pdj-tag"><span class="pdj-sparkle" aria-hidden="true">✨</span> Edición Limitada · Navidad 2024 / 2025</div>
         <h2 class="pdj-headline">Se acerca diciembre…<br><span class="pdj-highlight">¿y todavía no sabes dónde comprar tu pan de jamón?</span></h2>
         
-        <p class="pdj-lead">
-          En <strong>Masa Fácil</strong> entendemos que el pan de jamón es sagrado: es el verdadero corazón de la mesa navideña venezolana y no se improvisa. Por eso horneamos nuestra receta insignia con una masa dorada de enrejado artesanal, tierna, suave y aromática, generosamente rellena <em>de punta a punta</em> con abundante jamón ahumado de primera calidad, tocineta crujiente, uvas pasas dulces y aceitunas selectas. Cada rebanada guarda el balance perfecto entre lo dulce y lo salado, recién salido del horno en nuestro taller de La Esmeralda.
-        </p>
+        <!-- Versión de lectura para Desktop -->
+        <div class="pdj-desktop-text">
+          <p class="pdj-lead">
+            En <strong>Masa Fácil</strong> entendemos que el pan de jamón es sagrado: es el verdadero corazón de la mesa navideña venezolana y no se improvisa. Por eso horneamos nuestra receta insignia con una masa dorada de enrejado artesanal, tierna, suave y aromática, generosamente rellena <em>de punta a punta</em> con abundante jamón ahumado de primera calidad, tocineta crujiente, uvas pasas dulces y aceitunas selectas. Cada rebanada guarda el balance perfecto entre lo dulce y lo salado, recién salido del horno en nuestro taller de La Esmeralda.
+          </p>
 
-        <p class="pdj-lead-sub">
-          Y porque la familia siempre merece lo mejor: si formas parte de nuestro <strong>Club Masafácil</strong>, ¡te lo llevas a un <strong>precio especial exclusivo</strong> y acumulas tokens de fidelidad en cada encargo! Asegura el centro de tu cena navideña con tiempo.
-        </p>
+          <p class="pdj-lead-sub">
+            Y porque la familia siempre merece lo mejor: si formas parte de nuestro <strong>Club Masafácil</strong>, ¡te lo llevas a un <strong>precio especial exclusivo</strong> y acumulas tokens de fidelidad en cada encargo! Asegura el centro de tu cena navideña con tiempo.
+          </p>
+        </div>
+
+        <!-- Versión abreviada y compacta para Teléfono -->
+        <div class="pdj-mobile-text">
+          <p class="pdj-m-lead">
+            Masa artesanal dorada con enrejado y <b>relleno generoso de punta a punta</b> con jamón ahumado, tocineta, pasas y aceitunas en su caja de regalo.
+          </p>
+          <p class="pdj-m-club">
+            ⭐ <b>¿Eres del Club Masafácil?</b> Pídelo a <b>menor precio</b> y suma tokens.
+          </p>
+        </div>
 
         <div class="pdj-pillars">
           <div class="pdj-pillar">
