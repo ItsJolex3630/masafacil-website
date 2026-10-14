@@ -10,6 +10,11 @@ const TRAD_NORM = new Set([
   "queso", "jamon & queso", "tocineta", "pepperoni", "mortadela",
 ]);
 
+// Sabores permitidos para bebidas con selector de variante
+const SABORES_PERMITIDOS = new Set([
+  "manzana", "pera", "naranja", "durazno", "limon", "frescolita", "chinotto", "fanta", "colita", "uva"
+]);
+
 // Zonas de entrega (espejo de ZONAS_DELIVERY en index.html).
 const ZONAS = [
   { n: "Retiro en local (Pick Up) - La Esmeralda", p: 0 },
@@ -76,14 +81,20 @@ export async function buildPedido(db, user, body) {
   for (const p of pedido) {
     const hit = matchProducto(map, p.base);
     if (hit) {
-      // Si el cliente eligió un sabor (" · Manzana"), se conserva en el nombre mostrado.
-      p.nombre = p.key.indexOf(" · ") !== -1 ? p.key : hit.nombre;
+      // Si el cliente eligió un sabor (" · Manzana"), validar contra lista blanca.
+      if (p.key.indexOf(" · ") !== -1) {
+        const rawSabor = p.key.split(" · ")[1] || "";
+        const saborLimpio = sanitizePlainText(rawSabor, 25);
+        if (!SABORES_PERMITIDOS.has(norm(saborLimpio))) {
+          throw new HttpError(400, `Variante o sabor no válido para ${hit.nombre}`);
+        }
+        p.nombre = `${hit.nombre} · ${saborLimpio}`;
+      } else {
+        p.nombre = hit.nombre;
+      }
       p.u = hit.precio;
     } else {
-      // Producto fuera de catálogo: se conserva como "consultar" (precio 0),
-      // el administrador lo verifica al confirmar el pedido por WhatsApp.
-      p.nombre = p.key;
-      p.u = null;
+      throw new HttpError(400, `El producto "${p.base}" no existe en el catálogo oficial`);
     }
   }
 
@@ -170,7 +181,7 @@ export async function buildPedido(db, user, body) {
   const notas = sanitizePlainText(body.notas, 500);
   if (notas) msg += "\n\nNotas/Dirección: " + notas;
 
-  const pedId = "ped_" + Date.now();
+  const pedId = "ped_" + crypto.randomUUID();
 
   return {
     id: pedId,

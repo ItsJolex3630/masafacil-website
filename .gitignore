@@ -1,7 +1,7 @@
 # Variables de entorno y secretos
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 *.key
 *.pem
 credentials.json

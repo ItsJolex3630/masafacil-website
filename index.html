@@ -2460,7 +2460,7 @@ function LB(sel) {
           tokens_a_usar: lastTotals.tokensUsados || 0
         });
       } else {
-        window.open(w.href, '_blank');
+        window.open(w.href, '_blank', 'noopener,noreferrer');
       }
       return;
     }
@@ -2615,19 +2615,22 @@ function LB(sel) {
   mfApi.applyProductOverrides = function(map){
     if (!map) return;
     const fmtP = n => '$' + Number(n).toFixed(2).replace('.', ',');
+    // Solo se aceptan precios numéricos finitos y no negativos desde el servidor;
+    // cualquier otro valor se ignora para no pintar "$NaN" en el catálogo.
+    const precioValido = v => v != null && Number.isFinite(Number(v)) && Number(v) >= 0;
     const get = (cat, n) => map[(cat || '') + '|' + (n || '')];
     const SAFE_IMG = /^assets\/img\/[\w\-\/]+\.webp$/; // allowlist anti-XSS por atributo src
     PASTELITOS_LIST.forEach(it => {
       const o = get('Pastelitos', it.n);
       if (!o) return;
-      if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
+      if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
       if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
     });
     DRINKS.forEach(it => {
       const o = get('Bebidas', it.n);
       if (!o) return;
-      if (o.precio != null) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
+      if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
       if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
     });
@@ -2635,9 +2638,9 @@ function LB(sel) {
       const cat = rw.dataset.cat || '';
       const nEl = rw.querySelector('.n'); if (!nEl) return;
       const o = get(cat, nEl.textContent.trim()); if (!o) return;
-      if (o.precio != null) { const pEl = rw.querySelector('.p'); if (pEl) pEl.textContent = fmtP(o.precio); }
+      if (precioValido(o.precio)) { const pEl = rw.querySelector('.p'); if (pEl) pEl.textContent = fmtP(o.precio); }
       const addBtn = rw.querySelector('.pl');
-      if (addBtn && o.precio != null) addBtn.dataset.u = o.precio;
+      if (addBtn && precioValido(o.precio)) addBtn.dataset.u = o.precio;
       if (o.promo_tag) { const tg = rw.querySelector('.tg'); if (tg) tg.textContent = o.promo_tag; }
       if (Number(o.disponible) === 0) {
         rw.classList.add('agotado');
@@ -2753,7 +2756,18 @@ function LB(sel) {
   }
 
   // ==== Cliente de API ====
-  function getCred(){ try{ return localStorage.getItem(CRED_KEY); }catch(e){ return null; } }
+  function getCred(){
+    try{
+      var t = localStorage.getItem(CRED_KEY);
+      if (!t) return null;
+      var p = parseJwt(t);
+      if (!p || !p.exp || (p.exp * 1000) < (Date.now() + 30000)) {
+        clearCred();
+        return null;
+      }
+      return t;
+    }catch(e){ return null; }
+  }
   function setCred(t){ try{ localStorage.setItem(CRED_KEY, t); }catch(e){} }
   function clearCred(){ try{ localStorage.removeItem(CRED_KEY); }catch(e){} }
 
@@ -2828,7 +2842,7 @@ function LB(sel) {
       if (signin) signin.style.display = 'none';
       pill.style.display = '';
       var av = $('u-avatar');
-      if (av) { av.src = c.avatar || 'assets/img/logo_masafacil.png'; av.alt = 'Foto de ' + (c.nombre || 'cliente'); }
+      if (av) { var safeAv = safeAvatar(c.avatar); av.src = safeAv; av.alt = 'Foto de ' + (c.nombre || 'cliente'); }
       var nm = $('u-name');
       if (nm) nm.textContent = String(c.nombre || 'Cliente').split(' ')[0];
       var bd = $('u-badge');
@@ -2904,7 +2918,7 @@ function LB(sel) {
     // Pestaña abierta desde el gesto del usuario (evita bloqueo de popups);
     // su destino final lo dicta la respuesta del servidor.
     var tab = null;
-    try { tab = window.open('about:blank', '_blank'); } catch (e) {}
+    try { tab = window.open('about:blank', '_blank', 'noopener,noreferrer'); if (tab) tab.opener = null; } catch (e) {}
 
     function irA(url){ if (tab) { tab.location.href = url; } else { window.location.href = url; } }
 
@@ -3115,7 +3129,26 @@ function LB(sel) {
   var rand = function(n){ return Math.floor(Math.random() * n); };
   var wait = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
   var norm = function(s){ return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
-  var esc = function(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); };
+  // Valida rutas de imagen antes de usarlas en src: bloquea esquemas peligrosos
+  // (javascript:, data:text/html) y devuelve un fallback seguro si no pasa.
+  var sanitizeAssetUrl = function(url, fallback){
+    fallback = fallback || 'assets/img/logo_masafacil.webp';
+    if (!url || typeof url !== 'string') return fallback;
+    var clean = url.trim();
+    if (/^(\/?assets\/img\/[a-zA-Z0-9_\-\/]+\.(webp|png|svg|jpg|jpeg))$/i.test(clean)) return clean;
+    try {
+      var parsed = new URL(clean, window.location.origin);
+      if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.href;
+    } catch (_) {}
+    return fallback;
+  };
+  // Valida avatar: solo permite lh3.googleusercontent.com o assets/img/*.png|webp
+  var safeAvatar = function(u){
+    if (!u || typeof u !== 'string') return 'assets/img/logo_masafacil.webp';
+    var clean = u.trim();
+    return (/^https:\/\/lh3\.googleusercontent\.com\//i.test(clean) || /^assets\/img\/[\w\-\/]+\.(webp|png)$/i.test(clean)) ? clean : 'assets/img/logo_masafacil.webp';
+  };
   var priceToU = function(p){ var v = parseFloat(String(p).replace(/[^\d,]/g, '').replace(',', '.')); return isNaN(v) ? null : v; };
   var keyFor = function(cat, n){ return cat === 'Pastelitos' ? 'Pastelito ' + n : (cat === 'Paninis' ? 'Panini ' + n : n); };
 
@@ -3254,7 +3287,7 @@ function LB(sel) {
   function addCard(item){
     var wrap = document.createElement('div');
     wrap.className = 'masito-card';
-    wrap.innerHTML = '<img src="' + esc(item.img || 'assets/img/logo_masafacil.png') + '" alt="">' +
+    wrap.innerHTML = '<img src="' + esc(sanitizeAssetUrl(item.img)) + '" alt="">' +
       '<div class="mc-info"><b>' + esc(item.name) + '</b><span>' + esc(item.price || '') + '</span><small>' + esc(item.desc || 'Recomendado por Masito') + '</small></div>' +
       '<button type="button" class="mc-add">+ Añadir</button>';
     var btn = wrap.querySelector('.mc-add');

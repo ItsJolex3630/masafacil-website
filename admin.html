@@ -172,20 +172,20 @@ textarea{width:100%;min-height:52px;resize:vertical}
     <h3 id="mv-title">Registrar Venta Manual</h3>
     <input type="hidden" id="mv-id">
     <div class="row">
-      <div><label>Nombre del cliente</label><input class="text" id="mv-nombre" placeholder="Ej: María González"></div>
-      <div><label>Teléfono (WhatsApp)</label><input class="text" id="mv-tel" placeholder="+58 424…"></div>
+      <div><label>Nombre del cliente</label><input class="text" id="mv-nombre" placeholder="Ej: María González" maxlength="120"></div>
+      <div><label>Teléfono (WhatsApp)</label><input class="text" id="mv-tel" placeholder="+58 424…" maxlength="40" inputmode="tel"></div>
     </div>
     <div class="row">
-      <div><label>Correo (opcional)</label><input class="text" id="mv-email" placeholder="cliente@correo.com"></div>
-      <div><label>Total ($ USD)</label><input class="num" id="mv-total" type="number" step="0.01" min="0" style="width:100%"></div>
+      <div><label>Correo (opcional)</label><input class="text" id="mv-email" placeholder="cliente@correo.com" maxlength="160" inputmode="email"></div>
+      <div><label>Total ($ USD)</label><input class="num" id="mv-total" type="number" step="0.01" min="0" max="100000" style="width:100%"></div>
     </div>
-    <div><label>Descripción / productos</label><textarea id="mv-items" placeholder="Ej: 6 pastelitos, 2 cafés, 1 panini"></textarea></div>
+    <div><label>Descripción / productos</label><textarea id="mv-items" maxlength="300" placeholder="Ej: 6 pastelitos, 2 cafés, 1 panini"></textarea></div>
     <div class="row">
-      <div><label>Zona / método</label><input class="text" id="mv-zona" placeholder="Tienda física / Delivery"></div>
+      <div><label>Zona / método</label><input class="text" id="mv-zona" placeholder="Tienda física / Delivery" maxlength="120"></div>
       <div><label>Estado</label><select id="mv-estado"><option value="completado">Completado</option><option value="pendiente">Pendiente</option><option value="cancelado">Cancelado</option></select></div>
     </div>
     <div><label>Método de pago</label><select id="mv-pago"><option>Efectivo</option><option>Pago Móvil</option><option>Punto de venta</option><option>Zelle</option></select></div>
-    <div><label>Notas</label><input class="text" id="mv-notas" placeholder="Notas internas (opcional)"></div>
+    <div><label>Notas</label><input class="text" id="mv-notas" placeholder="Notas internas (opcional)" maxlength="500"></div>
     <div class="actions">
       <button class="btn ghost sm" id="mv-cancel">Cancelar</button>
       <button class="btn sm" id="mv-save">Guardar</button>
@@ -206,8 +206,40 @@ textarea{width:100%;min-height:52px;resize:vertical}
   var $ = function(id){ return document.getElementById(id); };
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+  // Valida rutas de imagen antes de usarlas en src: bloquea esquemas peligrosos
+  // (javascript:, data:text/html) y devuelve un fallback seguro si no pasa.
+  function sanitizeAssetUrl(url, fallback){
+    fallback = fallback || 'assets/img/logo_masafacil.webp';
+    if (!url || typeof url !== 'string') return fallback;
+    var clean = url.trim();
+    if (/^(\/?assets\/img\/[a-zA-Z0-9_\-\/]+\.(webp|png|svg|jpg|jpeg))$/i.test(clean)) return clean;
+    try {
+      var parsed = new URL(clean, window.location.origin);
+      if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.href;
+    } catch (_) {}
+    return fallback;
+  }
+  // Valida avatar: solo permite Google (lh3.googleusercontent.com) o assets/img/ local.
+  function safeAvatar(u){
+    if(!u || typeof u !== 'string') return 'assets/img/logo_masafacil.webp';
+    var clean = u.trim();
+    if (/^https:\/\/lh3\.googleusercontent\.com\//i.test(clean)) return clean;
+    if (/^assets\/img\/[\w\-\/]+\.(png|webp)$/i.test(clean)) return clean;
+    return 'assets/img/logo_masafacil.webp';
+  }
   function fmt(n){ return '$' + Number(n||0).toFixed(2).replace('.',','); }
   function digits(s){ return String(s||'').replace(/[^\d]/g,''); }
+  // Validación numérica estricta: devuelve un número finito dentro de [0, max],
+  // o null si la entrada no es un número válido. Evita NaN/negativos/desbordes
+  // antes de enviarlos al servidor (que además los vuelve a validar).
+  function numPos(v, max){
+    var s = String(v == null ? '' : v).trim();
+    if (s === '') return null;
+    var n = Number(s);
+    if (!Number.isFinite(n) || n < 0) return null;
+    if (max != null && n > max) return null;
+    return n;
+  }
   function toast(msg, err){ var t=$('toast'); t.textContent=msg; t.className = 'on' + (err?' err':''); clearTimeout(t._t); t._t=setTimeout(function(){ t.className=''; }, 2600); }
   function parseJwt(token){ try{ var b=token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(atob(b).split('').map(function(c){return '%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''))); }catch(e){ return null; } }
 
@@ -324,7 +356,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     list.innerHTML = '<div class="card" style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Nivel</th><th>Tokens</th><th>Descuento %</th><th></th></tr></thead><tbody>' +
       rows.map(function(c){
         return '<tr data-id="'+esc(c.id)+'">' +
-          '<td><img class="avatar" src="'+esc(c.avatar_url||'assets/img/logo_masafacil.png')+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.png\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
+          '<td><img class="avatar" src="'+esc(safeAvatar(c.avatar_url))+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.webp\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
           '<td><div>'+esc(c.email||'')+'</div><div class="muted">'+esc(c.telefono_whatsapp||'—')+'</div></td>' +
           '<td><input class="num peds" type="number" min="0" step="1" value="'+Number(c.total_pedidos||0)+'"></td>' +
           '<td><input class="num gast" type="number" min="0" step="0.01" value="'+Number(c.total_gastado||0)+'"></td>' +
@@ -337,13 +369,26 @@ textarea{width:100%;min-height:52px;resize:vertical}
     list.querySelectorAll('.save-cli').forEach(function(btn){
       btn.addEventListener('click', async function(){
         var tr = btn.closest('tr'); var id = tr.dataset.id;
-        var pct = Number(tr.querySelector('.pct').value||0);
+        var pct = numPos(tr.querySelector('.pct').value, 100);
+        if (pct === null) { toast('Descuento inválido: debe ser un número entre 0 y 100.', true); return; }
         var niv = tr.querySelector('.niv').value;
         var body = { porcentaje_descuento: pct, nivel_fidelizacion: niv };
         var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast'), toks = tr.querySelector('.toks');
-        if(peds) body.total_pedidos = Number(peds.value||0);
-        if(gast) body.total_gastado = Number(gast.value||0);
-        if(toks) body.tokens_saldo = Number(toks.value||0);
+        if (peds) {
+          var vPeds = numPos(peds.value, 100000);
+          if (vPeds === null) { toast('Pedidos inválido: número entre 0 y 100.000.', true); return; }
+          body.total_pedidos = vPeds;
+        }
+        if (gast) {
+          var vGast = numPos(gast.value, 1000000);
+          if (vGast === null) { toast('Gastado inválido: número entre 0 y 1.000.000.', true); return; }
+          body.total_gastado = vGast;
+        }
+        if (toks) {
+          var vToks = numPos(toks.value, 10000000);
+          if (vToks === null) { toast('Tokens inválido: número entre 0 y 10.000.000.', true); return; }
+          body.tokens_saldo = vToks;
+        }
         try{
           await api('/api/admin/clientes/' + encodeURIComponent(id), {
             method: 'PUT',
@@ -382,11 +427,11 @@ textarea{width:100%;min-height:52px;resize:vertical}
         return '<div class="card" data-id="'+esc(p.id)+'">' +
           '<div class="prod-head"><b>'+esc(p.nombre)+'</b><span class="switch"><input type="checkbox" class="disp"'+(Number(p.disponible)?' checked':'')+'> Disponible</span></div>' +
           '<div class="prod-row">' +
-            '<div><label>Precio ($ USD)</label><input class="num precio" type="number" min="0" step="0.01" value="'+Number(p.precio||0)+'"></div>' +
-            '<div><label>Badge / Tag</label><input class="text tag-in" value="'+esc(p.promo_tag||'')+'"></div>' +
+            '<div><label>Precio ($ USD)</label><input class="num precio" type="number" min="0" max="10000" step="0.01" value="'+Number(p.precio||0)+'"></div>' +
+            '<div><label>Badge / Tag</label><input class="text tag-in" maxlength="40" value="'+esc(p.promo_tag||'')+'"></div>' +
           '</div>' +
-          '<div class="prod-row"><div><label>Ruta de imagen (.webp)</label><input class="text img-in" value="'+esc(p.imagen_url||'')+'"></div></div>' +
-          '<div><label style="font-size:.72rem;color:#6a5750">Descripción</label><textarea class="desc-in">'+esc(p.descripcion||'')+'</textarea></div>' +
+          '<div class="prod-row"><div><label>Ruta de imagen (.webp)</label><input class="text img-in" maxlength="300" value="'+esc(p.imagen_url||'')+'"></div></div>' +
+          '<div><label style="font-size:.72rem;color:#6a5750">Descripción</label><textarea class="desc-in" maxlength="500">'+esc(p.descripcion||'')+'</textarea></div>' +
           '<div style="margin-top:8px;text-align:right"><button class="btn sm save-prod">Guardar</button></div>' +
         '</div>';
       }).join('') + '</div>';
@@ -394,17 +439,23 @@ textarea{width:100%;min-height:52px;resize:vertical}
     list.querySelectorAll('.save-prod').forEach(function(btn){
       btn.addEventListener('click', async function(){
         var card = btn.closest('.card'); var id = card.dataset.id;
+        var precio = numPos(card.querySelector('.precio').value, 10000);
+        if (precio === null) { toast('Precio inválido: debe ser un número entre 0 y 10.000.', true); return; }
+        var imgVal = card.querySelector('.img-in').value.trim();
+        if (imgVal && !/^assets\/img\/[\w\-\/]+\.webp$/.test(imgVal)) {
+          toast('Ruta de imagen inválida: debe ser assets/img/… .webp', true); return;
+        }
         var body = {
-          precio: Number(card.querySelector('.precio').value||0),
+          precio: precio,
           disponible: card.querySelector('.disp').checked ? 1 : 0,
           promo_tag: card.querySelector('.tag-in').value.trim(),
-          imagen_url: card.querySelector('.img-in').value.trim(),
+          imagen_url: imgVal,
           descripcion: card.querySelector('.desc-in').value.trim()
         };
         try{
           await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
           toast('Producto actualizado ✓');
-        }catch(e){ toast('Error al guardar: '+(e.message||e), true); }
+        }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
       });
     });
   }

@@ -8,6 +8,11 @@ import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from 
 const NIVELES = ["Nuevo", "Frecuente", "Plata", "Oro", "VIP"];
 const ESTADOS = ["pendiente", "completado", "cancelado"];
 
+// Helper centralizado para obtener IP del cliente (respeta CF-Connecting-IP)
+function getClientIp(request) {
+  return request.headers.get("CF-Connecting-IP") || "local-client";
+}
+
 // Siembra idempotente de los administradores base en Turso. La lista se lee de la
 // variable de entorno segura `ADMIN_SEEDS` (no hardcodeada en el repo); solo si
 // está ausente se usa un respaldo local. SOLO inserta los que faltan y NUNCA
@@ -30,14 +35,10 @@ async function seedAdmins(db, env) {
     }
   }
 
+  // Si no se configuró la variable de entorno, no sembrar nada y marcar completado
   if (!adminList.length) {
-    adminList = [
-      ["jolex3630@gmail.com", "Administrador Principal"],
-      ["masafacilelmaracucho@gmail.com", "Masa Fácil Maracucho"],
-      ["somosvendo.ve@gmail.com", "Somos Vendo"],
-      ["masafaciladminweb@gmail.com", "Masa Fácil Admin Web"],
-      ["maryorycastellano31@gmail.com", "Maryory Castellano"],
-    ];
+    adminsSeeded = true;
+    return;
   }
 
   try {
@@ -125,10 +126,7 @@ export async function onRequest(context) {
     // aporta Google ya verificado: aquí no se acepta.
     if (route === "/me/perfil" && method === "POST") {
       const u = await requireUser(request, env);
-      const ip =
-        request.headers.get("CF-Connecting-IP") ||
-        (request.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
-        "unknown";
+      const ip = getClientIp(request);
       const permitido = await rateLimit(db, "perfil:" + ip, 15, 5 * 60 * 1000);
       if (!permitido) {
         return json({ error: "Demasiadas solicitudes de actualización. Intenta de nuevo en unos minutos." }, 429);
@@ -165,10 +163,7 @@ export async function onRequest(context) {
     }
 
     if (route === "/pedidos" && method === "POST") {
-      const ip =
-        request.headers.get("CF-Connecting-IP") ||
-        (request.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
-        "unknown";
+      const ip = getClientIp(request);
       const permitido = await rateLimit(db, "ped:" + ip, 10, 10 * 60 * 1000);
       if (!permitido) {
         return json({ error: "Demasiados pedidos. Intenta de nuevo en unos minutos." }, 429);
@@ -182,14 +177,18 @@ export async function onRequest(context) {
         args: pedido.args,
       }];
       // Canje inmediato de tokens (ledger + saldo) en la misma transacción del pedido.
+      // Anti-TOCTOU: actualización atómica con condición tokens_saldo >= cantidad a canjear.
       if (pedido.tokens && pedido.tokens.canjeados > 0 && pedido.clienteId) {
+        const deduct = await db.execute({
+          sql: "UPDATE clientes SET tokens_saldo = tokens_saldo - ?, updated_at = datetime('now') WHERE id = ? AND tokens_saldo >= ?",
+          args: [pedido.tokens.canjeados, pedido.clienteId, pedido.tokens.canjeados],
+        });
+        if (!deduct.rowsAffected) {
+          throw new HttpError(409, "Saldo de tokens insuficiente o modificado por otra operación.");
+        }
         stmts.push({
           sql: "INSERT INTO tokens_movimientos (cliente_id, pedido_id, tipo, tokens, motivo) VALUES (?, ?, 'redeem', ?, ?)",
           args: [pedido.clienteId, pedido.id, -pedido.tokens.canjeados, `Canje en pedido ${pedido.id}`],
-        });
-        stmts.push({
-          sql: "UPDATE clientes SET tokens_saldo = MAX(0, tokens_saldo - ?), updated_at = datetime('now') WHERE id = ?",
-          args: [pedido.tokens.canjeados, pedido.clienteId],
         });
       }
       await db.batch(stmts, "write");
@@ -197,6 +196,13 @@ export async function onRequest(context) {
     }
 
     // ---------- Administración (admin verificado en servidor) ----------
+    // Rate limiting para rutas administrativas (anti-fuerza bruta)
+    if (route.startsWith("/admin/")) {
+      const ip = getClientIp(request);
+      const okAdminRate = await rateLimit(db, "adm:" + ip, 60, 60 * 1000);
+      if (!okAdminRate) return json({ error: "Demasiadas peticiones administrativas." }, 429);
+    }
+
     if (route === "/admin/me" && method === "GET") {
       const u = await requireAdmin(request, env);
       return json({ email: u.email, nombre: u.name || "", picture: u.picture || "" });
@@ -206,7 +212,7 @@ export async function onRequest(context) {
       await requireAdmin(request, env);
       const url = new URL(request.url);
       const sort = url.searchParams.get("sort") === "gastado" ? "total_gastado DESC" : "total_pedidos DESC";
-      const r = await db.execute("SELECT " + CLIENTE_COLS + " FROM clientes ORDER BY " + sort);
+      const r = await db.execute("SELECT " + CLIENTE_COLS + " FROM clientes ORDER BY " + sort + " LIMIT 500");
       return json(r.rows);
     }
 
@@ -272,7 +278,7 @@ export async function onRequest(context) {
 
     if (route === "/admin/pedidos" && method === "GET") {
       await requireAdmin(request, env);
-      const r = await db.execute("SELECT * FROM pedidos ORDER BY datetime(created_at) DESC, id DESC");
+      const r = await db.execute("SELECT * FROM pedidos ORDER BY datetime(created_at) DESC, id DESC LIMIT 500");
       return json(r.rows);
     }
 
@@ -296,7 +302,7 @@ export async function onRequest(context) {
         const q = await db.execute({ sql: "SELECT id FROM clientes WHERE lower(email) = lower(?)", args: [email] });
         if (q.rows.length) clienteId = q.rows[0].id;
       }
-      const id = "man_" + Date.now();
+      const id = "man_" + crypto.randomUUID();
       const stmts = [{
         sql: "INSERT INTO pedidos (id, cliente_id, nombre_cliente, email_cliente, telefono_whatsapp, items_json, subtotal, descuento_aplicado, costo_delivery, total_final, zona_entrega, notas, metodo_pago, estado) VALUES (?,?,?,?,?,?,?,0,0,?,?,?,?,?)",
         args: [id, clienteId, nombre, email, tel, items_json, total, total, zona, notas, metodo_pago, estado],
@@ -331,17 +337,23 @@ export async function onRequest(context) {
       if (old !== "completado" && nuevo === "completado") { dCount = 1; dSpend = Number(p.total_final || 0); }
       else if (old === "completado" && nuevo !== "completado") { dCount = -1; dSpend = -Number(p.total_final || 0); }
 
-      const stmts = [{
-        sql: "UPDATE pedidos SET estado = ?, updated_at = datetime('now') WHERE id = ?",
-        args: [nuevo, id],
-      }];
+      // Corrección Falla 2: Ejecución atómica y única del cambio de estado
+      const upd = await db.execute({
+        sql: "UPDATE pedidos SET estado = ?, updated_at = datetime('now') WHERE id = ? AND COALESCE(estado, 'pendiente') = ?",
+        args: [nuevo, id, old],
+      });
+      if (!upd.rowsAffected) {
+        throw new HttpError(409, "El estado del pedido ya fue modificado por otra solicitud.");
+      }
+
+      const stmts = [];
       if (p.cliente_id && (dCount || dSpend)) {
         stmts.push({
           sql: "UPDATE clientes SET total_pedidos = MAX(0, total_pedidos + ?), total_gastado = MAX(0, total_gastado + ?), updated_at = datetime('now') WHERE id = ?",
           args: [dCount, dSpend, p.cliente_id],
         });
       }
-      await db.batch(stmts, "write");
+      if (stmts.length) await db.batch(stmts, "write");
 
       // Fidelización por tokens: acreditar al completar, revertir al descompletar.
       let tokensAcreditados = 0;
@@ -373,26 +385,30 @@ export async function onRequest(context) {
       const descTxt = sanitizePlainText(body.items, 300);
       const items_json = JSON.stringify(descTxt ? { [descTxt]: { q: 1, u: total } } : {});
 
+      // Corrección Falla 1: Declarar oldE en el ámbito de la función antes del batch
+      const oldE = p.estado || "pendiente";
+      const oldT = Number(p.total_final || 0);
+      let dC = 0, dS = 0;
+      if (oldE !== "completado" && estado === "completado") { dC = 1; dS = total; }
+      else if (oldE === "completado" && estado !== "completado") { dC = -1; dS = -oldT; }
+      else if (oldE === "completado" && estado === "completado") { dS = total - oldT; }
+
       const stmts = [];
-      if (p.cliente_id) {
-        const oldE = p.estado || "pendiente";
-        const oldT = Number(p.total_final || 0);
-        let dC = 0, dS = 0;
-        if (oldE !== "completado" && estado === "completado") { dC = 1; dS = total; }
-        else if (oldE === "completado" && estado !== "completado") { dC = -1; dS = -oldT; }
-        else if (oldE === "completado" && estado === "completado") { dS = total - oldT; }
-        if (dC || dS) {
-          stmts.push({
-            sql: "UPDATE clientes SET total_pedidos = MAX(0, total_pedidos + ?), total_gastado = MAX(0, total_gastado + ?), updated_at = datetime('now') WHERE id = ?",
-            args: [dC, dS, p.cliente_id],
-          });
-        }
+      if (p.cliente_id && (dC || dS)) {
+        stmts.push({
+          sql: "UPDATE clientes SET total_pedidos = MAX(0, total_pedidos + ?), total_gastado = MAX(0, total_gastado + ?), updated_at = datetime('now') WHERE id = ?",
+          args: [dC, dS, p.cliente_id],
+        });
       }
       stmts.push({
         sql: "UPDATE pedidos SET nombre_cliente=?, email_cliente=?, telefono_whatsapp=?, items_json=?, total_final=?, zona_entrega=?, notas=?, metodo_pago=?, estado=?, updated_at=datetime('now') WHERE id=?",
         args: [nombre, email, tel, items_json, total, zona, notas, metodo_pago, estado, id],
       });
       await db.batch(stmts, "write");
+      if (p.cliente_id) {
+        if (oldE !== "completado" && estado === "completado") await acreditarTokensPedido(db, p);
+        else if (oldE === "completado" && estado !== "completado") await revertirTokensPedido(db, p);
+      }
       return json({ ok: true });
     }
 

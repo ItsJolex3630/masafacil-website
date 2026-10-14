@@ -90,10 +90,17 @@ export function json(data, status = 200) {
   });
 }
 
-export async function readBody(request) {
+export async function readBody(request, maxBytes = 65536) {
+  const len = Number(request.headers.get("content-length") || 0);
+  if (len > maxBytes) {
+    throw new HttpError(413, "Cuerpo de la petición demasiado grande");
+  }
   try {
-    return await request.json();
+    const raw = await request.text();
+    if (raw.length > maxBytes) throw new Error("Payload too large");
+    return JSON.parse(raw);
   } catch (e) {
+    if (e instanceof HttpError) throw e;
     throw new HttpError(400, "Cuerpo de la petición inválido");
   }
 }
@@ -139,13 +146,12 @@ export async function rateLimit(db, key, limit, windowMs) {
   try {
     await ensureRateTable(db);
     const ws = Math.floor(Date.now() / windowMs) * windowMs;
-    await db.execute({
+    const r = await db.execute({
       sql:
         "INSERT INTO rate_limits (k, ws, hits) VALUES (?, ?, 1) " +
-        "ON CONFLICT(k) DO UPDATE SET hits = CASE WHEN ws = excluded.ws THEN hits + 1 ELSE 1 END, ws = excluded.ws",
+        "ON CONFLICT(k) DO UPDATE SET hits = CASE WHEN ws = excluded.ws THEN hits + 1 ELSE 1 END, ws = excluded.ws RETURNING hits",
       args: [key, ws],
     });
-    const r = await db.execute({ sql: "SELECT hits FROM rate_limits WHERE k = ?", args: [key] });
     const hits = Number(r.rows[0] ? r.rows[0].hits : 1);
     if (Math.random() < 0.02) {
       db.execute({ sql: "DELETE FROM rate_limits WHERE ws < ?", args: [ws - windowMs * 10] }).catch(() => {});

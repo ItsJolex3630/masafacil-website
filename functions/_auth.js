@@ -23,7 +23,7 @@ async function verify(request, env) {
       audience: env.GOOGLE_CLIENT_ID,
       issuer: ["https://accounts.google.com", "accounts.google.com"],
     });
-    if (!payload.sub || !payload.email) return null;
+    if (!payload.sub || !payload.email || payload.email_verified !== true) return null;
     return payload;
   } catch (e) {
     throw new HttpError(401, "Credencial de Google inválida o expirada");
