@@ -263,13 +263,14 @@ textarea{width:100%;min-height:52px;resize:vertical}
     } catch (_) {}
     return fallback;
   }
-  // Valida avatar: solo permite Google (lh3.googleusercontent.com) o assets/img/ local.
+  var DEFAULT_AVATAR_SILHOUETTE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'><rect width='40' height='40' rx='20' fill='%236a3826'/><path d='M20 11a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 13c-5.5 0-11 2.8-11 6v2h22v-2c0-3.2-5.5-6-11-6z' fill='%23ffffff' opacity='0.95'/></svg>";
+  // Valida avatar: permite Google o assets locales; silueta si no hay foto
   function safeAvatar(u){
-    if(!u || typeof u !== 'string') return 'assets/img/logo_masafacil.webp';
+    if(!u || typeof u !== 'string') return DEFAULT_AVATAR_SILHOUETTE;
     var clean = u.trim();
     if (/^https:\/\/lh3\.googleusercontent\.com\//i.test(clean)) return clean;
     if (/^assets\/img\/[\w\-\/]+\.(png|webp)$/i.test(clean)) return clean;
-    return 'assets/img/logo_masafacil.webp';
+    return DEFAULT_AVATAR_SILHOUETTE;
   }
   function fmt(n){ return '$' + Number(n||0).toFixed(2).replace('.',','); }
   function digits(s){ return String(s||'').replace(/[^\d]/g,''); }
@@ -410,7 +411,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     list.innerHTML = '<div class="card" style="overflow-x:auto"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Pedidos</th><th>Gastado</th><th>Nivel</th><th>Tokens</th><th>Descuento %</th><th></th></tr></thead><tbody>' +
       rows.map(function(c){
         return '<tr data-id="'+esc(c.id)+'">' +
-          '<td><img class="avatar" src="'+esc(safeAvatar(c.avatar_url))+'" alt="" onerror="this.src=\'assets/img/logo_masafacil.webp\'"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
+          '<td><img class="avatar" src="'+esc(safeAvatar(c.avatar_url))+'" alt="" onerror="this.onerror=null;this.src=DEFAULT_AVATAR_SILHOUETTE"><b>'+esc(c.nombre||'Cliente')+'</b></td>' +
           '<td><div>'+esc(c.email||'')+'</div><div class="muted">'+esc(c.telefono_whatsapp||'—')+'</div></td>' +
           '<td><input class="num peds" type="number" min="0" step="1" value="'+Number(c.total_pedidos||0)+'"></td>' +
           '<td><input class="num gast" type="number" min="0" step="0.01" value="'+Number(c.total_gastado||0)+'"></td>' +
