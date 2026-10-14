@@ -148,8 +148,8 @@ export async function buildPedido(db, user, body) {
   const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
   const total = Number((subtotalFinal + deliveryCosto).toFixed(2));
 
-  // Método de pago elegido en el carrito (Efectivo, Pago Móvil, Punto de venta, Zelle).
-  const metodosPago = ["Efectivo", "Pago Móvil", "Punto de venta", "Zelle"];
+  // Método de pago elegido en el carrito (Efectivo, Pago Móvil, Punto de venta, Zelle, Binance).
+  const metodosPago = ["Efectivo", "Pago Móvil", "Punto de venta", "Zelle", "Binance"];
   const pagoRaw = str(body.pago, 40);
   const pago = metodosPago.includes(pagoRaw) ? pagoRaw : "Efectivo";
 
