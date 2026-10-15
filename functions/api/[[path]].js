@@ -1,7 +1,7 @@
 // API de Masafácil — toda la autorización y el cállo de datos ocurre aquí,
 // en el servidor. El navegador nunca recibe credenciales de Turso.
 import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IMG_ALLOWLIST, sanitizePlainText } from "../_db.js";
-import { optionalUser, requireUser, requireAdmin } from "../_auth.js";
+import { optionalUser, requireUser, requireAdmin, createSessionToken } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
 import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from "../_tokens.js";
 
@@ -63,7 +63,42 @@ async function seedAdmins(db, env) {
 }
 
 const CLIENTE_COLS =
-  "id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion,tokens_saldo,perfil_completo";
+  "id,email,nombre,avatar_url,telefono_whatsapp,total_pedidos,total_gastado,porcentaje_descuento,nivel_fidelizacion,tokens_saldo,perfil_completo,carrito_json";
+
+// Saneamiento del carrito del cliente: solo pares llave->{q,u} válidos, con
+// cantidades enteras 1-99 y un máximo de 100 productos. Nunca confía en el
+// navegador: normaliza la forma antigua (llave->qty) a la nueva (llave->{q,u}).
+function sanitizeCarrito(raw) {
+  const out = {};
+  if (!raw || typeof raw !== "object") return out;
+  const keys = Object.keys(raw).slice(0, 100);
+  for (const k of keys) {
+    const key = str(k, 120);
+    if (!key) continue;
+    const v = raw[k];
+    let q = 0;
+    let u = null;
+    if (v && typeof v === "object") {
+      q = Math.min(99, Math.max(0, Math.floor(num(v.q, 0))));
+      if (v.u != null) {
+        const n = Number(v.u);
+        u = Number.isFinite(n) ? Math.max(0, Math.min(10000, n)) : null;
+      }
+    } else {
+      q = Math.min(99, Math.max(0, Math.floor(num(v, 0))));
+    }
+    if (q >= 1) out[key] = { q: q, u: u };
+  }
+  return out;
+}
+
+function parseCarrito(carritoJson) {
+  try {
+    return carritoJson ? sanitizeCarrito(JSON.parse(carritoJson)) : {};
+  } catch (e) {
+    return {};
+  }
+}
 
 export async function onRequest(context) {
   const { request, env, params } = context;
@@ -131,6 +166,9 @@ export async function onRequest(context) {
       }
 
       const row = r.rows[0];
+      // Sesión de 30 días emitida por el servidor: reemplaza al ID Token de
+      // Google (vida ~1h) en localStorage y evita cierres prematuros de sesión.
+      const sessionToken = await createSessionToken({ sub, email, name, picture, role: "cliente" }, env);
       return json({
         id: row.id,
         email: row.email,
@@ -142,7 +180,25 @@ export async function onRequest(context) {
         total_pedidos: Number(row.total_pedidos || 0),
         tokens_saldo: Number(row.tokens_saldo || 0),
         perfil_completo: Number(row.perfil_completo || 0),
+        carrito: parseCarrito(row.carrito_json),
+        session_token: sessionToken,
       });
+    }
+
+    // Persistencia del carrito del cliente en Turso (asociado a su cuenta).
+    // El carrito solo se vacía desde el frontend al pulsar "Pedir por WhatsApp".
+    if (route === "/me/carrito" && method === "PUT") {
+      const u = await requireUser(request, env);
+      const email = String(u.email || "").toLowerCase().trim();
+      const sub = String(u.sub || ("usr:" + email));
+      if (!email) throw new HttpError(400, "El token no contiene un correo válido");
+      const body = await readBody(request);
+      const items = sanitizeCarrito(body && body.items);
+      await db.execute({
+        sql: "UPDATE clientes SET carrito_json = ?, updated_at = datetime('now') WHERE id = ? OR lower(email) = ?",
+        args: [JSON.stringify(items), sub, email],
+      });
+      return json({ ok: true });
     }
 
     // Completar perfil del Club Masafácil (nombre + WhatsApp). El correo lo
@@ -214,6 +270,16 @@ export async function onRequest(context) {
         stmts.push({
           sql: "INSERT INTO tokens_movimientos (cliente_id, pedido_id, tipo, tokens, motivo) VALUES (?, ?, 'redeem', ?, ?)",
           args: [pedido.clienteId, pedido.id, -pedido.tokens.canjeados, `Canje en pedido ${pedido.id}`],
+        });
+      }
+      // El pedido consumió el carrito del cliente registrado: se vacía en la
+      // misma transacción para que nunca queden artículos ya pedidos.
+      if (u && u.email) {
+        const rEmail = String(u.email).toLowerCase().trim();
+        const rSub = String(u.sub || ("usr:" + rEmail));
+        stmts.push({
+          sql: "UPDATE clientes SET carrito_json = '{}', updated_at = datetime('now') WHERE id = ? OR lower(email) = ?",
+          args: [rSub, rEmail],
         });
       }
       await db.batch(stmts, "write");
@@ -323,7 +389,9 @@ export async function onRequest(context) {
         console.warn("No se pudo sincronizar admin en clientes:", eSync && eSync.message);
       }
 
-      return json({ email: u.email, nombre: u.name || "", picture: u.picture || "" });
+      // Sesión de administrador de 30 días emitida por el servidor.
+      const sessionToken = await createSessionToken({ sub, email, name, picture, role: "admin" }, env);
+      return json({ email: u.email, nombre: u.name || "", picture: u.picture || "", session_token: sessionToken });
     }
 
     if (route === "/admin/clientes" && method === "GET") {

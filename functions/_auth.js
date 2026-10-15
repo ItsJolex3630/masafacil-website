@@ -36,6 +36,31 @@ export async function createAdminToken(email, nombre, env) {
   return jwt;
 }
 
+// Genera un token de sesión de 30 días emitido por el servidor (HS256). Se usa
+// para reemplazar el ID Token de Google (vida ~1h) y evitar que la sesión del
+// cliente se cierre sola cada hora.
+export async function createSessionToken(user, env) {
+  const secret = getSecretKey(env);
+  const email = String((user && user.email) || "").toLowerCase().trim();
+  const sub = String((user && user.sub) || ("usr:" + email));
+  const name = String((user && (user.name || user.nombre)) || "Cliente").slice(0, 120);
+  const picture = String((user && (user.picture || user.avatar || user.avatar_url)) || "").slice(0, 300);
+  const role = String((user && user.role) || "cliente");
+  const jwt = await new SignJWT({
+    sub: sub,
+    email: email,
+    name: name,
+    picture: picture,
+    role: role,
+    iss: "masafacil-auth"
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("30d") // 30 días: sesión continua emitida por el servidor
+    .sign(secret);
+  return jwt;
+}
+
 async function verify(request, env) {
   const token = extractToken(request);
   if (!token) return null;

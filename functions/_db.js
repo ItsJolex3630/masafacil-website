@@ -36,6 +36,8 @@ export async function ensureSchema(db) {
     "ALTER TABLE pedidos ADD COLUMN tokens_canjeados INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN tokens_ganados INTEGER DEFAULT 0",
     "ALTER TABLE pedidos ADD COLUMN metodo_pago TEXT",
+    // Carrito persistente del cliente (sincronizado desde el navegador).
+    "ALTER TABLE clientes ADD COLUMN carrito_json TEXT DEFAULT '{}'",
   ];
   for (const sql of alters) {
     try {

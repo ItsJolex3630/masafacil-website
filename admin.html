@@ -369,6 +369,9 @@ textarea{width:100%;min-height:52px;resize:vertical}
       return;
     }
     adminEmail = me.email || adminEmail;
+    // Sesión de administrador de 30 días emitida por el servidor: evita que el
+    // panel cierre sesión al expirar el ID Token de Google (~1h).
+    if (me && me.session_token) setCred(me.session_token);
     $('admin-name').textContent = me.nombre || adminEmail;
     $('admin-email').textContent = adminEmail;
     showApp();
