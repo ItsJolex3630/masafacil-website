@@ -3,7 +3,10 @@
 <link rel="apple-touch-icon" href="assets/img/logo_masafacil.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/img/hero_spread.webp" fetchpriority="high">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet"></noscript>
 <script>
 (function resetClientStorageOnce() {
   var CURRENT_VERSION = 'mf_clean_20261014_v1';
@@ -63,7 +66,7 @@ nav{background:#40201aE8;backdrop-filter:saturate(1.5) blur(14px)}
 .btn:active,.tabs button:active,.wf:active,.ai:active{transform:scale(.97)}
 @media(hover:hover) and (pointer:fine){.btn:hover{filter:brightness(1.08)}.tabs button:hover{background:var(--k)}.tabs button[aria-pressed=true]:hover{background:var(--dk)}.mn img:hover{transform:scale(1.02)}}
 .mn img{transition:transform 300ms var(--eo)}
-.rw{opacity:0;transform:translateY(8px);animation:up 300ms var(--eo) forwards}@keyframes up{to{opacity:1;transform:none}}
+.rw{opacity:1;transform:none}
 .rv{opacity:0;transform:translateY(14px);transition:opacity 500ms var(--eo),transform 500ms var(--eo)}.rv.in{opacity:1;transform:none}
 .hero .tx>*{animation:hi 600ms var(--eo) both}.hero .tx>*:nth-child(2){animation-delay:60ms}.hero .tx>*:nth-child(3){animation-delay:120ms}.hero .tx>*:nth-child(4){animation-delay:180ms}.hero .tx>*:nth-child(5){animation-delay:240ms}@keyframes hi{from{opacity:0;transform:translateY(12px)}}
 .chat{display:block!important;visibility:hidden;opacity:0;transform:translateY(8px) scale(.95);transform-origin:bottom left;transition:opacity 180ms var(--eo),transform 180ms var(--eo),visibility 0s linear 180ms}.chat.on{visibility:visible;opacity:1;transform:none;transition-delay:0s}
@@ -87,7 +90,7 @@ nav{background:rgba(64,32,26,.88);backdrop-filter:blur(18px) saturate(180%);-web
 .ind{position:absolute;top:4px;left:0;height:calc(100% - 8px);border-radius:99px;background:var(--dk);transition:transform 400ms var(--ea),width 400ms var(--ea);z-index:0}
 .nl a[aria-current]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:7px}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){nav{background:#40201a;backdrop-filter:none}.wf{background:#6f3826;backdrop-filter:none}.ai{background:#c9a577;backdrop-filter:none}.chat{background:#fff;backdrop-filter:none}}
-@media(prefers-reduced-motion:reduce){.ind{transition:none}}</style><style id="v2">body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media(prefers-reduced-motion:reduce){.ind{transition:none}}</style><style id="v2">@media (min-width: 1024px) and (hover: hover) and (pointer: fine) { body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")} }
 .hero .ph{position:relative;border-radius:999px 999px 30px 30px;margin:26px 26px 26px 0;min-height:440px;box-shadow:14px 14px 0 var(--tan)}@media(max-width:799px){.hero .ph{margin:0 26px 40px 18px;min-height:380px}}
 .stk{position:absolute;left:-22px;bottom:34px;width:114px;height:114px;border-radius:50%;box-shadow:0 10px 30px rgba(64,32,26,.3);transform:rotate(-7deg);border:4px solid var(--bg);overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;padding:12px;box-sizing:border-box}@media(max-width:799px){.stk{left:-10px;bottom:20px;width:96px;height:96px;padding:9px}}.stk img{width:100%;height:auto;object-fit:contain;display:block}
 .tg1{position:absolute;right:-8px;top:46px;background:var(--dk);color:var(--bg);font:600 0.9375rem/1.15 var(--h);padding:12px 16px;border-radius:18px;transform:rotate(6deg);box-shadow:0 8px 22px rgba(64,32,26,.3);text-align:center}.tg1 b{font-size:1.625rem;color:var(--tan)}
@@ -199,7 +202,7 @@ html.lock{overflow:hidden}
 .mn.is-pastelitos .plate-stage,.mn.is-bebidas .plate-stage{display:flex;position:absolute;top:0;bottom:0;left:calc(-1 * ((100vw - min(1040px, 100vw)) / 2 + 18px));width:calc((100vw - min(1040px, 100vw)) / 2 + 18px + 430px);max-width:620px;height:100%;min-height:850px;overflow:visible;pointer-events:none;z-index:5;background:none;border:none;box-shadow:none}
 .plate-viewport{position:absolute;inset:0;overflow:hidden;pointer-events:auto}
 .plate-wheel{position:absolute;top:50%;left:0;height:min(840px,94%);aspect-ratio:1/1;border-radius:50%;transform:translate(-50%,-50%);will-change:transform;transform-origin:center center;transition:transform 700ms var(--ea)}
-.plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 28px rgba(64,32,26,.22));user-select:none;pointer-events:none;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges}
+.plate-stage .plate-base-img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:50%;box-shadow:none;filter:drop-shadow(14px 18px 28px rgba(64,32,26,.22));user-select:none;pointer-events:none}
 .plate-slots{position:absolute;inset:0}
 .plate-item{position:absolute;top:50%;left:50%;width:150px;height:150px;margin:-75px 0 0 -75px;cursor:pointer;display:flex;align-items:center;justify-content:center;transform-origin:center center;transition:transform 700ms var(--ea),filter 300ms ease,opacity 350ms ease;z-index:2}
 .plate-stage .plate-item img{width:100%;height:100%;max-height:none;object-fit:contain;border-radius:0;box-shadow:none;filter:drop-shadow(0 10px 18px rgba(40,20,14,.32));transition:transform 450ms var(--ea)}
@@ -215,10 +218,10 @@ html.lock{overflow:hidden}
 .plate-badge .pl{width:30px;height:30px;font-size:1.25rem}
 .menu-list-curved{position:relative;z-index:6;width:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0 24px;background:none!important;border:none!important;box-shadow:none!important}
 .menu-list-curved .nt{max-width:580px;margin-left:auto;margin-bottom:14px}
-.menu-list-curved .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left}
-.menu-list-curved .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transition:margin-left 350ms var(--ea),transform 200ms ease;will-change:margin-left,transform;cursor:pointer}
-.menu-list-curved .rw:hover{transform:translateX(6px)}
-.menu-list-curved .rw.plate-focus{transform:translateX(8px)}
+.menu-list-curved .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transform:translate3d(var(--curve-offset,0px),0,0);transition:transform 350ms var(--ea)}
+.menu-list-curved .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transform:translate3d(var(--curve-offset,0px),0,0);transition:transform 250ms var(--ea);cursor:pointer}
+.menu-list-curved .rw:hover{transform:translate3d(calc(var(--curve-offset,0px) + 6px),0,0)}
+.menu-list-curved .rw.plate-focus{transform:translate3d(calc(var(--curve-offset,0px) + 8px),0,0)}
 .menu-list-curved .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
@@ -1205,6 +1208,62 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
   .pdj-thumb{padding:3px!important;border-radius:8px!important;font-size:.65rem!important;gap:3px!important}
   .pdj-thumb img{border-radius:5px!important}
 }
+
+/* Omitir renderizado y layout de secciones fuera de pantalla hasta que se acerquen al viewport */
+#como-pedir,
+#galeria,
+#pan-de-jamon,
+#opiniones,
+section.faq,
+#info,
+section.cta,
+.site-footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 520px;
+}
+
+@media (max-width: 849px) {
+  /* 1. Reducir pasadas de renderizado de backdrop-filter en elementos que hacen scroll o flotan */
+  .wf { background: #6f3826 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .ai { background: #c9a577 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .plate-badge,
+  .plate-detail-card,
+  .front-plate-item,
+  .sw-hero-card,
+  .sw-nav-card,
+  .diamond-center-card,
+  .pdj-hero-badge,
+  .pdj-mob-notif {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #fffdf9 !important;
+  }
+  .pdj-mob-notif {
+    background: #361510 !important;
+  }
+  .pdj-hero-badge {
+    background: rgba(64, 32, 26, 0.96) !important;
+  }
+
+  /* 2. Eliminar transición de filter y drop-shadow en los ítems en órbita */
+  .mn.is-pastelitos .plate-item img,
+  .mn.is-bebidas .drink-item img,
+  .diamond-item img,
+  .front-plate-item .front-plate-img {
+    filter: none !important;
+    transition: transform 600ms var(--ea) !important;
+    will-change: transform;
+  }
+
+  /* Solo aplicar sombra estática ligera al elemento activo o usar box-shadow cuando es circular */
+  .mn.is-bebidas .drink-item.is-active img {
+    box-shadow: 0 10px 20px rgba(40, 20, 14, 0.32) !important;
+  }
+  .mn.is-pastelitos .plate-item.is-active img,
+  .diamond-item.is-protagonist img {
+    filter: drop-shadow(0 8px 12px rgba(40, 20, 14, 0.32)) !important;
+  }
+}
 </style></head>
 <body>
 <nav><div class="w"><a href="#" class="nav-brand" aria-label="Inicio Masafácil"><img class="brand-wordmark" src="assets/img/logo_masafacil_wordmark.webp" alt="Masafácil"></a><div class="nl"><a href="#menu">Menú</a><a href="#como-pedir">Cómo pedir</a><a href="#galeria">Fotos</a><a href="#pan-de-jamon" class="nl-navidad">🎄 Pan de Jamón</a><a href="#opiniones">Opiniones</a><a href="#info">Horario y ubicación</a></div><div class="nav-actions"><div id="auth-box" class="auth-box"><div id="g_signin" data-type="standard" data-size="small" data-theme="outline" data-text="signin" data-shape="pill" data-logo_alignment="left"></div><div id="user-pill" class="user-pill" style="display:none;"><img id="u-avatar" class="u-avatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'><rect width='40' height='40' rx='20' fill='%236a3826'/><path d='M20 11a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 13c-5.5 0-11 2.8-11 6v2h22v-2c0-3.2-5.5-6-11-6z' fill='%23ffffff' opacity='0.95'/></svg>" alt="Foto"><div class="u-data"><span id="u-name" class="u-name"></span><span id="u-badge" class="u-badge" style="display:none;"></span></div><button id="u-logout" class="u-logout" title="Cerrar sesión" aria-label="Cerrar sesión">✕</button></div></div><button id="u-tokens" class="u-tokens" type="button" style="display:none" title="Tus Tokens Masafácil" aria-label="Tus Tokens Masafácil"><span class="ut-coin" aria-hidden="true">🪙</span><span class="ut-bal ut-full">0</span><span class="ut-bal ut-short">0</span><span class="ut-usd"></span></button><a class="admin-btn" id="admin-btn" href="admin.html" style="display:none" title="Panel de Administración"><span aria-hidden="true">⚙️</span><span class="admin-btn-label">Panel Admin</span></a><button class="cart-b" id="cb" aria-label="Abrir mi pedido"><span class="cart-icon" aria-hidden="true">🛒</span><span class="cart-text-label">Pedido</span><b id="cn">0</b></button><a class="btn-pedir" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir</a></div></div></nav>
@@ -1231,11 +1290,11 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 <header class="hero"><div class="tx"><span class="est">El Maracucho · est. 2024</span><h1>Pastelitos, paninis y café recién hechos</h1><p class="lead">Cafetería y fábrica de masas artesanales en La Esmeralda, San Diego. Pide por delivery o retira en local.</p><div class="chips"><span>Delivery</span><span>Lun a Sáb 6:30 am</span><span>Domingos 6:30 am</span></div><div><a class="btn" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Pedir por WhatsApp</a> <a class="btn o" href="#menu">Ver menú</a></div></div><div class="ph" role="img" aria-label="Café, tequeños, pastelitos y sándwiches de Masafácil" style="background-image:url('assets/img/hero_spread.webp')"></div></header>
 
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
-<div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Queso blanco pasteurizado suave y abundante que funde al primer mordisco.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal" width="600" height="600" decoding="async"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Queso blanco pasteurizado suave y abundante que funde al primer mordisco.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
 <div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
 <div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div id="content-sandwiches"></div></div></div>
-<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar al pedido">+</button></div></div></div><div id="drinks-detail-card" class="plate-detail-card"><div class="pd-head"><span id="drinks-detail-tag" class="badge-sub">CAFETERÍA DE ESPECIALIDAD</span><span id="drinks-detail-price" class="pd-price">$2,00</span></div><h3 id="drinks-detail-title">Café Latte</h3><p id="drinks-detail-desc" class="pd-desc">Café espresso con leche cremosa al vapor.</p><div class="pd-foot"><span class="pd-note">Granos venezolanos seleccionados</span><button id="drinks-detail-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar Latte al pedido">+</button></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
+<div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal" width="600" height="600" decoding="async"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar al pedido">+</button></div></div></div><div id="drinks-detail-card" class="plate-detail-card"><div class="pd-head"><span id="drinks-detail-tag" class="badge-sub">CAFETERÍA DE ESPECIALIDAD</span><span id="drinks-detail-price" class="pd-price">$2,00</span></div><h3 id="drinks-detail-title">Café Latte</h3><p id="drinks-detail-desc" class="pd-desc">Café espresso con leche cremosa al vapor.</p><div class="pd-foot"><span class="pd-note">Granos venezolanos seleccionados</span><button id="drinks-detail-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar Latte al pedido">+</button></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Combos Eventos" id="slide-combos"><div class="w"><div class="layout-zigzag" id="content-combos"></div></div></div>
 </div></div></section>
 
@@ -1319,7 +1378,7 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
       <div class="pdj-gallery">
         <div class="pdj-hero-frame">
           <button type="button" class="pdj-hero-btn" id="pdj-main-btn" aria-label="Ampliar fotografía de Pan de Jamón">
-            <img id="pdj-main-img" class="pdj-hero-img" src="assets/img/pan_jamon_caja.webp" alt="Pan de Jamón Masafácil en su caja de regalo con ambiente navideño" width="681" height="1024" loading="eager">
+            <img id="pdj-main-img" class="pdj-hero-img" src="assets/img/pan_jamon_caja.webp" alt="Pan de Jamón Masafácil en su caja de regalo con ambiente navideño" width="681" height="1024" loading="lazy" decoding="async">
             <div class="pdj-hero-badge">✨ Foto Real Masafácil</div>
             <div class="pdj-hero-caption">
               <span id="pdj-main-caption">Presentación en caja de regalo Masafácil</span>
@@ -1351,7 +1410,24 @@ footer #privacidad-link{color:inherit;opacity:.85;text-decoration:underline;text
 
 <section class="kr faq"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Preguntas frecuentes</h2><details><summary>¿Cuál es el horario de atención?</summary><p>Lunes a sábados de 6:30 am a 10:00 pm y domingos de 6:30 am a 2:30 pm ininterrumpido.</p></details><details><summary>¿Cómo funciona el delivery y cuánto cuesta?</summary><p>El delivery está tarifado según la distancia ($1/km desde La Esmeralda). Ejemplos: La Esmeralda $1, El Morro $2, Los Jarales $3, El Remanso $4, Campo Solo $5, Tulipanes $6. También puedes retirar en el local (Pick Up) sin costo.</p></details><details><summary>¿Cuánto cuestan los pastelitos y qué promociones tienen?</summary><p><b>¡Aprovecha nuestra promo: 2 Pastelitos Tradicionales por $1,00</b> (precio individual $0,65 c/u). Pastelitos Especiales caseros: $1,10. Especiales Gourmet (Camarón y Champiñón): $1,99. Paquetes de masa para freír en casa desde $1,50 (12 discos), $2,80 (24 discos) y $5,50 (50 discos).</p></details><details><summary>¿Qué métodos de pago aceptan?</summary><p>Aceptamos Efectivo en Divisas ($), Pago Móvil (a tasa oficial BCV del día), Transferencias bancarias nacionales, Zelle, Binance y Punto de Venta en el local.</p></details><details><summary>¿Cómo cocinar las masas y tequeños congelados en casa?</summary><p>En freidora tradicional o sartén: calentar abundante aceite a 180°C y freír sin descongelar durante 3 a 4 minutos hasta dorar. En freidora de aire (Air Fryer): precalentar a 190°C, pincelar ligeramente con aceite y cocinar 8 minutos volteando a la mitad.</p></details><details><summary>¿Hacen pedidos para fiestas y eventos?</summary><p>¡Sí! Tenemos combos de pasapalos para eventos de 30, 60 y 100 piezas (mini pastelitos y tequeños) listos para freír o fritos calientes. Recomendamos encargar con 24 horas de anticipación por WhatsApp.</p></details></div></section>
 
-<section class="kr" id="info"><div class="w"><div class="info"><div class="card"><h3>Horario</h3><p><b>Lunes a sábados</b><br>6:30 am – 10:00 pm</p><p><b>Domingos</b><br>6:30 am – 2:30 pm</p></div><div class="card"><h3>Delivery y Contacto</h3><p><b>WhatsApp</b><br>+58 424-4099610</p><p><b>Instagram</b><br><a href="https://www.instagram.com/masafacil_ve" target="_blank" rel="noopener">@masafacil_ve</a></p></div><div class="card"><h3>Dónde estamos</h3><p>La Esmeralda, Municipio San Diego, Estado Carabobo, Venezuela.</p></div></div><div class="map"><div><span style="font-size:36px;display:block">📍</span><b>Masafácil · El Maracucho</b><br>La Esmeralda, San Diego, Carabobo<iframe src="https://www.google.com/maps?q=10.2294,-67.9709&hl=es&z=16&output=embed" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ubicación Google Maps — Masa Fácil La Esmeralda"></iframe><br><a class="btn go" href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" rel="noopener">Abrir en Google Maps</a></div></div></div></section>
+<section class="kr" id="info"><div class="w"><div class="info"><div class="card"><h3>Horario</h3><p><b>Lunes a sábados</b><br>6:30 am – 10:00 pm</p><p><b>Domingos</b><br>6:30 am – 2:30 pm</p></div><div class="card"><h3>Delivery y Contacto</h3><p><b>WhatsApp</b><br>+58 424-4099610</p><p><b>Instagram</b><br><a href="https://www.instagram.com/masafacil_ve" target="_blank" rel="noopener">@masafacil_ve</a></p></div><div class="card"><h3>Dónde estamos</h3><p>La Esmeralda, Municipio San Diego, Estado Carabobo, Venezuela.</p></div></div><div class="map"><div><span style="font-size:36px;display:block">📍</span><b>Masafácil · El Maracucho</b><br>La Esmeralda, San Diego, Carabobo<iframe id="gmap-iframe" data-src="https://www.google.com/maps?q=10.2294,-67.9709&hl=es&z=16&output=embed" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="Ubicación Google Maps — Masa Fácil La Esmeralda"></iframe><br><a class="btn go" href="https://maps.app.goo.gl/fkahxK22ZsK5Z6pUA" target="_blank" rel="noopener">Abrir en Google Maps</a></div></div></div></section>
+<script>
+(function lazyLoadMap() {
+  var mapFrame = document.getElementById('gmap-iframe');
+  if (!mapFrame) return;
+  if (!('IntersectionObserver' in window)) {
+    if (mapFrame.dataset.src) mapFrame.src = mapFrame.dataset.src;
+    return;
+  }
+  var mapObs = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting) {
+      mapFrame.src = mapFrame.dataset.src;
+      mapObs.disconnect();
+    }
+  }, { rootMargin: '150px 0px' });
+  mapObs.observe(mapFrame);
+})();
+</script>
 
 <section class="cta"><div class="w"><h2>¿Listo para comer el auténtico sabor maracucho?</h2><a class="btn t" style="font-size:1.15rem;padding:15px 32px" href="https://wa.me/584244099610?text=Hola%20Masaf%C3%A1cil%2C%20quiero%20hacer%20un%20pedido">Hacer pedido por WhatsApp</a></div></section>
 
@@ -1671,7 +1747,7 @@ function rowHTML(r, n, cat) {
   var optId = 'opt' + n;
   var optSel = r.o ? ' <select class="opt" id="' + optId + '" aria-label="Sabor de ' + r.n + '">' + r.o.map(function(f){ return '<option>' + f + '</option>'; }).join('') + '</select>' : '';
   var addBtn = r.o ? (function(){ var u = parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.')); return ' <button class="pl" data-k="' + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '" data-opt="' + optId + '" aria-label="Agregar ' + r.n + ' al pedido">+</button>'; })() : '';
-  return '<div style="animation-delay:' + Math.min(n * 35, 300) + 'ms" data-cat="' + cat + '" class="rw' + (r.a ? ' ag' : '') + (r.nw ? ' nowheel' : '') + '"><div><span class="n">' + r.n + '</span>' + (r.t ? '<span class="tg">' + r.t + '</span>' : '') + (r.d ? '<i>' + r.d + '</i>' : '') + '</div><span class="dt"></span>' + optSel + '<span class="p">' + r.p + '</span>' + addBtn + '</div>';
+  return '<div data-cat="' + cat + '" class="rw' + (r.a ? ' ag' : '') + (r.nw ? ' nowheel' : '') + '"><div><span class="n">' + r.n + '</span>' + (r.t ? '<span class="tg">' + r.t + '</span>' : '') + (r.d ? '<i>' + r.d + '</i>' : '') + '</div><span class="dt"></span>' + optSel + '<span class="p">' + r.p + '</span>' + addBtn + '</div>';
 }
 function groupsHTML(cat) {
   const s = M[cat]; let n = 0;
@@ -1680,7 +1756,7 @@ function groupsHTML(cat) {
 function zigzagHTML(cat, imgs) {
   return M[cat].g.map((g, i) => {
     const reverse = i % 2 === 1;
-    const img = '<div class="zigzag-img-wrap"><img src="' + imgs[i % imgs.length] + '" alt="' + g.t + '" class="arch-img"></div>';
+    const img = '<div class="zigzag-img-wrap"><img loading="lazy" decoding="async" src="' + imgs[i % imgs.length] + '" alt="' + g.t + '" class="arch-img"></div>';
     const content = '<div class="zigzag-content"><span class="gt">' + g.t + '</span><div class="items-group">' + g.r.map((r, j) => rowHTML(r, j, cat)).join('') + '</div></div>';
     return '<div class="zigzag-row' + (reverse ? ' reverse' : '') + '">' + (reverse ? content + img : img + content) + '</div>';
   }).join('');
@@ -1692,7 +1768,7 @@ function frontHTML(cat, imgs) {
   // Elementos de la vitrina interactiva
   const plates = rows.map((r, i) => 
     '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<img src="' + imgs[i] + '" alt="' + r.n + '" class="front-plate-img">' +
+      '<img loading="lazy" decoding="async" src="' + imgs[i] + '" alt="' + r.n + '" class="front-plate-img">' +
       '<div class="front-plate-meta">' +
         '<span class="front-plate-name">' + r.n + '</span>' +
         '<span class="front-plate-price">' + r.p + '</span>' +
@@ -1725,7 +1801,7 @@ function frontHTML(cat, imgs) {
 }
 function diamondHTML(cat, imgs) {
   const rows = M[cat].g[0].r;
-  const items = rows.map((r, i) => '<div class="diamond-item" data-idx="' + i + '"><img src="' + imgs[i] + '" alt="' + r.n + '"></div>').join('');
+  const items = rows.map((r, i) => '<div class="diamond-item" data-idx="' + i + '"><img loading="lazy" decoding="async" src="' + imgs[i] + '" alt="' + r.n + '"></div>').join('');
   const r0 = rows[0];
   const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
 
@@ -1757,7 +1833,7 @@ function sandwichesShowcaseHTML(cat, imgs) {
   const navItems = rows.map((r, i) => {
     const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
     return '<button type="button" class="sw-nav-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<div class="sw-nav-thumb"><img src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
+      '<div class="sw-nav-thumb"><img loading="lazy" decoding="async" src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
       '<div class="sw-nav-info">' +
         '<div class="sw-nav-title-box"><h4 class="sw-nav-name">' + r.n + '</h4>' + tag + '</div>' +
         '<span class="sw-nav-price">' + r.p + '</span>' +
@@ -1776,7 +1852,7 @@ function sandwichesShowcaseHTML(cat, imgs) {
     '</div>' +
     '<div class="sw-hero-col">' +
       '<div class="sw-hero-stage">' +
-        '<img id="sw-hero-img" class="sw-hero-img" src="' + imgs[0] + '" alt="' + r0.n + '">' +
+        '<img id="sw-hero-img" class="sw-hero-img" loading="lazy" decoding="async" src="' + imgs[0] + '" alt="' + r0.n + '">' +
       '</div>' +
       '<div class="sw-hero-card" id="sw-hero-card">' +
         '<div class="sw-card-head">' +
@@ -1867,8 +1943,13 @@ document.querySelectorAll('.card,.cta,.bar,.map').forEach(el => {
     mv();
   };
   mv();
-  requestAnimationFrame(() => requestAnimationFrame(() => ind.style.transition = ''));
-  addEventListener('resize', mv);
+  let lastTabW = innerWidth;
+  addEventListener('resize', () => {
+    if (innerWidth !== lastTabW) {
+      lastTabW = innerWidth;
+      mv();
+    }
+  }, { passive: true });
 })();
 </script>
 <script>
@@ -1896,8 +1977,7 @@ function LB(sel) {
     ['assets/img/interior_local.webp', 'Interior acogedor'],
     ['assets/img/surtido_fritos.webp', 'Surtido de pastelitos']
   ];
-  document.getElementById('gal').innerHTML = G.map(g => '<button aria-label="Ampliar foto: ' + g[1] + '"><img loading="lazy" src="' + g[0] + '" alt="' + g[1] + ' de Masafácil"><span>' + g[1] + '</span></button>').join('');
-  LB('#gal img');
+  document.getElementById('gal').innerHTML = G.map(g => '<button aria-label="Ampliar foto: ' + g[1] + '"><img loading="lazy" decoding="async" src="' + g[0] + '" alt="' + g[1] + ' de Masafácil"><span>' + g[1] + '</span></button>').join('');
 
   try {
     const f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Caracas', weekday: 'short', hour: 'numeric', minute: 'numeric', hour12: false }).formatToParts(new Date());
@@ -1935,6 +2015,15 @@ function LB(sel) {
   if (hero) hero.insertAdjacentHTML('beforeend', '<div class="stk"><img src="assets/img/logo_masafacil_nuevo.webp" alt="Masafácil"></div><div class="tg1">Promo Tradicionales<br><b>2 x $1,00</b><br><small style="font-size:0.75rem;opacity:.9;display:block;margin-top:2px">(o $0,65 c/u)</small></div>');
 
   document.getElementById('menu').insertAdjacentHTML('beforebegin', '<div class="band" aria-hidden="true"><div>' + '★ PASTELITOS CRUJIENTES ★ TEQUEÑOS DORADOS ★ MASAS PARA LLEVAR ★ PANINIS ARTESANALES ★ CAFÉ DE ESPECIALIDAD ★ LA ESMERALDA, SAN DIEGO ★ '.repeat(6) + '</div></div>');
+  const bandEl = document.querySelector('.band div');
+  if (bandEl && 'IntersectionObserver' in window) {
+    const bandObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        bandEl.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+      });
+    }, { rootMargin: '50px 0px' });
+    bandObs.observe(bandEl.parentElement);
+  }
 
   function syncMetodosPago() {
     const cpago = $('cpago');
@@ -2037,45 +2126,72 @@ function LB(sel) {
   function initPlateSlots() {
     const box = document.getElementById('plate-slots');
     if (!box) return;
-    box.innerHTML = PASTELITOS_LIST.map((it, i) => '<div class="plate-item" data-idx="' + i + '" data-angle="' + (i * PLATE_STEP) + '"><img src="' + it.img + '" alt="Pastelito de ' + it.n + '"></div>').join('');
+    box.innerHTML = PASTELITOS_LIST.map((it, i) => '<div class="plate-item" data-idx="' + i + '" data-angle="' + (i * PLATE_STEP) + '"><img decoding="async" src="' + it.img + '" alt="Pastelito de ' + it.n + '"></div>').join('');
     box.querySelectorAll('.plate-item').forEach(el => el.addEventListener('click', () => selectPastelito(parseInt(el.dataset.idx, 10))));
     selectPastelito(0);
   }
 
+  let curveRaf = 0;
+
   function applyCurve(listEl, wheelEl) {
     if (!listEl || !wheelEl) return;
+    
+    // FASE 1: LECTURAS GEOMÉTRICAS (Batch Read - 0 Reflows forzados)
     const wheelRect = wheelEl.getBoundingClientRect();
     const listRect = listEl.getBoundingClientRect();
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const radius = wheelEl.offsetWidth / 2;
-    listEl.querySelectorAll('.rw, .gt').forEach(el => {
+    const radius = wheelRect.width / 2;
+    const rows = listEl.querySelectorAll('.rw, .gt');
+    
+    const updates = [];
+    for (let i = 0; i < rows.length; i++) {
+      const el = rows[i];
       const r = el.getBoundingClientRect();
-      const dy = r.top + r.height / 2 - centerY;
-      let targetLeft = 0;
+      const dy = (r.top + r.height / 2) - centerY;
+      let rl = 0;
       if (Math.abs(dy) < radius) {
-        // x = centerX + sqrt(R^2 - dy^2), con 32px de margen visual al borde del plato
-        targetLeft = Math.max(0, centerX + Math.sqrt(radius * radius - dy * dy) - listRect.left + 32);
+        rl = Math.round(Math.max(0, centerX + Math.sqrt(radius * radius - dy * dy) - listRect.left + 32));
       }
-      const rl = Math.round(targetLeft);
-      el.style.marginLeft = rl + 'px';
-      if (el.classList.contains('rw')) el.style.maxWidth = 'calc(100% - ' + rl + 'px)';
-    });
+      updates.push({ el, rl, isRw: el.classList.contains('rw') });
+    }
+
+    // FASE 2: ESCRITURAS DE ESTILO (Batch Write en el compositor)
+    for (let i = 0; i < updates.length; i++) {
+      const { el, rl, isRw } = updates[i];
+      el.style.setProperty('--curve-offset', rl + 'px');
+      if (isRw) {
+        el.style.maxWidth = rl > 0 ? ('calc(100% - ' + rl + 'px)') : '';
+      }
+    }
   }
+
   function resetCurve(listEl) {
-    if (!listEl) return;
+    if (!listEl || !listEl.dataset.curved) return;
+    listEl.dataset.curved = '';
     listEl.querySelectorAll('.rw, .gt').forEach(el => {
-      el.style.removeProperty('margin-left');
+      el.style.removeProperty('--curve-offset');
       el.style.removeProperty('max-width');
     });
   }
+
   function updateCurvedOffsets() {
-    const desktop = matchMedia('(min-width:800px)').matches;
-    const cat = SLIDES_CATS[currentSlideIndex];
-    const p = document.getElementById('mg-pastelitos');
-    const d = document.getElementById('mg-bebidas');
-    if (p) { desktop && cat === 'Pastelitos' ? applyCurve(p, document.getElementById('plate-wheel')) : resetCurve(p); }
-    if (d) { desktop && cat === 'Bebidas' ? applyCurve(d, document.getElementById('drinks-wheel')) : resetCurve(d); }
+    if (curveRaf) cancelAnimationFrame(curveRaf);
+    curveRaf = requestAnimationFrame(() => {
+      curveRaf = 0;
+      const desktop = matchMedia('(min-width:800px)').matches;
+      const cat = SLIDES_CATS[currentSlideIndex];
+      const p = document.getElementById('mg-pastelitos');
+      const d = document.getElementById('mg-bebidas');
+      if (p) {
+        if (desktop && cat === 'Pastelitos') { p.dataset.curved = '1'; applyCurve(p, document.getElementById('plate-wheel')); }
+        else resetCurve(p);
+      }
+      if (d) {
+        if (desktop && cat === 'Bebidas') { d.dataset.curved = '1'; applyCurve(d, document.getElementById('drinks-wheel')); }
+        else resetCurve(d);
+      }
+    });
   }
 
   // Ajusta la posición del plato/bandeja (borde físico en escritorio, centrado en móvil)
@@ -2155,7 +2271,6 @@ function LB(sel) {
         if (img) {
           // Secundarios a scale(1.00) (~62px) para máxima legibilidad; protagonista a scale(1.5) (~93px)
           img.style.transform = 'rotate(' + (-plateWheelAngle) + 'deg)' + (isProtagonist ? ' scale(1.5)' : ' scale(1.0)');
-          img.style.filter = isProtagonist ? 'drop-shadow(0 16px 26px rgba(40,20,14,.46))' : 'drop-shadow(0 4px 10px rgba(40,20,14,.24))';
         }
       });
     }
@@ -2296,7 +2411,7 @@ function LB(sel) {
   function initDrinkSlots() {
     const box = document.getElementById('drinks-slots');
     if (!box) return;
-    box.innerHTML = DRINKS.map((d, i) => '<div class="drink-item" data-idx="' + i + '"><img src="' + d.img + '" alt="' + d.n + '"></div>').join('');
+    box.innerHTML = DRINKS.map((d, i) => '<div class="drink-item" data-idx="' + i + '"><img loading="lazy" decoding="async" src="' + d.img + '" alt="' + d.n + '"></div>').join('');
     box.querySelectorAll('.drink-item').forEach(el => el.addEventListener('click', () => selectDrink(parseInt(el.dataset.idx, 10))));
     selectDrink(0);
   }
@@ -2333,7 +2448,6 @@ function LB(sel) {
       const img = el.querySelector('img');
       if (img && !isDesktop) {
         img.style.transform = isActive ? 'scale(1.28)' : 'scale(0.92)';
-        img.style.filter = isActive ? 'drop-shadow(0 14px 22px rgba(40,20,14,.4))' : 'drop-shadow(0 4px 8px rgba(40,20,14,.2))';
       }
     });
 
@@ -2572,7 +2686,7 @@ function LB(sel) {
       });
     });
 
-    window.addEventListener('resize', updateDiamond);
+    window.updateDiamond = updateDiamond;
     selectEntrada(0);
   }
 
@@ -2590,13 +2704,37 @@ function LB(sel) {
     requestAnimationFrame(updateCurvedOffsets);
   }
 
+  let lastWinWidth = window.innerWidth;
+  let resizeRaf = 0;
+
   window.addEventListener('resize', () => {
-    layoutStages();
-    if (SLIDES_CATS[currentSlideIndex] === 'Pastelitos') selectPastelito(currentPlateIndex);
-    if (SLIDES_CATS[currentSlideIndex] === 'Bebidas') selectDrink(currentDrinkIndex);
-    updateCurvedOffsets();
-  });
-  window.addEventListener('scroll', () => { updateCurvedOffsets(); }, { passive: true });
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      resizeRaf = 0;
+      const currentWidth = window.innerWidth;
+      const widthChanged = currentWidth !== lastWinWidth;
+
+      if (widthChanged) {
+        lastWinWidth = currentWidth;
+        layoutStages();
+        const activeCat = SLIDES_CATS[currentSlideIndex];
+        if (activeCat === 'Pastelitos') selectPastelito(currentPlateIndex);
+        else if (activeCat === 'Bebidas') selectDrink(currentDrinkIndex);
+        else if (activeCat === 'Entradas' && typeof window.updateDiamond === 'function') window.updateDiamond();
+        updateCurvedOffsets();
+      }
+
+      if (want) {
+        meas();
+        x = 0;
+        apply();
+      } else if (widthChanged) {
+        meas();
+        x = size;
+        apply();
+      }
+    });
+  }, { passive: true });
 
   initFrontPlates('content-paninis');
   initSandwichesShowcase('content-sandwiches');
@@ -2613,14 +2751,26 @@ function LB(sel) {
     sh.classList.toggle('v', vert);
     size = vert ? sh.offsetHeight : sh.offsetWidth;
   };
-  const rb = (d, s, c = .55) => d * s * c / (s + c * Math.abs(d));
+  let lastShVis = '';
+  let lastScPe = '';
+
   function apply() {
     const p = Math.max(0, Math.min(1, 1 - x / size)), cl = x >= size - .5 && !drag;
     sh.style.transform = RM.matches ? 'none' : (vert ? 'translate3d(0,' + x + 'px,0)' : 'translate3d(' + x + 'px,0,0)');
-    sh.style.opacity = RM.matches ? (cl ? 0 : 1) : 1;
-    sc.style.opacity = p * .5;
-    sc.style.pointerEvents = p > .02 ? 'auto' : 'none';
-    sh.style.visibility = cl ? 'hidden' : 'visible';
+    if (RM.matches) sh.style.opacity = cl ? '0' : '1';
+    sc.style.opacity = (p * .5).toFixed(3);
+
+    const nextPe = p > .02 ? 'auto' : 'none';
+    if (nextPe !== lastScPe) {
+      lastScPe = nextPe;
+      sc.style.pointerEvents = nextPe;
+    }
+
+    const nextVis = cl ? 'hidden' : 'visible';
+    if (nextVis !== lastShVis) {
+      lastShVis = nextVis;
+      sh.style.visibility = nextVis;
+    }
   }
   function fin() {
     V = 0;
@@ -2656,21 +2806,32 @@ function LB(sel) {
   }
   function openSh() {
     if (want) return;
-    meas();
+    if (!size) meas();
     if (x === 0 && !want && size) x = size;
     want = true;
     fb = document.activeElement;
+
+    const cb = $('cbar');
+    if (cb) cb.classList.remove('on');
     document.documentElement.classList.add('lock');
+    lastShVis = 'visible';
     sh.style.visibility = 'visible';
     draw();
-    spring(0);
-    setTimeout(() => $('ccx').focus({ preventScroll: true }), 60);
+
+    requestAnimationFrame(() => {
+      spring(0);
+    });
+    setTimeout(() => {
+      const ccx = $('ccx');
+      if (ccx) ccx.focus({ preventScroll: true });
+    }, 120);
   }
   function closeSh() {
     if (!want) return;
     want = false;
     spring(size);
-    draw();
+    const cb = $('cbar');
+    if (cb) cb.classList.toggle('on', Object.keys(C).length > 0);
   }
   let dragRaf = 0;
   sh.addEventListener('pointerdown', e => {
@@ -2719,10 +2880,6 @@ function LB(sel) {
   }
   sh.addEventListener('pointerup', () => rel(false));
   sh.addEventListener('pointercancel', () => rel(true));
-  addEventListener('resize', () => {
-    meas();
-    if (!want) { x = size; apply(); } else { x = 0; apply(); }
-  });
   meas();
   x = size;
   apply();
@@ -2969,9 +3126,16 @@ function LB(sel) {
       persistCart();
       window.dispatchEvent(new CustomEvent('mf:cart-add', { detail: { k: k, u: u, q: C[k].q } }));
       const c = $('cn');
-      c.classList.remove('bump');
-      void c.offsetWidth;
-      c.classList.add('bump');
+      if (c && !RM.matches && c.animate) {
+        c.animate([
+          { transform: 'scale(1)' },
+          { transform: 'scale(1.28)', offset: 0.4 },
+          { transform: 'scale(1)' }
+        ], { duration: 380, easing: 'cubic-bezier(.32,.72,0,1)' });
+      } else if (c) {
+        c.classList.remove('bump');
+        requestAnimationFrame(() => c.classList.add('bump'));
+      }
       return;
     }
     if (e.target.closest('#udo') && und) {
@@ -3051,7 +3215,24 @@ function LB(sel) {
     else if (e.target.closest('#ccx,#sc')) closeSh();
   });
 
-  $('cnt').addEventListener('input', draw);
+  let notesDebounce = 0;
+  function updateWaLinkOnly() {
+    const w = $('cwa');
+    if (!w || !w.href) return;
+    try {
+      const url = new URL(w.href);
+      let currentText = url.searchParams.get('text') || '';
+      const baseText = currentText.replace(/\n\nNotas\/Dirección: [\s\S]*$/, '');
+      const notesVal = $('cnt') ? $('cnt').value.trim() : '';
+      url.searchParams.set('text', baseText + (notesVal ? '\n\nNotas/Dirección: ' + notesVal : ''));
+      w.href = url.toString();
+    } catch (e) {}
+  }
+
+  $('cnt').addEventListener('input', () => {
+    clearTimeout(notesDebounce);
+    notesDebounce = setTimeout(updateWaLinkOnly, 200);
+  });
   document.addEventListener('change', e => {
     if (e.target && e.target.id === 'useTokens') { useTokens = !!e.target.checked; draw(); }
     else if (e.target && e.target.id === 'cpago') { draw(); }
@@ -3062,9 +3243,6 @@ function LB(sel) {
   /* ---- galería: la foto sale y vuelve a su miniatura ---- */
   const g = $('gal'), d = $('lb');
   if (g && d) {
-    const g2 = g.cloneNode(true);
-    g.replaceWith(g2);
-    d.onclick = null;
     let from = null;
     const dl = (r, b) => 'translate(' + (r.left + r.width / 2 - b.left - b.width / 2) + 'px,' + (r.top + r.height / 2 - b.top - b.height / 2) + 'px) scale(' + (r.width / b.width) + ')', ez = 'cubic-bezier(.32,.72,0,1)';
     function shut() {
@@ -3074,7 +3252,7 @@ function LB(sel) {
     }
     d.addEventListener('click', shut);
     d.addEventListener('cancel', e => { e.preventDefault(); shut(); });
-    g2.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+    g.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
       from = b.querySelector('img');
       const im = d.querySelector('img');
       im.src = from.src;
@@ -3259,7 +3437,16 @@ function LB(sel) {
     draw();
     persistCart();
     const c = $('cn');
-    if (c) { c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); }
+    if (c && !RM.matches && c.animate) {
+      c.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.28)', offset: 0.4 },
+        { transform: 'scale(1)' }
+      ], { duration: 380, easing: 'cubic-bezier(.32,.72,0,1)' });
+    } else if (c) {
+      c.classList.remove('bump');
+      requestAnimationFrame(() => c.classList.add('bump'));
+    }
     const bar = $('cbar');
     if (bar) bar.textContent = 'Agregado: ' + k;
     clearTimeout(bt);
@@ -3649,11 +3836,15 @@ function LB(sel) {
       return true;
     }
   }
-  (function waitForGis() {
-    if (initGoogle()) return;
-    if (++gsiAttempts < 40) setTimeout(waitForGis, 250);
-    else console.warn("Google Identity Services no cargó (modo offline o bloqueado por red).");
-  })();
+  var gsiScript = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+  if (!initGoogle() && gsiScript) {
+    gsiScript.addEventListener('load', initGoogle, { once: true });
+    (function waitForGis() {
+      if (initGoogle()) return;
+      if (++gsiAttempts < 40) setTimeout(waitForGis, 250);
+      else console.warn("Google Identity Services no cargó (modo offline o bloqueado por red).");
+    })();
+  }
 
   // ==== Botón del Panel Admin: visible solo si el SERVIDOR confirma el rol ====
   function verificarAdmin() {
@@ -3678,8 +3869,11 @@ function LB(sel) {
     }).catch(function(e) { console.warn('No se pudo cargar productos:', e); });
   }
 
-  window.addEventListener('load', aplicarCatalogoTurso);
-  aplicarCatalogoTurso();
+  if (document.readyState === 'complete') {
+    aplicarCatalogoTurso();
+  } else {
+    window.addEventListener('load', aplicarCatalogoTurso, { once: true });
+  }
 
   // ==== Interfaz: logout y modales legales / de transparencia ====
   function abrirModalLegal(id) {
@@ -3809,6 +4003,8 @@ function LB(sel) {
 </script>
 <script>
 (function(){
+  var runWhenIdle = window.requestIdleCallback || function(cb) { return setTimeout(cb, 120); };
+  runWhenIdle(function(){
   var MFapi = window.MFapi;
   if (!MFapi) return;
   var $ = function(i){ return document.getElementById(i); };
@@ -4295,7 +4491,8 @@ function LB(sel) {
     toastMsg.textContent = opts.body;
     toastGo.textContent = opts.actionLabel || 'Abrir';
     toast.hidden = false;
-    toast.classList.remove('in'); void toast.offsetWidth; toast.classList.add('in');
+    toast.classList.remove('in');
+    requestAnimationFrame(function(){ toast.classList.add('in'); });
     aib.classList.add('want');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ toast.hidden = true; }, 14000);
@@ -4367,11 +4564,14 @@ function LB(sel) {
   };
 
   resetIdle();
+  });
 })();
 </script>
 <script>
 /* ---- Lógica Interactiva: Sección Exclusiva Pan de Jamón ---- */
-(function initPanDeJamon() {
+(function(){
+  var runWhenIdle = window.requestIdleCallback || function(cb) { return setTimeout(cb, 120); };
+  runWhenIdle(function initPanDeJamon() {
   var thumbs = document.querySelectorAll('.pdj-thumb');
   var mainImg = document.getElementById('pdj-main-img');
   var mainCap = document.getElementById('pdj-main-caption');
@@ -4454,10 +4654,15 @@ function LB(sel) {
         if (typeof window.drawCart === 'function') window.drawCart();
         window.dispatchEvent(new CustomEvent('mf:cart-add', { detail: { k: k, u: null, q: window.C[k].q } }));
         var c = document.getElementById('cn');
-        if (c) {
+        if (c && c.animate) {
+          c.animate([
+            { transform: 'scale(1)' },
+            { transform: 'scale(1.28)', offset: 0.4 },
+            { transform: 'scale(1)' }
+          ], { duration: 380, easing: 'cubic-bezier(.32,.72,0,1)' });
+        } else if (c) {
           c.classList.remove('bump');
-          void c.offsetWidth;
-          c.classList.add('bump');
+          requestAnimationFrame(function(){ c.classList.add('bump'); });
         }
         var cb = document.getElementById('cbar');
         if (cb) {
@@ -4516,5 +4721,6 @@ function LB(sel) {
       pdjObserver.observe(pdjSection);
     }
   }
+  });
 })();
 </script></body></html>

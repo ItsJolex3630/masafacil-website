@@ -8,7 +8,9 @@
 <link rel="icon" type="image/png" href="assets/img/logo_masafacil.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet"></noscript>
 <script>
 (function resetClientStorageOnce() {
   var CURRENT_VERSION = 'mf_clean_20261014_v1';
@@ -405,6 +407,14 @@ textarea{width:100%;min-height:52px;resize:vertical}
       renderClientes();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar clientes: '+esc(e.message||e)+'</div>'; }
   }
+  function debounce(fn, ms) {
+    var t;
+    return function(e) {
+      clearTimeout(t);
+      t = setTimeout(function() { fn(e); }, ms);
+    };
+  }
+
   function renderClientes(){
     var rows = (window._clientes||[]).filter(function(c){
       var s = cliFilter.toLowerCase();
@@ -425,40 +435,42 @@ textarea{width:100%;min-height:52px;resize:vertical}
           '<td><button class="btn sm save-cli">Guardar</button></td>' +
         '</tr>';
       }).join('') + '</tbody></table></div>';
-    list.querySelectorAll('.save-cli').forEach(function(btn){
-      btn.addEventListener('click', async function(){
-        var tr = btn.closest('tr'); var id = tr.dataset.id;
-        var pct = numPos(tr.querySelector('.pct').value, 100);
-        if (pct === null) { toast('Descuento inválido: debe ser un número entre 0 y 100.', true); return; }
-        var niv = tr.querySelector('.niv').value;
-        var body = { porcentaje_descuento: pct, nivel_fidelizacion: niv };
-        var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast'), toks = tr.querySelector('.toks');
-        if (peds) {
-          var vPeds = numPos(peds.value, 100000);
-          if (vPeds === null) { toast('Pedidos inválido: número entre 0 y 100.000.', true); return; }
-          body.total_pedidos = vPeds;
-        }
-        if (gast) {
-          var vGast = numPos(gast.value, 1000000);
-          if (vGast === null) { toast('Gastado inválido: número entre 0 y 1.000.000.', true); return; }
-          body.total_gastado = vGast;
-        }
-        if (toks) {
-          var vToks = numPos(toks.value, 10000000);
-          if (vToks === null) { toast('Tokens inválido: número entre 0 y 10.000.000.', true); return; }
-          body.tokens_saldo = vToks;
-        }
-        try{
-          await api('/api/admin/clientes/' + encodeURIComponent(id), {
-            method: 'PUT',
-            body: JSON.stringify(body)
-          });
-          toast('Cliente actualizado ✓');
-        }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
-      });
-    });
   }
-  $('cli-search').addEventListener('input', function(e){ cliFilter = e.target.value; renderClientes(); });
+
+  $('cli-list').addEventListener('click', async function(e){
+    var btn = e.target.closest('.save-cli');
+    if (!btn) return;
+    var tr = btn.closest('tr'); var id = tr.dataset.id;
+    var pct = numPos(tr.querySelector('.pct').value, 100);
+    if (pct === null) { toast('Descuento inválido: debe ser un número entre 0 y 100.', true); return; }
+    var niv = tr.querySelector('.niv').value;
+    var body = { porcentaje_descuento: pct, nivel_fidelizacion: niv };
+    var peds = tr.querySelector('.peds'), gast = tr.querySelector('.gast'), toks = tr.querySelector('.toks');
+    if (peds) {
+      var vPeds = numPos(peds.value, 100000);
+      if (vPeds === null) { toast('Pedidos inválido: número entre 0 y 100.000.', true); return; }
+      body.total_pedidos = vPeds;
+    }
+    if (gast) {
+      var vGast = numPos(gast.value, 1000000);
+      if (vGast === null) { toast('Gastado inválido: número entre 0 y 1.000.000.', true); return; }
+      body.total_gastado = vGast;
+    }
+    if (toks) {
+      var vToks = numPos(toks.value, 10000000);
+      if (vToks === null) { toast('Tokens inválido: número entre 0 y 10.000.000.', true); return; }
+      body.tokens_saldo = vToks;
+    }
+    try{
+      await api('/api/admin/clientes/' + encodeURIComponent(id), {
+        method: 'PUT',
+        body: JSON.stringify(body)
+      });
+      toast('Cliente actualizado ✓');
+    }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
+  });
+
+  $('cli-search').addEventListener('input', debounce(function(e){ cliFilter = e.target.value; renderClientes(); }, 180));
   $('cli-sort-pedidos').addEventListener('click', function(){ cliSort='pedidos'; loadClientes(); });
   $('cli-sort-gastado').addEventListener('click', function(){ cliSort='gastado'; loadClientes(); });
 
@@ -495,30 +507,32 @@ textarea{width:100%;min-height:52px;resize:vertical}
         '</div>';
       }).join('') + '</div>';
     }).join('');
-    list.querySelectorAll('.save-prod').forEach(function(btn){
-      btn.addEventListener('click', async function(){
-        var card = btn.closest('.card'); var id = card.dataset.id;
-        var precio = numPos(card.querySelector('.precio').value, 10000);
-        if (precio === null) { toast('Precio inválido: debe ser un número entre 0 y 10.000.', true); return; }
-        var imgVal = card.querySelector('.img-in').value.trim();
-        if (imgVal && !/^assets\/img\/[\w\-\/]+\.webp$/.test(imgVal)) {
-          toast('Ruta de imagen inválida: debe ser assets/img/… .webp', true); return;
-        }
-        var body = {
-          precio: precio,
-          disponible: card.querySelector('.disp').checked ? 1 : 0,
-          promo_tag: card.querySelector('.tag-in').value.trim(),
-          imagen_url: imgVal,
-          descripcion: card.querySelector('.desc-in').value.trim()
-        };
-        try{
-          await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
-          toast('Producto actualizado ✓');
-        }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
-      });
-    });
   }
-  $('prod-search').addEventListener('input', function(e){ prodFilter = e.target.value; renderProductos(); });
+
+  $('prod-list').addEventListener('click', async function(e){
+    var btn = e.target.closest('.save-prod');
+    if (!btn) return;
+    var card = btn.closest('.card'); var id = card.dataset.id;
+    var precio = numPos(card.querySelector('.precio').value, 10000);
+    if (precio === null) { toast('Precio inválido: debe ser un número entre 0 y 10.000.', true); return; }
+    var imgVal = card.querySelector('.img-in').value.trim();
+    if (imgVal && !/^assets\/img\/[\w\-\/]+\.webp$/.test(imgVal)) {
+      toast('Ruta de imagen inválida: debe ser assets/img/… .webp', true); return;
+    }
+    var body = {
+      precio: precio,
+      disponible: card.querySelector('.disp').checked ? 1 : 0,
+      promo_tag: card.querySelector('.tag-in').value.trim(),
+      imagen_url: imgVal,
+      descripcion: card.querySelector('.desc-in').value.trim()
+    };
+    try{
+      await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
+      toast('Producto actualizado ✓');
+    }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
+  });
+
+  $('prod-search').addEventListener('input', debounce(function(e){ prodFilter = e.target.value; renderProductos(); }, 180));
 
   // ---- Ventas ----
   var ventaFilter = 'todos';
@@ -697,7 +711,11 @@ textarea{width:100%;min-height:52px;resize:vertical}
       return true;
     }catch(e){ console.warn('GIS:', e); return true; }
   }
-  (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
+  var gsiScript = document.querySelector('script[src*="accounts.google.com/gsi/client"]');
+  if (!initGoogle() && gsiScript) {
+    gsiScript.addEventListener('load', initGoogle, { once: true });
+    (function wait(){ if(initGoogle()) return; if(++tries < 40) setTimeout(wait, 250); })();
+  }
 
   // ---- Formulario de Acceso Directo (Correo + PIN) ----
   $('admin-login-form').addEventListener('submit', async function(e){
