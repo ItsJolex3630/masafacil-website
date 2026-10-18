@@ -218,10 +218,10 @@ html.lock{overflow:hidden}
 .plate-badge .pl{width:30px;height:30px;font-size:1.25rem}
 .menu-list-curved{position:relative;z-index:6;width:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0 24px;background:none!important;border:none!important;box-shadow:none!important}
 .menu-list-curved .nt{max-width:580px;margin-left:auto;margin-bottom:14px}
-.menu-list-curved .gt{display:inline-block;margin-top:14px;margin-bottom:8px;transform:translate3d(var(--curve-offset,0px),0,0);transition:transform 350ms var(--ea)}
-.menu-list-curved .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;transform:translate3d(var(--curve-offset,0px),0,0);transition:transform 250ms var(--ea);cursor:pointer}
-.menu-list-curved .rw:hover{transform:translate3d(calc(var(--curve-offset,0px) + 6px),0,0)}
-.menu-list-curved .rw.plate-focus{transform:translate3d(calc(var(--curve-offset,0px) + 8px),0,0)}
+.menu-list-curved .gt{display:inline-block;margin-top:14px;margin-bottom:8px;margin-left:var(--curve-offset,0px);transition:margin-left 350ms var(--ea)}
+.menu-list-curved .rw{background:none!important;border:none!important;box-shadow:none!important;border-radius:0!important;padding:7px 0!important;margin-bottom:1px!important;box-sizing:border-box;margin-left:var(--curve-offset,0px);max-width:calc(100% - var(--curve-offset,0px));transition:margin-left 350ms var(--ea),transform 200ms ease;cursor:pointer}
+.menu-list-curved .rw:hover{transform:translateX(6px)}
+.menu-list-curved .rw.plate-focus{transform:translateX(8px)}
 .menu-list-curved .rw.plate-focus .n{color:var(--md);text-shadow:0 0 1px rgba(111,56,38,.3)}
 }
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){.plate-badge{background:#fff;backdrop-filter:none}}
@@ -2136,12 +2136,13 @@ function LB(sel) {
   function applyCurve(listEl, wheelEl) {
     if (!listEl || !wheelEl) return;
     
-    // FASE 1: LECTURAS GEOMÉTRICAS (Batch Read - 0 Reflows forzados)
+    // FASE 1: LECTURAS GEOMÉTRICAS (Batch Read)
+    // Usar offsetWidth (o 560px) en lugar de wheelRect.width para evitar que el AABB rotado altere el radio
     const wheelRect = wheelEl.getBoundingClientRect();
     const listRect = listEl.getBoundingClientRect();
+    const radius = (wheelEl.offsetWidth || 560) / 2;
     const centerX = wheelRect.left + wheelRect.width / 2;
     const centerY = wheelRect.top + wheelRect.height / 2;
-    const radius = wheelRect.width / 2;
     const rows = listEl.querySelectorAll('.rw, .gt');
     
     const updates = [];
@@ -2153,16 +2154,11 @@ function LB(sel) {
       if (Math.abs(dy) < radius) {
         rl = Math.round(Math.max(0, centerX + Math.sqrt(radius * radius - dy * dy) - listRect.left + 32));
       }
-      updates.push({ el, rl, isRw: el.classList.contains('rw') });
+      updates.push({ el, rl });
     }
-
-    // FASE 2: ESCRITURAS DE ESTILO (Batch Write en el compositor)
+    // FASE 2: ESCRITURAS DE ESTILO (Batch Write a la variable CSS)
     for (let i = 0; i < updates.length; i++) {
-      const { el, rl, isRw } = updates[i];
-      el.style.setProperty('--curve-offset', rl + 'px');
-      if (isRw) {
-        el.style.maxWidth = rl > 0 ? ('calc(100% - ' + rl + 'px)') : '';
-      }
+      updates[i].el.style.setProperty('--curve-offset', updates[i].rl + 'px');
     }
   }
 
@@ -2171,7 +2167,6 @@ function LB(sel) {
     listEl.dataset.curved = '';
     listEl.querySelectorAll('.rw, .gt').forEach(el => {
       el.style.removeProperty('--curve-offset');
-      el.style.removeProperty('max-width');
     });
   }
 
