@@ -286,6 +286,10 @@ html.lock{overflow:hidden}
 .sw-card-title-box h3{margin:0;font:600 1.35rem var(--h);color:var(--dk);line-height:1.2}
 .sw-card-price{font:600 1.25rem var(--h);background:var(--k);padding:3px 14px;border-radius:99px;color:var(--dk);white-space:nowrap}
 .sw-card-desc{font-size:.88rem;color:#6a5750;line-height:1.35;margin:0 0 14px}
+.sw-extra-add{display:none;width:100%;margin:0 0 12px;padding:8px 12px;border:1.5px dashed var(--tan);border-radius:12px;background:rgba(201,165,119,.12);color:var(--md);font:600 .82rem var(--h);cursor:pointer;transition:background-color 180ms ease,border-color 180ms ease,transform 180ms ease}
+.sw-extra-add.is-visible{display:block}
+.sw-extra-add:hover{background:rgba(201,165,119,.22);border-color:var(--md)}
+.sw-extra-add:active{transform:scale(.98)}
 .sw-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px dashed rgba(201,165,119,.35)}
 .sw-fresh-badge{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--md)}
 
@@ -476,7 +480,7 @@ html.lock{overflow:hidden}
     height:auto!important;
     pointer-events:auto!important;
   }
-  /* Plato ampliado en móvil para lucir los 13 pastelitos con máximo detalle */
+  /* Plato ampliado en móvil para lucir los pastelitos con máximo detalle */
   .mn.is-pastelitos .plate-stage{
     display:flex;
     position:relative;
@@ -1292,6 +1296,7 @@ section.cta,
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
 <div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal" width="600" height="600" decoding="async"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Queso blanco pasteurizado suave y abundante que funde al primer mordisco.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
+<div class="menu-slide" data-cat="Masas Congeladas" id="slide-masas"><div class="w"><div class="layout-zigzag" id="content-masas"></div></div></div>
 <div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
 <div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div id="content-sandwiches"></div></div></div>
 <div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal" width="600" height="600" decoding="async"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar al pedido">+</button></div></div></div><div id="drinks-detail-card" class="plate-detail-card"><div class="pd-head"><span id="drinks-detail-tag" class="badge-sub">CAFETERÍA DE ESPECIALIDAD</span><span id="drinks-detail-price" class="pd-price">$2,00</span></div><h3 id="drinks-detail-title">Café Latte</h3><p id="drinks-detail-desc" class="pd-desc">Café espresso con leche cremosa al vapor.</p><div class="pd-foot"><span class="pd-note">Granos venezolanos seleccionados</span><button id="drinks-detail-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar Latte al pedido">+</button></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
@@ -1567,7 +1572,7 @@ section.cta,
 <script>
 const IM = {
   past: 'assets/img/surtido_fritos.webp',
-  masas: 'assets/img/combopasapalos.webp',
+  masas: 'assets/img/masas_congeladas_card.webp',
   ent: 'assets/img/tequenos_dorados.webp',
   pan: 'assets/img/panini_italiano.webp',
   bur: 'assets/img/sandwich_criollo.webp',
@@ -1601,7 +1606,8 @@ const M = {
           R('Jamón & Queso', 'Combinación clásica de jamón de pierna seleccionado y queso blanco fundido', '$0,65', '2x$1'),
           R('Tocineta', 'Tocineta ahumada crujiente combinada con queso fundido cremoso', '$0,65', '2x$1'),
           R('Pepperoni', 'Rodajas de pepperoni especiado con queso derretido estilo pizza', '$0,65', '2x$1'),
-          R('Mortadela', 'Mortadela especial sazonada con queso blanco en masa extra dorada', '$0,65', '2x$1')
+          R('Mortadela', 'Mortadela especial sazonada con queso blanco en masa extra dorada', '$0,65', '2x$1'),
+          R('Pizza', 'Salsa pizzera artesanal, queso mozzarella fundido, trocitos de jamón y orégano', '$0,65', '2x$1')
         ]
       },
       {
@@ -1628,8 +1634,23 @@ const M = {
         r: [
           R('Ración (6) Mini Pastelitos', 'Crujientes y dorados con salsa tártara de la casa', '$1,50'),
           R('Ración (6) Tequeños', 'Queso derretido envuelto en masa suave y dorada', '$1,70', 'Top'),
-          R('Ración (6) Tequeños de Chocolate', 'Rellenos con auténtico chocolate venezolano', '$2,20', 'Dulce'),
-          R('Ración Nuggets con papas', '6 nuggets crocantes acompañados de papas fritas', '$4,00')
+          R('Ración (3) Tequeños de Chocolate', '3 unidades rellenas con auténtico chocolate venezolano derretido', '$1,50', 'Dulce'),
+          R('Ración (3) Queso con Guayaba', '3 unidades con queso blanco fundido y dulce de guayaba artesanal', '$1,50', 'Dulce'),
+          R('Ración (3) Plátano con Queso', '3 unidades de masa de plátano maduro con queso blanco derretido', '$1,50', 'Especial'),
+          R('Ración Tenders con papas', 'Crocantes tiras de pechuga de pollo crispy acompañadas de papas fritas y salsa', '$4,50', 'Top')
+        ]
+      }
+    ]
+  },
+  'Masas Congeladas': {
+    im: 'masas',
+    nt: 'Discos de masa fresca y elástica listos para rellenar y freír o congelar en casa.',
+    g: [
+      {
+        t: 'Para Preparar en Casa',
+        r: [
+          R('Paquete de Masas (10 discos)', 'Discos de masa tradicional Masa Fácil con separadores individuales listos para armar y freír', '$2,50', 'Estrella'),
+          R('Paquete de Masas (20 discos)', 'Discos de masa tradicional Masa Fácil listos para congelar o freír en familia', '$4,50', 'Ahorro')
         ]
       }
     ]
@@ -1658,7 +1679,8 @@ const M = {
         r: [
           R('Sandwich Criollo', 'Pan clásico con queso amarillo fundido, jamón y salchichón', '$5,50'),
           R('Sandwich Diet', 'Pan integral, queso paisa bajo en sal, jamón de pavo y vegetales frescos', '$5,00'),
-          R('Burger Crispy', 'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y queso cheddar', '$6,50', 'Favorito')
+          R('Burger Crispy', 'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y cheddar', '$6,50', 'Favorito'),
+          R('Extra Papas Fritas (para Burger)', 'Porción extra de papas fritas crujientes doradas', '$1,00', 'Extra')
         ]
       }
     ]
@@ -1735,18 +1757,19 @@ const $ = i => document.getElementById(i), ks = Object.keys(M);
 const IMGS = {
   combos: ['assets/img/combopasapalos.webp', 'assets/img/surtido_fritos.webp'],
   paninis: ['assets/img/paninis/panini_pollo.webp', 'assets/img/paninis/panini_capresa.webp', 'assets/img/paninis/panini_roastbeef.webp', 'assets/img/paninis/panini_italiano.webp'],
-  sandwiches: ['assets/img/sandwiches/sandwich_criollo.webp', 'assets/img/sandwiches/sandwich_diet.webp', 'assets/img/sandwiches/burger_crispy.webp'],
-  entradas: ['assets/img/entradas/mini_pastelitos.webp', 'assets/img/entradas/tequenos.webp', 'assets/img/entradas/tequenos_chocolate.webp', 'assets/img/entradas/nuggets_papas.webp'],
+  sandwiches: ['assets/img/sandwiches/sandwich_criollo.webp', 'assets/img/sandwiches/sandwich_diet.webp', 'assets/img/sandwiches/burger_crispy.webp', 'assets/img/producto_extra_2.webp'],
+  entradas: ['assets/img/entradas/mini_pastelitos.webp', 'assets/img/entradas/tequenos.webp', 'assets/img/entradas/tequenos_chocolate.webp', 'assets/img/entradas/tequenos_guayaba.webp', 'assets/img/entradas/tequenos_platano_queso.webp', 'assets/img/entradas/tenders_papas.webp'],
+  masas: ['assets/img/masas_congeladas_card.webp'],
   bebidas: ['assets/img/bebidas/cafe_latte.webp', 'assets/img/bebidas/jugo_parchita.webp', 'assets/img/bebidas/nestea_limon.webp', 'assets/img/bebidas/refresco.webp']
 };
 
-const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
+const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Masas Congeladas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
 let currentSlideIndex = 0;
 
 function rowHTML(r, n, cat) {
   var optId = 'opt' + n;
   var optSel = r.o ? ' <select class="opt" id="' + optId + '" aria-label="Sabor de ' + r.n + '">' + r.o.map(function(f){ return '<option>' + f + '</option>'; }).join('') + '</select>' : '';
-  var addBtn = r.o ? (function(){ var u = parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.')); return ' <button class="pl" data-k="' + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '" data-opt="' + optId + '" aria-label="Agregar ' + r.n + ' al pedido">+</button>'; })() : '';
+  var addBtn = (r.o || cat === 'Masas Congeladas') ? (function(){ var u = parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.')); return ' <button class="pl" data-k="' + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '"' + (r.o ? ' data-opt="' + optId + '"' : '') + ' aria-label="Agregar ' + r.n + ' al pedido">+</button>'; })() : '';
   return '<div data-cat="' + cat + '" class="rw' + (r.a ? ' ag' : '') + (r.nw ? ' nowheel' : '') + '"><div><span class="n">' + r.n + '</span>' + (r.t ? '<span class="tg">' + r.t + '</span>' : '') + (r.d ? '<i>' + r.d + '</i>' : '') + '</div><span class="dt"></span>' + optSel + '<span class="p">' + r.p + '</span>' + addBtn + '</div>';
 }
 function groupsHTML(cat) {
@@ -1754,7 +1777,8 @@ function groupsHTML(cat) {
   return (s.nt ? '<div class="nt">' + s.nt + '</div>' : '') + s.g.map(g => '<div><span class="gt">' + g.t + '</span><div class="items-group">' + g.r.map(r => rowHTML(r, n++, cat)).join('') + '</div></div>').join('');
 }
 function zigzagHTML(cat, imgs) {
-  return M[cat].g.map((g, i) => {
+  const note = M[cat].nt ? '<div class="nt">' + M[cat].nt + '</div>' : '';
+  return note + M[cat].g.map((g, i) => {
     const reverse = i % 2 === 1;
     const img = '<div class="zigzag-img-wrap"><img loading="lazy" decoding="async" src="' + imgs[i % imgs.length] + '" alt="' + g.t + '" class="arch-img"></div>';
     const content = '<div class="zigzag-content"><span class="gt">' + g.t + '</span><div class="items-group">' + g.r.map((r, j) => rowHTML(r, j, cat)).join('') + '</div></div>';
@@ -1829,7 +1853,9 @@ function diamondHTML(cat, imgs) {
 }
 
 function sandwichesShowcaseHTML(cat, imgs) {
-  const rows = M[cat].g[0].r;
+  const allRows = M[cat].g[0].r;
+  const rows = allRows.filter(r => r.t !== 'Extra');
+  const extraRow = allRows.find(r => r.t === 'Extra');
   const navItems = rows.map((r, i) => {
     const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
     return '<button type="button" class="sw-nav-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
@@ -1844,6 +1870,8 @@ function sandwichesShowcaseHTML(cat, imgs) {
   const r0 = rows[0];
   const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
   const tag0 = r0.t ? '<span class="tg">' + r0.t + '</span>' : '<span class="badge-sub">Hecho al momento</span>';
+  const uExtra = extraRow ? parseFloat(extraRow.p.replace(/[^\d,]/g, '').replace(',', '.')) : null;
+  const extraBtn = extraRow ? '<button type="button" class="sw-extra-add" id="sw-extra-add" data-k="' + extraRow.n + '" data-u="' + (isNaN(uExtra) ? '' : uExtra) + '" aria-label="Agregar ' + extraRow.n + ' al pedido">🍟 Añadir papas extra · ' + extraRow.p + '</button>' : '';
 
   return '<div class="sandwiches-showcase-layout" id="sandwiches-showcase">' +
     '<div class="sw-nav-col">' +
@@ -1860,6 +1888,7 @@ function sandwichesShowcaseHTML(cat, imgs) {
           '<span id="sw-hero-price" class="sw-card-price">' + r0.p + '</span>' +
         '</div>' +
         '<p id="sw-hero-desc" class="sw-card-desc">' + (r0.d || '') + '</p>' +
+        extraBtn +
         '<div class="sw-card-foot">' +
           '<span class="sw-fresh-badge">Pan artesanal recién horneado</span>' +
           '<button id="sw-hero-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
@@ -1874,6 +1903,7 @@ function buildMenu() {
   set('mg-pastelitos', groupsHTML('Pastelitos'));
   set('mg-bebidas', groupsHTML('Bebidas'));
   set('content-combos', zigzagHTML('Combos Eventos', IMGS.combos));
+  set('content-masas', zigzagHTML('Masas Congeladas', IMGS.masas));
   set('content-entradas', diamondHTML('Entradas', IMGS.entradas));
   set('content-paninis', frontHTML('Paninis', IMGS.paninis));
   set('content-sandwiches', sandwichesShowcaseHTML('Sándwich y Burger', IMGS.sandwiches));
@@ -1970,10 +2000,11 @@ function LB(sel) {
   const G = [
     ['assets/img/mini_pastelitos.webp', 'Mini Pastelitos dorados'],
     ['assets/img/tequenos_dorados.webp', 'Tequeños de queso'],
+    ['assets/img/entradas/tenders_papas.webp', 'Tenders de pollo con papas'],
     ['assets/img/mostrador_caliente.webp', 'Mostrador caliente'],
     ['assets/img/panini_italiano.webp', 'Panini Italiano con burrata'],
     ['assets/img/latte_art.webp', 'Café Latte de especialidad'],
-    ['assets/img/combopasapalos.webp', 'Masas y combos'],
+    ['assets/img/masas_congeladas.webp', 'Masas congeladas artesanales'],
     ['assets/img/interior_local.webp', 'Interior acogedor'],
     ['assets/img/surtido_fritos.webp', 'Surtido de pastelitos']
   ];
@@ -2105,7 +2136,8 @@ function LB(sel) {
     { id: '10_andino', n: 'Andino', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/10_andino.webp' },
     { id: '11_dos_quesos', n: 'Dos Quesos', p: '$1,10', u: 1.10, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/11_dos_quesos.webp' },
     { id: '12_camaron_ajillo', n: 'Camarón al ajillo con queso crema', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/12_camaron_ajillo.webp' },
-    { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' }
+    { id: '13_champinon', n: 'Champiñón con queso crema y tocineta', p: '$1,99', u: 1.99, cat: 'Especial', promo: false, img: 'assets/img/pastelitos/especiales/13_champinon.webp' },
+    { id: '14_pizza', n: 'Pizza', p: '$0,65', u: 0.65, cat: 'Tradicional', promo: true, img: 'assets/img/pastelitos/tradicionales/pizza.webp' }
   ];
   let currentPlateIndex = 0;
   let plateWheelAngle = 0;
@@ -2250,7 +2282,7 @@ function LB(sel) {
         el.style.pointerEvents = dist <= 2 ? 'auto' : 'none';
       });
     } else {
-      // Móvil: todos los 13 pastelitos orbitan en 360°. Pastelitos más grandes, detallados y nítidos
+      // Móvil: todos los pastelitos orbitan en 360°. Pastelitos más grandes, detallados y nítidos
       document.querySelectorAll('#plate-slots .plate-item').forEach((el, i) => {
         const slotAngle = i * PLATE_STEP;
         const isProtagonist = (i === idx);
@@ -2342,7 +2374,8 @@ function LB(sel) {
     const priceEl = root.querySelector('#sw-hero-price');
     const descEl = root.querySelector('#sw-hero-desc');
     const addBtn = root.querySelector('#sw-hero-add-btn');
-    const rows = M['Sándwich y Burger'].g[0].r;
+    const extraBtn = root.querySelector('#sw-extra-add');
+    const rows = M['Sándwich y Burger'].g[0].r.filter(r => r.t !== 'Extra');
     const imgs = IMGS.sandwiches;
 
     function pick(idx) {
@@ -2368,8 +2401,16 @@ function LB(sel) {
         addBtn.dataset.u = isNaN(u) ? '' : u;
         addBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
       }
+      if (extraBtn) extraBtn.classList.toggle('is-visible', cur.n === 'Burger Crispy');
     }
     mfApi.pickSandwich = pick;
+
+    if (extraBtn) {
+      extraBtn.addEventListener('click', function(){
+        var u = parseFloat(this.dataset.u);
+        if (typeof mfApi.addToCart === 'function') mfApi.addToCart(this.dataset.k, isNaN(u) ? null : u);
+      });
+    }
 
     cards.forEach((c, i) => {
       c.addEventListener('mouseenter', () => pick(i));
@@ -2568,7 +2609,8 @@ function LB(sel) {
     const bAdd = document.getElementById('entradas-add-btn');
 
     const catData = M['Entradas'].g[0].r;
-    const N = items.length; // 4
+    const N = items.length;
+    const step = 360 / N;
     let currentIdx = 0;
     let diamondWheelAngle = 0;
 
@@ -2580,7 +2622,7 @@ function LB(sel) {
       // En escritorio el plato protagonista rota a la derecha (0°).
       // En móvil rota completamente abajo (90°), conectando visualmente con la lista inferior.
       const targetProtagonistAngle = isDesktop ? 0 : 90;
-      const targetAngle = targetProtagonistAngle - currentIdx * 90;
+      const targetAngle = targetProtagonistAngle - currentIdx * step;
       let delta = (targetAngle - (diamondWheelAngle % 360));
       while (delta > 180) delta -= 360;
       while (delta < -180) delta += 360;
@@ -2591,7 +2633,7 @@ function LB(sel) {
       }
 
       items.forEach((item, i) => {
-        const slotAngle = i * 90;
+        const slotAngle = i * step;
         const visualAngle = slotAngle + diamondWheelAngle;
         const norm = ((visualAngle % 360) + 360) % 360;
         const isProtagonist = norm === targetProtagonistAngle;
@@ -2634,7 +2676,7 @@ function LB(sel) {
         const isDesktop = matchMedia('(min-width: 800px)').matches;
         const stageW = (stage && stage.offsetWidth > 100) ? stage.offsetWidth : (isDesktop ? 520 : 320);
         const radius = isDesktop ? Math.min(205, stageW * 0.40) : Math.min(115, stageW * 0.36);
-        const canonical = (isDesktop ? 0 : 90) - targetIdx * 90;
+        const canonical = (isDesktop ? 0 : 90) - targetIdx * step;
         const start = diamondWheelAngle;
         const end = start + (3 + Math.floor(Math.random() * 3)) * 360 + ((((canonical - start) % 360) + 360) % 360);
         const dur = duration + 'ms';
@@ -2644,7 +2686,7 @@ function LB(sel) {
           item.style.transition = 'transform ' + dur + ' ' + ez;
           const img = item.querySelector('img');
           if (img) img.style.transition = 'transform ' + dur + ' ' + ez;
-          const slotAngle = i * 90;
+          const slotAngle = i * step;
           item.style.transform = 'rotate(' + slotAngle + 'deg) translate(' + radius + 'px) rotate(' + (-slotAngle) + 'deg)';
           item.classList.remove('is-protagonist');
           item.classList.add('is-secondary');
@@ -2696,6 +2738,7 @@ function LB(sel) {
       if (!drinksBuilt) { initDrinkSlots(); hookDrinkRows(); drinksBuilt = true; }
       else selectDrink(currentDrinkIndex);
     }
+    if (k === 'Entradas' && typeof window.updateDiamond === 'function') window.updateDiamond();
     requestAnimationFrame(updateCurvedOffsets);
   }
 
@@ -2885,7 +2928,8 @@ function LB(sel) {
     'Pastelito Jamón & Queso',
     'Pastelito Tocineta',
     'Pastelito Pepperoni',
-    'Pastelito Mortadela'
+    'Pastelito Mortadela',
+    'Pastelito Pizza'
   ]);
   // Club Masafácil: economía de tokens (espejo de functions/_tokens.js).
   const TOKENS_POR_DOLAR = { Nuevo: 100, Frecuente: 120, Plata: 140, Oro: 160, VIP: 180 };
@@ -4226,7 +4270,7 @@ function LB(sel) {
           return { name: r.n, price: r.p, u: priceToU(r.p), img: MFapi.imgs.paninis[ti], desc: r.d, key: 'Panini ' + r.n };
         });
       } else if (cat === 'Sándwich y Burger'){
-        var sr = MFapi.menu['Sándwich y Burger'].g[0].r;
+        var sr = MFapi.menu['Sándwich y Burger'].g[0].r.filter(function(r){ return r.t !== 'Extra'; });
         p = slotMachine(MFapi.pickSandwich, sr.length, 3000).then(function(ti){
           var r = sr[ti];
           return { name: r.n, price: r.p, u: priceToU(r.p), img: MFapi.imgs.sandwiches[ti], desc: r.d, key: r.n };

@@ -7,8 +7,19 @@ import { calcularTokensGanados, calcularMaxTokensCanjeables, tokensADolares } fr
 const TRAD_PRECIO = 0.65;
 const TRAD_AHORRO_POR_PAR = 0.30;
 const TRAD_NORM = new Set([
-  "queso", "jamon & queso", "tocineta", "pepperoni", "mortadela",
+  "queso", "jamon & queso", "tocineta", "pepperoni", "mortadela", "pizza",
 ]);
+
+const PRODUCTOS_NUEVOS = {
+  "pizza": { nombre: "Pizza", precio: 0.65 },
+  "racion (3) tequenos de chocolate": { nombre: "Ración (3) Tequeños de Chocolate", precio: 1.5 },
+  "racion (3) queso con guayaba": { nombre: "Ración (3) Queso con Guayaba", precio: 1.5 },
+  "racion (3) platano con queso": { nombre: "Ración (3) Plátano con Queso", precio: 1.5 },
+  "racion tenders con papas": { nombre: "Ración Tenders con papas", precio: 4.5 },
+  "extra papas fritas (para burger)": { nombre: "Extra Papas Fritas (para Burger)", precio: 1.0 },
+  "paquete de masas (10 discos)": { nombre: "Paquete de Masas (10 discos)", precio: 2.5 },
+  "paquete de masas (20 discos)": { nombre: "Paquete de Masas (20 discos)", precio: 4.5 },
+};
 
 // Sabores permitidos para bebidas con selector de variante
 const SABORES_PERMITIDOS = new Set([
@@ -79,7 +90,7 @@ export async function buildPedido(db, user, body) {
   const map = {};
   for (const row of r.rows) map[norm(row.nombre)] = { nombre: row.nombre, precio: Number(row.precio) };
   for (const p of pedido) {
-    const hit = matchProducto(map, p.base);
+    const hit = matchProducto(map, p.base) || matchProducto(PRODUCTOS_NUEVOS, p.base);
     if (hit) {
       // Si el cliente eligió un sabor (" · Manzana"), validar contra lista blanca.
       if (p.key.indexOf(" · ") !== -1) {
