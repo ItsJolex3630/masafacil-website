@@ -139,6 +139,7 @@ html.lock{overflow:hidden}
 .cl-stepper{display:inline-flex;align-items:center;background:var(--k);border-radius:99px;padding:2px 4px;border:1px solid rgba(111,56,38,.15)}
 .cl-stepper button{width:26px!important;height:26px!important;border-radius:50%!important;border:0!important;background:#ffffff!important;color:var(--dk)!important;font-weight:800!important;font-size:1rem!important;line-height:1!important;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:0;transition:transform 120ms ease,background 120ms ease}
 .cl-stepper button:active{transform:scale(.9);background:var(--tan)!important}
+.cl-stepper button:disabled{opacity:.35;cursor:not-allowed;transform:none!important;background:#ffffff!important}
 .cl-qty{min-width:26px;text-align:center;font-weight:700;font-size:.88rem;color:var(--dk)}
 .cl-unit{font-size:.74rem;color:#7d6b63;font-weight:500}
 .cl-rm{margin-left:auto;background:none;border:0;color:#a44234;font-size:.75rem;font-weight:600;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background 150ms}
@@ -147,6 +148,7 @@ html.lock{overflow:hidden}
 .cem-icon{font-size:2.6rem;margin-bottom:6px;opacity:.8}
 .cem b{color:var(--dk);font-size:1.05rem}
 .cem-sub{font-size:.85rem;margin:6px 0 0;opacity:.85}
+.cem .btn{font-size:.9rem;padding:10px 20px}
 #cft{display:flex;flex-direction:column;gap:10px;padding-top:8px;border-top:1px dashed rgba(111,56,38,.22)}
 .cart-opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:350px){.cart-opts-grid{grid-template-columns:1fr}}
@@ -1296,11 +1298,11 @@ section.cta,
 <section id="menu"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Nuestro menú</h2><div class="tabs" id="tb"></div></div><div class="menu-carousel-viewport" id="menu-viewport"><div class="menu-carousel-track" id="menu-track">
 <div class="menu-slide is-active" data-cat="Pastelitos" id="slide-pastelitos"><div class="w"><div class="mn is-pastelitos"><div class="mn-left"><div id="plate-stage" class="plate-stage" aria-label="Plato interactivo de degustación"><div class="plate-viewport"><div id="plate-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Plato artesanal" width="600" height="600" decoding="async"><div id="plate-slots" class="plate-slots"></div></div></div><div id="plate-protagonist-badge" class="plate-badge"><h4 id="plate-badge-title">Queso</h4><div class="badge-actions"><span id="plate-badge-price" class="badge-price">$0,65</span><button id="plate-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar al pedido">+</button></div></div></div><div id="plate-detail-card" class="plate-detail-card"><div class="pd-head"><span id="plate-detail-tag" class="badge-sub">TRADICIONAL · PROMO 2X$1</span><span id="plate-detail-price" class="pd-price">$0,65</span></div><h3 id="plate-detail-title">Pastelito de Queso</h3><p id="plate-detail-desc" class="pd-desc">Queso blanco pasteurizado suave y abundante que funde al primer mordisco.</p><div class="pd-foot"><span class="pd-note">¡Promo: 2 Tradicionales por $1,00!</span><button id="plate-detail-add-btn" class="pl" data-k="Pastelito Queso" data-u="0.65" aria-label="Agregar Pastelito Queso al pedido">+</button></div></div></div><div id="mg-pastelitos" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Entradas" id="slide-entradas"><div class="w"><div class="layout-entradas" id="content-entradas"></div></div></div>
-<div class="menu-slide" data-cat="Masas Congeladas" id="slide-masas"><div class="w"><div class="layout-zigzag" id="content-masas"></div></div></div>
 <div class="menu-slide" data-cat="Paninis" id="slide-paninis"><div class="w"><div class="layout-front-plates" id="content-paninis"></div></div></div>
 <div class="menu-slide" data-cat="Sándwich y Burger" id="slide-sandwiches"><div class="w"><div id="content-sandwiches"></div></div></div>
 <div class="menu-slide" data-cat="Bebidas" id="slide-bebidas"><div class="w"><div class="mn is-bebidas"><div class="mn-left"><div id="drinks-stage" class="plate-stage" aria-label="Bandeja de bebidas"><div class="plate-viewport"><div id="drinks-wheel" class="plate-wheel"><img src="assets/img/plato_artesanal.webp" class="plate-base-img" alt="Bandeja artesanal" width="600" height="600" decoding="async"><div id="drinks-slots" class="plate-slots"></div></div></div><div id="drinks-badge" class="plate-badge"><h4 id="drinks-badge-title">Latte</h4><div class="badge-actions"><span id="drinks-badge-price" class="badge-price">$2,00</span><button id="drinks-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar al pedido">+</button></div></div></div><div id="drinks-detail-card" class="plate-detail-card"><div class="pd-head"><span id="drinks-detail-tag" class="badge-sub">CAFETERÍA DE ESPECIALIDAD</span><span id="drinks-detail-price" class="pd-price">$2,00</span></div><h3 id="drinks-detail-title">Café Latte</h3><p id="drinks-detail-desc" class="pd-desc">Café espresso con leche cremosa al vapor.</p><div class="pd-foot"><span class="pd-note">Granos venezolanos seleccionados</span><button id="drinks-detail-add-btn" class="pl" data-k="Latte" data-u="2.00" aria-label="Agregar Latte al pedido">+</button></div></div></div><div id="mg-bebidas" class="menu-list menu-list-curved"></div></div></div></div>
 <div class="menu-slide" data-cat="Combos Eventos" id="slide-combos"><div class="w"><div class="layout-zigzag" id="content-combos"></div></div></div>
+<div class="menu-slide" data-cat="Masas Congeladas" id="slide-masas"><div class="w"><div class="layout-zigzag" id="content-masas"></div></div></div>
 </div></div></section>
 
 <section id="como-pedir"><div class="w"><h2 class="bar" style="padding-left:18px;border-radius:0 14px 14px 0;display:inline-block;padding-right:40px">Cómo pedir</h2><div class="info"><div class="card step"><b>1</b><h3>Elige</h3><p>Mira el menú y toca <b>+</b> en los pastelitos, masas, paninis o combos que quieras.</p></div><div class="card step"><b>2</b><h3>Revisa tu pedido</h3><p>Selecciona Pick Up o tu zona de Delivery ($1/km) y agrega notas especiales.</p></div><div class="card step"><b>3</b><h3>Envíalo por WhatsApp</h3><p>Tu lista llega formateada con el total al WhatsApp oficial de Masafácil (con promo 2x$1 calculada).</p></div></div></div></section>
@@ -1642,19 +1644,6 @@ const M = {
       }
     ]
   },
-  'Masas Congeladas': {
-    im: 'masas',
-    nt: 'Discos de masa fresca y elástica listos para rellenar y freír o congelar en casa.',
-    g: [
-      {
-        t: 'Para Preparar en Casa',
-        r: [
-          R('Paquete de Masas (10 discos)', 'Discos de masa tradicional Masa Fácil con separadores individuales listos para armar y freír', '$2,50', 'Estrella'),
-          R('Paquete de Masas (20 discos)', 'Discos de masa tradicional Masa Fácil listos para congelar o freír en familia', '$4,50', 'Ahorro')
-        ]
-      }
-    ]
-  },
   'Paninis': {
     im: 'pan',
     nt: 'Elige el pan que más te guste: Orégano & Parmesano / Mantequilla / Tradicional.',
@@ -1749,6 +1738,19 @@ const M = {
         ]
       }
     ]
+  },
+  'Masas Congeladas': {
+    im: 'masas',
+    nt: 'Masa fresca artesanal lista para rellenar, freír o congelar en casa. Calidad garantizada.',
+    g: [
+      {
+        t: 'Para Preparar en Casa',
+        r: [
+          R('Masas de Pastelitos (Discos) 950g', 'Paquete de discos de masa tradicional con separadores individuales (950 gr)', '$2,50', 'Al detal'),
+          R('Masas al Mayor (+12 und)', 'Precio especial al mayor por paquete de 950 gr llevando a partir de 12 unidades', '$1,10', 'Al mayor')
+        ]
+      }
+    ]
   }
 };
 
@@ -1763,7 +1765,7 @@ const IMGS = {
   bebidas: ['assets/img/bebidas/cafe_latte.webp', 'assets/img/bebidas/jugo_parchita.webp', 'assets/img/bebidas/nestea_limon.webp', 'assets/img/bebidas/refresco.webp']
 };
 
-const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Masas Congeladas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos'];
+const SLIDES_CATS = ['Pastelitos', 'Entradas', 'Paninis', 'Sándwich y Burger', 'Bebidas', 'Combos Eventos', 'Masas Congeladas'];
 let currentSlideIndex = 0;
 
 function rowHTML(r, n, cat) {
@@ -1871,7 +1873,8 @@ function sandwichesShowcaseHTML(cat, imgs) {
   const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
   const tag0 = r0.t ? '<span class="tg">' + r0.t + '</span>' : '<span class="badge-sub">Hecho al momento</span>';
   const uExtra = extraRow ? parseFloat(extraRow.p.replace(/[^\d,]/g, '').replace(',', '.')) : null;
-  const extraBtn = extraRow ? '<button type="button" class="sw-extra-add" id="sw-extra-add" data-k="' + extraRow.n + '" data-u="' + (isNaN(uExtra) ? '' : uExtra) + '" aria-label="Agregar ' + extraRow.n + ' al pedido">🍟 Añadir papas extra · ' + extraRow.p + '</button>' : '';
+  const extraLabel = extraRow ? '🍟 Añadir papas extra · ' + extraRow.p : '';
+  const extraBtn = extraRow ? '<button type="button" class="sw-extra-add" id="sw-extra-add" data-k="' + extraRow.n + '" data-u="' + (isNaN(uExtra) ? '' : uExtra) + '" data-label="' + extraLabel + '" aria-label="Agregar ' + extraRow.n + ' al pedido">' + extraLabel + '</button>' : '';
 
   return '<div class="sandwiches-showcase-layout" id="sandwiches-showcase">' +
     '<div class="sw-nav-col">' +
@@ -2407,8 +2410,27 @@ function LB(sel) {
 
     if (extraBtn) {
       extraBtn.addEventListener('click', function(){
-        var u = parseFloat(this.dataset.u);
-        if (typeof mfApi.addToCart === 'function') mfApi.addToCart(this.dataset.k, isNaN(u) ? null : u);
+        const defaultLabel = this.dataset.label || '🍟 Añadir papas extra · $1,00';
+        const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
+        const currentExtraQty = (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q) ? C[EXTRA_FRIES_KEY].q : 0;
+
+        if (burgerQty === 0) {
+          mfApi.addToCart(BURGER_KEY, 6.50);
+          mfApi.addToCart(EXTRA_FRIES_KEY, 1.00);
+          this.textContent = '✓ Burger + Papas añadidas';
+          setTimeout(() => { this.textContent = defaultLabel; }, 1600);
+          return;
+        }
+
+        if (currentExtraQty >= burgerQty) {
+          this.textContent = '✓ Extra ya incluido (' + currentExtraQty + '/' + burgerQty + ')';
+          setTimeout(() => { this.textContent = defaultLabel; }, 1600);
+          return;
+        }
+
+        mfApi.addToCart(EXTRA_FRIES_KEY, 1.00);
+        this.textContent = '✓ Papas extra añadidas (+$1,00)';
+        setTimeout(() => { this.textContent = defaultLabel; }, 1600);
       });
     }
 
@@ -2944,7 +2966,26 @@ function LB(sel) {
      El carrito se guarda de forma continua y SOLO se vacía cuando el usuario
      pulsa "Pedir por WhatsApp". Recargar, navegar o cerrar la pestaña no lo borra. */
   const CART_LS_KEY = 'mf_cart_items_v2';
+  const BURGER_KEY = 'Burger Crispy';
+  const EXTRA_FRIES_KEY = 'Extra Papas Fritas (para Burger)';
   let cartSyncTimer = 0;
+
+  function sanitizeCartDependencies() {
+    const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
+    let changed = false;
+    if (burgerQty === 0) {
+      if (C[EXTRA_FRIES_KEY]) {
+        delete C[EXTRA_FRIES_KEY];
+        changed = true;
+      }
+    } else if (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q > burgerQty) {
+      C[EXTRA_FRIES_KEY].q = burgerQty;
+      changed = true;
+    }
+    if (changed) persistCart();
+    return changed;
+  }
+
   // Normaliza cualquier valor (forma nueva {q,u} o antigua cantidad) a {q,u}.
   function normalizeCartEntry(v) {
     if (v && typeof v === 'object') {
@@ -2977,9 +3018,11 @@ function LB(sel) {
         if (entry) C[k] = entry;
       });
     }
+    sanitizeCartDependencies();
   } catch (e) {}
 
   function draw() {
+    sanitizeCartDependencies();
     syncMetodosPago();
     const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
     const subtotalBruto = ks.reduce((a, k) => a + (C[k].u || 0) * C[k].q, 0);
@@ -3041,6 +3084,7 @@ function LB(sel) {
       const isTrad = TRAD_ITEMS.has(k);
       const itemTot = C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q);
       const unitHint = (C[k].u != null && C[k].q > 1) ? '<span class="cl-unit">' + m(C[k].u) + ' c/u</span>' : '';
+      const atExtraLimit = k === EXTRA_FRIES_KEY && C[k].q >= ((C[BURGER_KEY] && C[BURGER_KEY].q) || 0);
       return '<div class="cl">' +
         '<div class="cl-top">' +
           '<div class="cl-name">' + esc(k) + (isTrad ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : '') + '</div>' +
@@ -3050,13 +3094,13 @@ function LB(sel) {
           '<div class="cl-stepper">' +
             '<button data-a="-" data-k="' + esc(k) + '" aria-label="Quitar uno">−</button>' +
             '<span class="cl-qty">' + C[k].q + '</span>' +
-            '<button data-a="+" data-k="' + esc(k) + '" aria-label="Agregar uno">+</button>' +
+            '<button data-a="+" data-k="' + esc(k) + '" aria-label="Agregar uno"' + (atExtraLimit ? ' disabled aria-disabled="true" title="Máximo 1 porción extra por hamburguesa"' : '') + '>+</button>' +
           '</div>' +
           unitHint +
           '<button class="cl-rm" data-a="x" data-k="' + esc(k) + '" aria-label="Eliminar producto">Quitar</button>' +
         '</div>' +
       '</div>';
-    }).join('') : '<div class="cem"><div class="cem-icon">🛒</div><p><b>Tu pedido está vacío</b></p><p class="cem-sub">Toca + en los productos del menú para armar tu pedido.</p></div>';
+    }).join('') : '<div class="cem"><div class="cem-icon">🛒</div><p><b>Tu pedido está vacío</b></p><p class="cem-sub">Agrega tus productos favoritos desde el menú para comenzar.</p><a href="#menu" class="btn cem-menu-link" style="margin-top:10px;display:inline-block">Explorar menú</a></div>';
 
     $('cft').style.display = ks.length ? 'flex' : 'none';
     const cbtBar = $('cbt-bar');
@@ -3111,7 +3155,15 @@ function LB(sel) {
       }
       msg += '------------------------------------\n\n';
     }
-    msg += ks.map(k => '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q))).join('\n');
+    msg += ks.filter(k => k !== EXTRA_FRIES_KEY).map(k => {
+      if (k === BURGER_KEY && C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q > 0) {
+        const extra = C[EXTRA_FRIES_KEY];
+        const burgerTotal = C[k].u == null ? 'consultar precio' : m(C[k].u * C[k].q);
+        const extraTotal = extra.u == null ? 'consultar precio' : m(extra.u * extra.q);
+        return '• ' + C[k].q + ' x ' + k + ' (' + burgerTotal + ') + ' + (extra.q === 1 ? '' : extra.q + ' x ') + 'Porción de Papas Extra (' + extraTotal + ')';
+      }
+      return '• ' + C[k].q + ' x ' + k + (C[k].u == null ? ' (consultar precio)' : ' - ' + m(C[k].u * C[k].q));
+    }).join('\n');
     if (tradAhorro > 0) {
       msg += '\n\n🎉 Ahorro Promo Tradicionales (2x$1 en ' + tradQty + ' piezas): -' + m(tradAhorro);
     }
@@ -3188,6 +3240,14 @@ function LB(sel) {
     const b = e.target.closest('#cli button');
     if (b) {
       const k = b.dataset.k, a = b.dataset.a;
+      if (a == '+' && k === EXTRA_FRIES_KEY) {
+        const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
+        const extraQty = (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q) ? C[EXTRA_FRIES_KEY].q : 0;
+        if (burgerQty < 1 || extraQty >= burgerQty) {
+          buzz(8);
+          return;
+        }
+      }
       if (a == 'x' || (a == '-' && C[k].q < 2)) {
         const it = C[k];
         delete C[k];
@@ -3195,6 +3255,7 @@ function LB(sel) {
       } else {
         C[k].q += a == '+' ? 1 : -1;
       }
+      sanitizeCartDependencies();
       draw();
       persistCart();
       window.dispatchEvent(new CustomEvent('mf:cart-remove', { detail: { k: k } }));
@@ -3248,6 +3309,15 @@ function LB(sel) {
       } else {
         window.open(waUrl, '_blank', 'noopener,noreferrer');
       }
+      return;
+    }
+    const menuLink = e.target.closest('.cem-menu-link');
+    if (menuLink) {
+      e.preventDefault();
+      closeSh();
+      document.documentElement.classList.remove('lock');
+      const menuTarget = $('menu');
+      if (menuTarget) menuTarget.scrollIntoView({ behavior: RM.matches ? 'auto' : 'smooth', block: 'start' });
       return;
     }
     if (e.target.closest('#cb,#cbar,#u-tokens')) openSh();

@@ -17,8 +17,8 @@ const PRODUCTOS_NUEVOS = {
   "racion (3) platano con queso": { nombre: "Ración (3) Plátano con Queso", precio: 1.5 },
   "racion tenders con papas": { nombre: "Ración Tenders con papas", precio: 4.5 },
   "extra papas fritas (para burger)": { nombre: "Extra Papas Fritas (para Burger)", precio: 1.0 },
-  "paquete de masas (10 discos)": { nombre: "Paquete de Masas (10 discos)", precio: 2.5 },
-  "paquete de masas (20 discos)": { nombre: "Paquete de Masas (20 discos)", precio: 4.5 },
+  "masas de pastelitos (discos) 950g": { nombre: "Masas de Pastelitos (Discos) 950g", precio: 2.5 },
+  "masas al mayor (+12 und)": { nombre: "Masas al Mayor (+12 und)", precio: 1.1 },
 };
 
 // Sabores permitidos para bebidas con selector de variante
