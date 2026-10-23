@@ -111,11 +111,15 @@ nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;back
 body.has-cart .wf,html.lock .wf,html.lock .ai{opacity:0;pointer-events:none}.wf,.ai{transition:transform 350ms var(--ea),opacity 200ms ease}
 html.lock .club-banner,html.lock .pdj-mob-notif,html.lock #cbar{opacity:0!important;pointer-events:none!important;visibility:hidden!important}
 .faq details{interpolate-size:allow-keywords}.faq details::details-content{block-size:0;overflow:clip;transition:block-size 300ms var(--ea),content-visibility 300ms allow-discrete}.faq details[open]::details-content{block-size:auto}
+html{scrollbar-gutter:stable}
 html.lock{overflow:hidden}
-#sc{position:fixed;inset:0;background:rgba(30,14,9,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;pointer-events:none;z-index:49;will-change:opacity;transition:opacity 280ms ease}
-#sh{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);z-index:50;background:linear-gradient(180deg,#fdfaf3 0%,#f7f1e4 100%);box-shadow:-12px 0 36px rgba(40,20,14,.28);border-left:1px solid rgba(255,255,255,.7);display:flex;flex-direction:column;visibility:hidden;will-change:transform;contain:layout style;box-sizing:border-box}
+#sc{position:fixed;inset:0;background:rgba(30,14,9,.70);opacity:0;pointer-events:none;z-index:49;will-change:opacity;transition:opacity 280ms cubic-bezier(.16,1,.3,1)}
+#sc.on{opacity:.55;pointer-events:auto}
+#sh{position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);z-index:50;background:linear-gradient(180deg,#fdfaf3 0%,#f7f1e4 100%);box-shadow:-12px 0 36px rgba(40,20,14,.28);border-left:1px solid rgba(255,255,255,.7);display:flex;flex-direction:column;visibility:hidden;will-change:transform;contain:layout style;box-sizing:border-box;transform:translate3d(100%,0,0);transition:transform 300ms cubic-bezier(.16,1,.3,1)}
 #sh .grab{display:none}
-#sh.v{top:auto;left:0;right:0;width:100%;max-width:100vw;height:min(90dvh,740px);border-radius:24px 24px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.85);box-shadow:0 -12px 38px rgba(30,14,9,.32)}
+#sh.v{top:auto;left:0;right:0;width:100%;max-width:100vw;height:min(90dvh,740px);border-radius:24px 24px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.85);box-shadow:0 -12px 38px rgba(30,14,9,.32);transform:translate3d(0,100%,0)}
+#sh.on{visibility:visible!important;transform:translate3d(0,0,0)!important}
+#sh.dragging,#sc.dragging{transition:none!important}
 #sh.v .grab{display:block;width:44px;height:5px;border-radius:99px;background:rgba(64,32,26,.25);margin:10px auto 4px;touch-action:none;cursor:grab}
 #sh>header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 12px 20px;background:var(--dk);color:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.12);flex-shrink:0;user-select:none;touch-action:pan-y;cursor:grab}
 #sh.v>header{touch-action:none;margin-top:4px;border-radius:16px 16px 0 0}
@@ -175,7 +179,7 @@ html.lock{overflow:hidden}
 #cbt-bar .btn#cwa:hover .cwa-arrow{transform:translateX(3px)}
 #cbar{font-size:1rem}
 @media(prefers-reduced-transparency:reduce),(prefers-contrast:more){#sh{background:#faf3e4;backdrop-filter:none}}
-@media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms}.faq details::details-content{transition:none}}</style><style id="plate">
+@media(prefers-reduced-motion:reduce){#sh{transition:opacity 200ms ease,visibility 0s linear 200ms!important;transform:none!important}#sh.on{opacity:1!important}#sc{transition:opacity 200ms ease!important}.faq details::details-content{transition:none}}</style><style id="plate">
 .mn-left{position:relative;width:100%}
 .plate-stage{display:none}
 .plate-detail-card{display:none}
@@ -1574,7 +1578,7 @@ section.cta,
 <script>
 const IM = {
   past: 'assets/img/surtido_fritos.webp',
-  masas: 'assets/img/masas_congeladas_card.webp?v=2',
+  masas: 'assets/img/masas_congeladas_card.webp?v=3',
   ent: 'assets/img/tequenos_dorados.webp',
   pan: 'assets/img/panini_italiano.webp',
   bur: 'assets/img/sandwich_criollo.webp',
@@ -1761,7 +1765,7 @@ const IMGS = {
   paninis: ['assets/img/paninis/panini_pollo.webp', 'assets/img/paninis/panini_capresa.webp', 'assets/img/paninis/panini_roastbeef.webp', 'assets/img/paninis/panini_italiano.webp'],
   sandwiches: ['assets/img/sandwiches/sandwich_criollo.webp', 'assets/img/sandwiches/sandwich_diet.webp', 'assets/img/sandwiches/burger_crispy.webp', 'assets/img/producto_extra_2.webp'],
   entradas: ['assets/img/entradas/mini_pastelitos.webp', 'assets/img/entradas/tequenos.webp', 'assets/img/entradas/tequenos_chocolate.webp', 'assets/img/entradas/tequenos_guayaba.webp', 'assets/img/entradas/tequenos_platano_queso.webp', 'assets/img/entradas/tenders_papas.webp'],
-  masas: ['assets/img/masas_congeladas_card.webp?v=2'],
+  masas: ['assets/img/masas_congeladas_card.webp?v=3'],
   bebidas: ['assets/img/bebidas/cafe_latte.webp', 'assets/img/bebidas/jugo_parchita.webp', 'assets/img/bebidas/nestea_limon.webp', 'assets/img/bebidas/refresco.webp']
 };
 
@@ -2007,7 +2011,7 @@ function LB(sel) {
     ['assets/img/mostrador_caliente.webp', 'Mostrador caliente'],
     ['assets/img/panini_italiano.webp', 'Panini Italiano con burrata'],
     ['assets/img/latte_art.webp', 'Café Latte de especialidad'],
-    ['assets/img/masas_congeladas.webp', 'Masas congeladas artesanales'],
+    ['assets/img/masas_congeladas.webp?v=3', 'Masas congeladas artesanales'],
     ['assets/img/interior_local.webp', 'Interior acogedor'],
     ['assets/img/surtido_fritos.webp', 'Surtido de pastelitos']
   ];
@@ -2803,146 +2807,137 @@ function LB(sel) {
   const initTab = document.querySelector('#tb [aria-pressed=true]');
   syncPlate(initTab ? initTab.textContent : '');
 
-  /* ---- hoja del pedido: resorte, interrumpible, con velocidad ---- */
+  /* ---- hoja del pedido: acelerada por hardware, fluida e instantánea ---- */
   const sh = $('sh'), sc = $('sc');
-  let x = 0, V = 0, raf = 0, want = false, vert = false, size = 0, drag = null, fb = null;
+  let want = false, vert = false, size = 0, drag = null, fb = null;
   const meas = () => {
     vert = innerWidth <= 600;
     sh.classList.toggle('v', vert);
-    size = vert ? sh.offsetHeight : sh.offsetWidth;
+    size = vert ? (sh.offsetHeight || Math.min(window.innerHeight * 0.9, 740)) : (sh.offsetWidth || 440);
   };
-  let lastShVis = '';
-  let lastScPe = '';
+  window.addEventListener('resize', meas, { passive: true });
 
-  function apply() {
-    const p = Math.max(0, Math.min(1, 1 - x / size)), cl = x >= size - .5 && !drag;
-    sh.style.transform = RM.matches ? 'none' : (vert ? 'translate3d(0,' + x + 'px,0)' : 'translate3d(' + x + 'px,0,0)');
-    if (RM.matches) sh.style.opacity = cl ? '0' : '1';
-    sc.style.opacity = (p * .5).toFixed(3);
-
-    const nextPe = p > .02 ? 'auto' : 'none';
-    if (nextPe !== lastScPe) {
-      lastScPe = nextPe;
-      sc.style.pointerEvents = nextPe;
-    }
-
-    const nextVis = cl ? 'hidden' : 'visible';
-    if (nextVis !== lastShVis) {
-      lastShVis = nextVis;
-      sh.style.visibility = nextVis;
-    }
-  }
-  function fin() {
-    V = 0;
-    if (x >= size - .5) {
+  sh.addEventListener('transitionend', e => {
+    if (e.target !== sh || (e.propertyName !== 'transform' && e.propertyName !== 'opacity')) return;
+    if (!want) {
+      sh.style.visibility = 'hidden';
       document.documentElement.classList.remove('lock');
       if (fb && fb.focus) fb.focus({ preventScroll: true });
     }
-  }
-  function spring(t, v0, z) {
-    cancelAnimationFrame(raf);
-    if (RM.matches) {
-      x = t;
-      apply();
-      return fin();
-    }
-    let tt = performance.now(), vv = v0 == null ? V : v0;
-    const w = 2 * Math.PI / .4, k = w * w, c = 2 * (z || 1) * w;
-    const step = n => {
-      const dt = Math.min((n - tt) / 1000, .032);
-      tt = n;
-      vv += (-k * (x - t) - c * vv) * dt;
-      x += vv * dt;
-      V = vv;
-      apply();
-      if (Math.abs(x - t) < .5 && Math.abs(vv) < 10) {
-        x = t;
-        apply();
-        return fin();
-      }
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-  }
+  });
+
   function openSh() {
     if (want) return;
-    if (!size) meas();
-    if (x === 0 && !want && size) x = size;
     want = true;
     fb = document.activeElement;
+    meas();
+    sh.classList.remove('dragging');
+    sc.classList.remove('dragging');
+    sh.style.transform = '';
+    sc.style.opacity = '';
+    sh.style.visibility = 'visible';
 
     const cb = $('cbar');
     if (cb) cb.classList.remove('on');
     document.documentElement.classList.add('lock');
-    lastShVis = 'visible';
-    sh.style.visibility = 'visible';
     draw();
 
     requestAnimationFrame(() => {
-      spring(0);
+      if (!want) return;
+      sh.classList.add('on');
+      sc.classList.add('on');
     });
+
     setTimeout(() => {
       const ccx = $('ccx');
-      if (ccx) ccx.focus({ preventScroll: true });
+      if (ccx && want) ccx.focus({ preventScroll: true });
     }, 120);
   }
+
   function closeSh() {
     if (!want) return;
     want = false;
-    spring(size);
+    sh.classList.remove('dragging');
+    sc.classList.remove('dragging');
+    sh.style.transform = '';
+    sc.style.opacity = '';
+    sh.classList.remove('on');
+    sc.classList.remove('on');
+
     const cb = $('cbar');
     if (cb) cb.classList.toggle('on', Object.keys(C).length > 0);
+
+    setTimeout(() => {
+      if (!want && !sh.classList.contains('on')) {
+        sh.style.visibility = 'hidden';
+        document.documentElement.classList.remove('lock');
+        if (fb && fb.focus) fb.focus({ preventScroll: true });
+      }
+    }, 320);
   }
-  let dragRaf = 0;
+
   sh.addEventListener('pointerdown', e => {
     if (!e.target.closest('.grab,#sh>header') || e.target.closest('button')) return;
-    cancelAnimationFrame(raf);
-    if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = 0; }
-    drag = { id: e.pointerId, p0: vert ? e.clientY : e.clientX, x0: x, h: [], on: false };
+    meas();
+    drag = { id: e.pointerId, p0: vert ? e.clientY : e.clientX, h: [], on: false };
+    sh.classList.add('dragging');
+    sc.classList.add('dragging');
     sh.setPointerCapture(e.pointerId);
   });
+
   sh.addEventListener('pointermove', e => {
     if (!drag || e.pointerId != drag.id) return;
     const p = vert ? e.clientY : e.clientX, d = p - drag.p0;
     if (!drag.on) {
-      if (Math.abs(d) < 8) return;
+      if (Math.abs(d) < 6) return;
       drag.on = true;
     }
-    const raw = drag.x0 + d;
-    x = raw < 0 ? -rb(-raw, size) : raw;
+    const offset = d > 0 ? d : d * 0.2;
+    sh.style.transform = vert ? 'translate3d(0,' + offset + 'px,0)' : 'translate3d(' + offset + 'px,0,0)';
+    const pNorm = Math.max(0, Math.min(1, 1 - Math.max(0, d) / (size || 400)));
+    sc.style.opacity = (pNorm * 0.55).toFixed(3);
+
     drag.h.push({ t: e.timeStamp, p });
     while (drag.h.length > 1 && e.timeStamp - drag.h[0].t > 100) drag.h.shift();
-    if (!dragRaf) {
-      dragRaf = requestAnimationFrame(() => {
-        dragRaf = 0;
-        apply();
-      });
-    }
   });
+
   function rel(cancel) {
-    if (dragRaf) { cancelAnimationFrame(dragRaf); dragRaf = 0; }
     if (!drag) return;
     const d = drag, h = d.h;
     drag = null;
+    sh.classList.remove('dragging');
+    sc.classList.remove('dragging');
+    sh.style.transform = '';
+    sc.style.opacity = '';
+
+    if (cancel || !d.on) {
+      if (want) {
+        sh.classList.add('on');
+        sc.classList.add('on');
+      } else {
+        closeSh();
+      }
+      return;
+    }
+
     let v = 0;
-    if (!cancel && h.length > 1) {
+    if (h.length > 1) {
       const a = h[0], b = h[h.length - 1];
       v = (b.p - a.p) / Math.max(1, b.t - a.t) * 1000;
     }
-    if (!d.on) {
-      spring(want ? 0 : size);
-      return;
+    const finalDist = h.length ? (h[h.length - 1].p - d.p0) : 0;
+    if (finalDist > 70 || v > 250) {
+      closeSh();
+    } else {
+      sh.classList.add('on');
+      sc.classList.add('on');
     }
-    const proj = x + (v / 1000) * .998 / (1 - .998), t = proj > size * .5 ? size : 0;
-    want = t == 0;
-    draw();
-    spring(t, v, Math.abs(v) > 300 ? .8 : 1);
   }
+
   sh.addEventListener('pointerup', () => rel(false));
   sh.addEventListener('pointercancel', () => rel(true));
+
   meas();
-  x = size;
-  apply();
 
   /* ---- carrito con cálculo de combos 2x$1 en tradicionales ---- */
   const TRAD_ITEMS = new Set([
