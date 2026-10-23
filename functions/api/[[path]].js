@@ -4,6 +4,7 @@ import { getDb, ensureSchema, json, HttpError, readBody, str, num, rateLimit, IM
 import { optionalUser, requireUser, requireAdmin, createSessionToken } from "../_auth.js";
 import { buildPedido } from "../_pedidos.js";
 import { acreditarTokensPedido, revertirTokensPedido, ajustarSaldoTokens } from "../_tokens.js";
+import { syncCanonicalCatalog } from "../_catalog.js";
 
 const NIVELES = ["Nuevo", "Frecuente", "Plata", "Oro", "VIP"];
 const ESTADOS = ["pendiente", "completado", "cancelado"];
@@ -118,6 +119,7 @@ export async function onRequest(context) {
     }
 
     if (route === "/productos" && method === "GET") {
+      try { await syncCanonicalCatalog(db, false); } catch(e) { console.warn("syncCanonicalCatalog error:", e); }
       const r = await db.execute(
         "SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre"
       );
@@ -435,15 +437,56 @@ export async function onRequest(context) {
 
     if (route === "/admin/productos" && method === "GET") {
       await requireAdmin(request, env);
+      try { await syncCanonicalCatalog(db, false); } catch(e) { console.warn("syncCanonicalCatalog admin error:", e); }
       const r = await db.execute(
         "SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre"
       );
       return json(r.rows);
     }
 
-    const mProd = route.match(/^\/admin\/productos\/(.+)$/);
+    // Sincronización explícita del catálogo con la web
+    if (route === "/admin/productos/sync" && method === "POST") {
+      await requireAdmin(request, env);
+      const res = await syncCanonicalCatalog(db, true);
+      return json({ ok: true, message: "Catálogo sincronizado exitosamente con la web", res });
+    }
+
+    // Creación de nuevo producto
+    if (route === "/admin/productos" && method === "POST") {
+      await requireAdmin(request, env);
+      const body = await readBody(request);
+      const nombre = sanitizePlainText(body.nombre, 120);
+      const categoria = sanitizePlainText(body.categoria, 80);
+      const subgrupo = sanitizePlainText(body.subgrupo, 80);
+      if (!nombre) throw new HttpError(400, "El nombre del producto es obligatorio");
+      if (!categoria) throw new HttpError(400, "La categoría es obligatoria");
+
+      const rawPrecio = num(body.precio, -1);
+      if (rawPrecio < 0 || rawPrecio > 10000) throw new HttpError(400, "Precio inválido");
+      const precio = Number(rawPrecio.toFixed(2));
+      const disp = body.disponible ? 1 : 0;
+      const tag = str(body.promo_tag, 40);
+      const img = str(body.imagen_url, 300);
+      if (img && !IMG_ALLOWLIST.test(img)) {
+        throw new HttpError(400, "Ruta de imagen inválida (debe ser assets/img/…)");
+      }
+      const desc = str(body.descripcion, 500);
+      const orden = Math.max(0, Math.min(9999, Math.floor(num(body.orden, 0))));
+
+      const baseSlug = (categoria + '-' + nombre).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+      const id = baseSlug + '_' + Math.random().toString(36).slice(2, 6);
+
+      await db.execute({
+        sql: "INSERT INTO productos (id, categoria, subgrupo, nombre, descripcion, precio, promo_tag, imagen_url, disponible, orden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        args: [id, categoria, subgrupo, nombre, desc, precio, tag, img, disp, orden]
+      });
+      return json({ ok: true, id }, 201);
+    }
+
+    const mProd = route.match(/^\/admin\/productos\/([^/]+)$/);
     if (mProd && method === "PUT") {
       await requireAdmin(request, env);
+      const id = str(mProd[1], 100);
       const body = await readBody(request);
       const rawPrecio = num(body.precio, -1);
       if (rawPrecio < 0 || rawPrecio > 10000) throw new HttpError(400, "Precio inválido");
@@ -452,12 +495,35 @@ export async function onRequest(context) {
       const tag = str(body.promo_tag, 40);
       const img = str(body.imagen_url, 300);
       if (img && !IMG_ALLOWLIST.test(img)) {
-        throw new HttpError(400, "Ruta de imagen inválida (debe ser assets/img/… .webp)");
+        throw new HttpError(400, "Ruta de imagen inválida (debe ser assets/img/…)");
       }
       const desc = str(body.descripcion, 500);
+      const nombre = body.nombre !== undefined ? sanitizePlainText(body.nombre, 120) : null;
+      const categoria = body.categoria !== undefined ? sanitizePlainText(body.categoria, 80) : null;
+      const subgrupo = body.subgrupo !== undefined ? sanitizePlainText(body.subgrupo, 80) : null;
+      const orden = body.orden !== undefined ? Math.max(0, Math.min(9999, Math.floor(num(body.orden, 0)))) : null;
+
+      const sets = ["precio = ?", "disponible = ?", "promo_tag = ?", "imagen_url = ?", "descripcion = ?", "updated_at = datetime('now')"];
+      const args = [precio, disp, tag, img, desc];
+      if (nombre) { sets.push("nombre = ?"); args.push(nombre); }
+      if (categoria) { sets.push("categoria = ?"); args.push(categoria); }
+      if (subgrupo !== null) { sets.push("subgrupo = ?"); args.push(subgrupo); }
+      if (orden !== null) { sets.push("orden = ?"); args.push(orden); }
+      args.push(id);
+
       await db.execute({
-        sql: "UPDATE productos SET precio = ?, disponible = ?, promo_tag = ?, imagen_url = ?, descripcion = ?, updated_at = datetime('now') WHERE id = ?",
-        args: [precio, disp, tag, img, desc, str(mProd[1], 80)],
+        sql: "UPDATE productos SET " + sets.join(", ") + " WHERE id = ?",
+        args,
+      });
+      return json({ ok: true });
+    }
+
+    if (mProd && method === "DELETE") {
+      await requireAdmin(request, env);
+      const id = str(mProd[1], 100);
+      await db.execute({
+        sql: "DELETE FROM productos WHERE id = ?",
+        args: [id]
       });
       return json({ ok: true });
     }

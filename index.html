@@ -3502,36 +3502,101 @@ function LB(sel) {
     // cualquier otro valor se ignora para no pintar "$NaN" en el catálogo.
     const precioValido = v => v != null && Number.isFinite(Number(v)) && Number(v) >= 0;
     const get = (cat, n) => map[(cat || '') + '|' + (n || '')];
-    const SAFE_IMG = /^assets\/img\/[\w\-\/]+\.webp$/; // allowlist anti-XSS por atributo src
+    const SAFE_IMG = /^(\/?assets\/img\/[\w\-\/\.]+\.(webp|png|jpg|jpeg|svg)(\?[\w\=\&\.\-]*)?)$/i;
+
+    // 1. Sincronizar estructura central M
+    if (window.M || typeof M !== 'undefined') {
+      const targetM = window.M || M;
+      Object.keys(targetM).forEach(cat => {
+        if (!targetM[cat] || !targetM[cat].g) return;
+        targetM[cat].g.forEach(group => {
+          if (!group.r) return;
+          group.r.forEach(r => {
+            const o = get(cat, r.n);
+            if (!o) return;
+            if (precioValido(o.precio)) { r.p = fmtP(o.precio); r.u = Number(o.precio); }
+            if (o.descripcion) r.d = o.descripcion;
+            if (o.promo_tag !== undefined) r.t = o.promo_tag;
+            if (Number(o.disponible) === 0) r.agotado = true;
+            else delete r.agotado;
+          });
+        });
+      });
+    }
+
+    // 2. Sincronizar catálogo circular de Pastelitos
     PASTELITOS_LIST.forEach(it => {
       const o = get('Pastelitos', it.n);
       if (!o) return;
       if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
       if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
+      else delete it.agotado;
     });
+
+    // 3. Sincronizar bandeja circular de Bebidas
     DRINKS.forEach(it => {
       const o = get('Bebidas', it.n);
       if (!o) return;
       if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
       if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
       if (Number(o.disponible) === 0) it.agotado = true;
+      else delete it.agotado;
     });
+
+    // 4. Sincronizar filas del menú en todas las categorías
     document.querySelectorAll('#menu .rw').forEach(rw => {
       const cat = rw.dataset.cat || '';
       const nEl = rw.querySelector('.n'); if (!nEl) return;
       const o = get(cat, nEl.textContent.trim()); if (!o) return;
-      if (precioValido(o.precio)) { const pEl = rw.querySelector('.p'); if (pEl) pEl.textContent = fmtP(o.precio); }
+
+      if (precioValido(o.precio)) {
+        const pEl = rw.querySelector('.p');
+        if (pEl) pEl.textContent = fmtP(o.precio);
+      }
       const addBtn = rw.querySelector('.pl');
       if (addBtn && precioValido(o.precio)) addBtn.dataset.u = o.precio;
-      if (o.promo_tag) { const tg = rw.querySelector('.tg'); if (tg) tg.textContent = o.promo_tag; }
+
+      if (o.promo_tag !== undefined) {
+        let tg = rw.querySelector('.tg');
+        if (o.promo_tag) {
+          if (!tg) {
+            tg = document.createElement('span');
+            tg.className = 'tg';
+            nEl.after(tg);
+          }
+          tg.textContent = o.promo_tag;
+        } else if (tg) {
+          tg.remove();
+        }
+      }
+
+      if (o.descripcion) {
+        const descEl = rw.querySelector('i');
+        if (descEl) descEl.textContent = o.descripcion;
+      }
+
       if (Number(o.disponible) === 0) {
         rw.classList.add('agotado');
-        if (addBtn) { addBtn.disabled = true; addBtn.setAttribute('aria-disabled', 'true'); addBtn.textContent = '×'; }
+        if (addBtn) {
+          addBtn.disabled = true;
+          addBtn.setAttribute('aria-disabled', 'true');
+          addBtn.textContent = '×';
+        }
+      } else {
+        rw.classList.remove('agotado');
+        if (addBtn && addBtn.textContent === '×') {
+          addBtn.disabled = false;
+          addBtn.removeAttribute('aria-disabled');
+          addBtn.textContent = '+';
+        }
       }
     });
+
+    // 5. Refrescar vitrinas interactivas
     try { if (document.querySelector('#plate-slots .plate-item')) selectPastelito(currentPlateIndex); } catch (e) {}
     try { if (document.querySelector('#drinks-slots .drink-item')) selectDrink(currentDrinkIndex); } catch (e) {}
+    try { if (typeof mfApi.pickSandwich === 'function') mfApi.pickSandwich(0); } catch (e) {}
   };
   mfApi.buzz = buzz;
   mfApi.addToCart = function (k, u) {

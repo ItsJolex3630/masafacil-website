@@ -87,11 +87,22 @@ input.text{width:100%}
 select{padding:7px 8px}
 textarea{width:100%;min-height:52px;resize:vertical}
 .switch{display:inline-flex;align-items:center;gap:6px;font-size:.82rem}
-.grid-prod{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
-.prod-head{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:8px}
-.prod-head b{font:600 1rem var(--h)}
-.prod-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.cat-pills{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:12px;scrollbar-width:thin}
+.cat-pills button{white-space:nowrap;border-radius:99px;padding:6px 14px;font:600 .82rem var(--h);border:1.5px solid var(--tan);background:var(--cream);color:var(--dk);cursor:pointer;transition:all .15s ease}
+.cat-pills button:hover{background:var(--k)}
+.cat-pills button.is-active{background:var(--md);color:#fff;border-color:var(--md);box-shadow:0 2px 8px rgba(111,56,38,.28)}
+.btn.danger{background:transparent;color:#8a2a1c;box-shadow:inset 0 0 0 1.5px #8a2a1c}
+.btn.danger:hover{background:#8a2a1c;color:#fff}
+.grid-prod{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+.prod-card{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:9px;transition:box-shadow .15s ease,opacity .15s ease}
+.prod-card:hover{box-shadow:0 6px 18px rgba(64,32,26,.08)}
+.prod-card.agotado{opacity:.72;background:#fcf7f0}
+.prod-head{display:flex;gap:10px;align-items:center}
+.prod-thumb{width:50px;height:50px;border-radius:10px;object-fit:cover;background:var(--k);flex-shrink:0;border:1px solid var(--line)}
+.prod-title-col{flex:1;min-width:0}
+.prod-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .prod-row label{font-size:.72rem;color:#6a5750;display:block;margin-bottom:2px}
+.prod-actions{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px;border-top:1px dashed var(--line);gap:8px}
 .cat-title{font:600 1.05rem var(--h);color:var(--md);margin:18px 0 8px;border-bottom:2px dashed var(--line);padding-bottom:4px}
 .venta{background:var(--cream);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
 .venta .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -178,9 +189,15 @@ textarea{width:100%;min-height:52px;resize:vertical}
     </section>
 
     <section id="tab-productos" hidden>
-      <div class="toolbar">
-        <input type="search" id="prod-search" placeholder="Buscar producto…">
-        <span class="muted" id="prod-count"></span>
+      <div class="toolbar" style="margin-bottom:10px">
+        <input type="search" id="prod-search" placeholder="Buscar por nombre, categoría o subgrupo…">
+        <button class="btn sm" id="nuevo-prod-btn">+ Nuevo Producto</button>
+        <button class="btn sm ghost" id="sync-cat-btn" title="Sincroniza y añade cualquier producto faltante con el menú de la web">🔄 Sincronizar con la Web</button>
+      </div>
+      <div class="cat-pills" id="prod-cat-pills" role="tablist" aria-label="Filtrar productos por categoría"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:.82rem" class="muted">
+        <span id="prod-count">Cargando productos…</span>
+        <span id="prod-filter-info"></span>
       </div>
       <div id="prod-list"></div>
     </section>
@@ -247,6 +264,66 @@ textarea{width:100%;min-height:52px;resize:vertical}
   </div>
 </div>
 
+<!-- Modal: Nuevo Producto -->
+<div class="modal" id="modal-producto">
+  <div class="box">
+    <h3 id="mp-title">Nuevo Producto</h3>
+    <div class="row">
+      <div>
+        <label>Nombre del Producto *</label>
+        <input class="text" id="mp-nombre" placeholder="Ej: Pastelito de Pizza" maxlength="120" required>
+      </div>
+      <div>
+        <label>Categoría *</label>
+        <select id="mp-categoria" style="width:100%">
+          <option value="Pastelitos">Pastelitos</option>
+          <option value="Entradas">Entradas</option>
+          <option value="Paninis">Paninis</option>
+          <option value="Sándwich y Burger">Sándwich y Burger</option>
+          <option value="Bebidas">Bebidas</option>
+          <option value="Combos Eventos">Combos Eventos</option>
+          <option value="Masas Congeladas">Masas Congeladas</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Subgrupo (ej: Tradicionales, Raciones...)</label>
+        <input class="text" id="mp-subgrupo" placeholder="Tradicionales" maxlength="80">
+      </div>
+      <div>
+        <label>Precio ($ USD) *</label>
+        <input class="num" id="mp-precio" type="number" step="0.01" min="0" max="10000" style="width:100%" placeholder="0.00" required>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Badge / Tag promocional</label>
+        <input class="text" id="mp-tag" placeholder="Ej: 2x$1, ¡Nuevo!, Favorito..." maxlength="40">
+      </div>
+      <div>
+        <label>Orden numérico</label>
+        <input class="num" id="mp-orden" type="number" step="1" min="0" max="9999" value="0" style="width:100%">
+      </div>
+    </div>
+    <div>
+      <label>Ruta de imagen (.webp / .png)</label>
+      <input class="text" id="mp-img" placeholder="assets/img/pastelitos/tradicionales/pizza.webp" maxlength="300">
+    </div>
+    <div style="margin-top:8px">
+      <label>Descripción</label>
+      <textarea id="mp-desc" maxlength="500" placeholder="Descripción apetitosa del producto..."></textarea>
+    </div>
+    <div style="margin-top:10px">
+      <label class="switch"><input type="checkbox" id="mp-disp" checked> Producto Disponible en Menú</label>
+    </div>
+    <div class="actions">
+      <button class="btn ghost sm" id="mp-cancel">Cancelar</button>
+      <button class="btn sm" id="mp-save">Guardar Producto</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -266,12 +343,19 @@ textarea{width:100%;min-height:52px;resize:vertical}
     fallback = fallback || 'assets/img/logo_masafacil_nuevo.webp';
     if (!url || typeof url !== 'string') return fallback;
     var clean = url.trim();
-    if (/^(\/?assets\/img\/[a-zA-Z0-9_\-\/]+\.(webp|png|svg|jpg|jpeg))$/i.test(clean)) return clean;
+    if (/^(\/?assets\/img\/[a-zA-Z0-9_\-\.\/]+(?:\.(?:webp|png|svg|jpg|jpeg))(?:\?[a-zA-Z0-9_=&-]+)?)$/i.test(clean)) return clean;
     try {
       var parsed = new URL(clean, window.location.origin);
       if (parsed.protocol === 'https:' || parsed.protocol === 'http:') return parsed.href;
     } catch (_) {}
     return fallback;
+  }
+  function isValidImg(url) {
+    if (!url) return true;
+    var u = String(url).trim();
+    if (/^(\/?assets\/img\/[a-zA-Z0-9_\-\.\/]+(?:\.(?:webp|png|jpg|jpeg|svg))(?:\?[a-zA-Z0-9_=&-]+)?)$/i.test(u)) return true;
+    if (/^https?:\/\//i.test(u)) return true;
+    return false;
   }
   var DEFAULT_AVATAR_SILHOUETTE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'><rect width='40' height='40' rx='20' fill='%236a3826'/><path d='M20 11a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11zm0 13c-5.5 0-11 2.8-11 6v2h22v-2c0-3.2-5.5-6-11-6z' fill='%23ffffff' opacity='0.95'/></svg>";
   // Valida avatar: permite Google o assets locales; silueta si no hay foto
@@ -483,62 +567,313 @@ textarea{width:100%;min-height:52px;resize:vertical}
   $('cli-sort-pedidos').addEventListener('click', function(){ cliSort='pedidos'; loadClientes(); });
   $('cli-sort-gastado').addEventListener('click', function(){ cliSort='gastado'; loadClientes(); });
 
+  // ---- Categorías y Filtros de Productos ----
+  var CATEGORIAS = [
+    'Pastelitos',
+    'Entradas',
+    'Paninis',
+    'Sándwich y Burger',
+    'Bebidas',
+    'Combos Eventos',
+    'Masas Congeladas'
+  ];
+  var selectedCat = 'Todos';
+
   // ---- Productos ----
   async function loadProductos(){
     var list = $('prod-list');
     list.innerHTML = '<div class="empty">Cargando productos…</div>';
     try{
       window._productos = await api('/api/admin/productos') || [];
+      renderCatPills();
       renderProductos();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar productos: '+esc(e.message||e)+'</div>'; }
   }
-  function renderProductos(){
-    var rows = (window._productos||[]).filter(function(p){
-      var s = prodFilter.toLowerCase();
-      return !s || String(p.nombre||'').toLowerCase().indexOf(s)!==-1 || String(p.categoria||'').toLowerCase().indexOf(s)!==-1;
+
+  function renderCatPills(){
+    var pillsContainer = $('prod-cat-pills');
+    if (!pillsContainer) return;
+    var allProds = window._productos || [];
+    var counts = { 'Todos': allProds.length };
+    CATEGORIAS.forEach(function(c){ counts[c] = 0; });
+    allProds.forEach(function(p){
+      var c = p.categoria || 'Sin categoría';
+      counts[c] = (counts[c] || 0) + 1;
     });
-    $('prod-count').textContent = (window._productos||[]).length + ' productos en total';
-    var list = $('prod-list');
-    if(!rows.length){ list.innerHTML='<div class="empty">No hay productos en la base de datos.<br>Ejecuta la importación del catálogo o agrégalos en Turso.</div>'; return; }
-    var byCat = {};
-    rows.forEach(function(p){ (byCat[p.categoria||'Sin categoría'] = byCat[p.categoria||'Sin categoría']||[]).push(p); });
-    list.innerHTML = Object.keys(byCat).map(function(cat){
-      return '<h3 class="cat-title">'+esc(cat)+'</h3><div class="grid-prod">' + byCat[cat].map(function(p){
-        return '<div class="card" data-id="'+esc(p.id)+'">' +
-          '<div class="prod-head"><b>'+esc(p.nombre)+'</b><span class="switch"><input type="checkbox" class="disp"'+(Number(p.disponible)?' checked':'')+'> Disponible</span></div>' +
-          '<div class="prod-row">' +
-            '<div><label>Precio ($ USD)</label><input class="num precio" type="number" min="0" max="10000" step="0.01" value="'+Number(p.precio||0)+'"></div>' +
-            '<div><label>Badge / Tag</label><input class="text tag-in" maxlength="40" value="'+esc(p.promo_tag||'')+'"></div>' +
-          '</div>' +
-          '<div class="prod-row"><div><label>Ruta de imagen (.webp)</label><input class="text img-in" maxlength="300" value="'+esc(p.imagen_url||'')+'"></div></div>' +
-          '<div><label style="font-size:.72rem;color:#6a5750">Descripción</label><textarea class="desc-in" maxlength="500">'+esc(p.descripcion||'')+'</textarea></div>' +
-          '<div style="margin-top:8px;text-align:right"><button class="btn sm save-prod">Guardar</button></div>' +
-        '</div>';
-      }).join('') + '</div>';
+
+    var catsToShow = ['Todos'].concat(CATEGORIAS);
+    Object.keys(counts).forEach(function(c){
+      if (catsToShow.indexOf(c) === -1) catsToShow.push(c);
+    });
+
+    pillsContainer.innerHTML = catsToShow.map(function(c){
+      var count = counts[c] || 0;
+      var active = selectedCat === c;
+      return '<button type="button" class="'+(active ? 'is-active' : '')+'" data-cat="'+esc(c)+'">'+esc(c)+' ('+count+')</button>';
     }).join('');
   }
 
+  var catPillsEl = $('prod-cat-pills');
+  if (catPillsEl) {
+    catPillsEl.addEventListener('click', function(e){
+      var btn = e.target.closest('button[data-cat]');
+      if (!btn) return;
+      selectedCat = btn.dataset.cat;
+      renderCatPills();
+      renderProductos();
+    });
+  }
+
+  function renderProductos(){
+    var all = window._productos || [];
+    var s = prodFilter.toLowerCase().trim();
+    var rows = all.filter(function(p){
+      if (selectedCat !== 'Todos' && (p.categoria || '') !== selectedCat) return false;
+      if (!s) return true;
+      return String(p.nombre||'').toLowerCase().indexOf(s)!==-1 ||
+             String(p.categoria||'').toLowerCase().indexOf(s)!==-1 ||
+             String(p.subgrupo||'').toLowerCase().indexOf(s)!==-1 ||
+             String(p.descripcion||'').toLowerCase().indexOf(s)!==-1;
+    });
+
+    $('prod-count').textContent = all.length + ' productos en total';
+    var filterInfo = $('prod-filter-info');
+    if (filterInfo) {
+      filterInfo.textContent = 'Mostrando ' + rows.length + (selectedCat !== 'Todos' ? ' en ' + selectedCat : '') + (s ? ' filtrados por "' + s + '"' : '');
+    }
+
+    var list = $('prod-list');
+    if(!rows.length){
+      list.innerHTML = '<div class="empty">No hay productos que coincidan' + (s ? ' con la búsqueda.' : ' con esta categoría.') + '</div>';
+      return;
+    }
+
+    var byCat = {};
+    rows.forEach(function(p){
+      var c = p.categoria || 'Sin categoría';
+      (byCat[c] = byCat[c] || []).push(p);
+    });
+
+    list.innerHTML = Object.keys(byCat).map(function(cat){
+      return '<h3 class="cat-title">'+esc(cat)+' <small style="font-weight:400;font-size:.85rem;color:#8a7a72">('+byCat[cat].length+')</small></h3>' +
+        '<div class="grid-prod">' + byCat[cat].map(function(p){
+          var isDisp = Number(p.disponible) === 1;
+          var safeImg = sanitizeAssetUrl(p.imagen_url);
+          var catOptions = CATEGORIAS.map(function(c){
+            return '<option value="'+esc(c)+'"'+(c === p.categoria ? ' selected' : '')+'>'+esc(c)+'</option>';
+          }).join('');
+          if (CATEGORIAS.indexOf(p.categoria) === -1 && p.categoria) {
+            catOptions += '<option value="'+esc(p.categoria)+'" selected>'+esc(p.categoria)+'</option>';
+          }
+
+          return '<div class="prod-card'+(isDisp ? '' : ' agotado')+'" data-id="'+esc(p.id)+'">' +
+            '<div class="prod-head">' +
+              '<img class="prod-thumb" src="'+esc(safeImg)+'" alt="" onerror="this.onerror=null;this.src=\'assets/img/logo_masafacil_nuevo.webp\'">' +
+              '<div class="prod-title-col">' +
+                '<input class="text prod-nombre-in" value="'+esc(p.nombre)+'" placeholder="Nombre del producto" maxlength="120" style="font-weight:700">' +
+                '<div style="margin-top:4px;display:flex;align-items:center;justify-content:space-between">' +
+                  '<label class="switch"><input type="checkbox" class="disp"'+(isDisp ? ' checked' : '')+'> <span class="disp-lbl" style="font-weight:600;color:'+(isDisp?'var(--sage)':'#8a2a1c')+'">'+(isDisp ? 'Disponible' : 'Agotado')+'</span></label>' +
+                  '<span class="muted" style="font-size:.72rem">ID: '+esc(p.id)+'</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="prod-row">' +
+              '<div><label>Categoría</label><select class="prod-cat-in" style="width:100%">'+catOptions+'</select></div>' +
+              '<div><label>Subgrupo (ej: Tradicionales)</label><input class="text prod-sub-in" maxlength="80" value="'+esc(p.subgrupo||'')+'"></div>' +
+            '</div>' +
+            '<div class="prod-row">' +
+              '<div><label>Precio ($ USD)</label><input class="num precio" type="number" min="0" max="10000" step="0.01" value="'+Number(p.precio||0)+'" style="width:100%"></div>' +
+              '<div><label>Orden numérico</label><input class="num prod-orden-in" type="number" min="0" max="9999" step="1" value="'+Number(p.orden||0)+'" style="width:100%"></div>' +
+            '</div>' +
+            '<div class="prod-row">' +
+              '<div><label>Badge / Tag promocional</label><input class="text tag-in" placeholder="Ej: 2x$1, ¡Nuevo!" maxlength="40" value="'+esc(p.promo_tag||'')+'"></div>' +
+              '<div><label>Ruta Imagen</label><input class="text img-in" placeholder="assets/img/…" maxlength="300" value="'+esc(p.imagen_url||'')+'"></div>' +
+            '</div>' +
+            '<div><label style="font-size:.72rem;color:#6a5750">Descripción</label><textarea class="desc-in" maxlength="500" placeholder="Descripción">'+esc(p.descripcion||'')+'</textarea></div>' +
+            '<div class="prod-actions">' +
+              '<button type="button" class="btn sm danger del-prod" data-id="'+esc(p.id)+'">🗑️ Eliminar</button>' +
+              '<button type="button" class="btn sm save-prod">Guardar Cambios</button>' +
+            '</div>' +
+          '</div>';
+        }).join('') + '</div>';
+    }).join('');
+  }
+
+  $('prod-list').addEventListener('change', function(e){
+    var card = e.target.closest('.prod-card');
+    if (!card) return;
+    if (e.target.classList.contains('disp')) {
+      var chk = e.target.checked;
+      var lbl = card.querySelector('.disp-lbl');
+      if (lbl) {
+        lbl.textContent = chk ? 'Disponible' : 'Agotado';
+        lbl.style.color = chk ? 'var(--sage)' : '#8a2a1c';
+      }
+      card.classList.toggle('agotado', !chk);
+    }
+    if (e.target.classList.contains('img-in')) {
+      var thumb = card.querySelector('.prod-thumb');
+      if (thumb) {
+        thumb.src = sanitizeAssetUrl(e.target.value.trim());
+      }
+    }
+  });
+
   $('prod-list').addEventListener('click', async function(e){
-    var btn = e.target.closest('.save-prod');
-    if (!btn) return;
-    var card = btn.closest('.card'); var id = card.dataset.id;
+    var delBtn = e.target.closest('.del-prod');
+    var saveBtn = e.target.closest('.save-prod');
+
+    if (delBtn) {
+      var card = delBtn.closest('.prod-card');
+      var id = delBtn.dataset.id || (card && card.dataset.id);
+      var nombre = card ? (card.querySelector('.prod-nombre-in').value || id) : id;
+      if (!confirm('¿Seguro que deseas eliminar definitivamente el producto "' + nombre + '" del catálogo?')) return;
+      delBtn.disabled = true;
+      try {
+        await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'DELETE' });
+        window._productos = (window._productos || []).filter(function(p){ return p.id !== id; });
+        renderCatPills();
+        renderProductos();
+        toast('Producto eliminado ✓');
+      } catch (err) {
+        if (!handleAuth(err)) toast('Error al eliminar: ' + (err.message || err), true);
+        delBtn.disabled = false;
+      }
+      return;
+    }
+
+    if (!saveBtn) return;
+    var card = saveBtn.closest('.prod-card');
+    var id = card.dataset.id;
+    var nombre = card.querySelector('.prod-nombre-in').value.trim();
+    if (!nombre) { toast('El nombre del producto no puede estar vacío.', true); return; }
+
     var precio = numPos(card.querySelector('.precio').value, 10000);
     if (precio === null) { toast('Precio inválido: debe ser un número entre 0 y 10.000.', true); return; }
+
+    var orden = numPos(card.querySelector('.prod-orden-in').value, 9999);
+    if (orden === null) orden = 0;
+
     var imgVal = card.querySelector('.img-in').value.trim();
-    if (imgVal && !/^assets\/img\/[\w\-\/]+\.webp$/.test(imgVal)) {
-      toast('Ruta de imagen inválida: debe ser assets/img/… .webp', true); return;
+    if (imgVal && !isValidImg(imgVal)) {
+      toast('Ruta de imagen inválida (debe ser assets/img/… o https://)', true); return;
     }
+
+    var categoria = card.querySelector('.prod-cat-in').value.trim();
+    var subgrupo = card.querySelector('.prod-sub-in').value.trim();
+    var promo_tag = card.querySelector('.tag-in').value.trim();
+    var descripcion = card.querySelector('.desc-in').value.trim();
+    var disponible = card.querySelector('.disp').checked ? 1 : 0;
+
     var body = {
+      nombre: nombre,
+      categoria: categoria,
+      subgrupo: subgrupo,
       precio: precio,
-      disponible: card.querySelector('.disp').checked ? 1 : 0,
-      promo_tag: card.querySelector('.tag-in').value.trim(),
+      orden: Math.floor(orden),
+      promo_tag: promo_tag,
       imagen_url: imgVal,
-      descripcion: card.querySelector('.desc-in').value.trim()
+      descripcion: descripcion,
+      disponible: disponible
     };
-    try{
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando…';
+    try {
       await api('/api/admin/productos/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(body) });
-      toast('Producto actualizado ✓');
-    }catch(e){ if(!handleAuth(e)) toast('Error al guardar: '+(e.message||e), true); }
+      var prodObj = (window._productos || []).find(function(p){ return p.id === id; });
+      if (prodObj) {
+        Object.assign(prodObj, body);
+      }
+      toast('Producto "' + nombre + '" actualizado ✓');
+      renderCatPills();
+    } catch(err) {
+      if (!handleAuth(err)) toast('Error al guardar: ' + (err.message || err), true);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Guardar Cambios';
+    }
+  });
+
+  // Modal: Nuevo Producto
+  $('nuevo-prod-btn').addEventListener('click', function(){
+    $('mp-title').textContent = 'Nuevo Producto';
+    $('mp-nombre').value = '';
+    $('mp-categoria').value = selectedCat !== 'Todos' ? selectedCat : 'Pastelitos';
+    $('mp-subgrupo').value = '';
+    $('mp-precio').value = '';
+    $('mp-tag').value = '';
+    $('mp-orden').value = '0';
+    $('mp-img').value = '';
+    $('mp-desc').value = '';
+    $('mp-disp').checked = true;
+    $('modal-producto').classList.add('on');
+    $('mp-nombre').focus();
+  });
+
+  $('mp-cancel').addEventListener('click', function(){
+    $('modal-producto').classList.remove('on');
+  });
+
+  $('mp-save').addEventListener('click', async function(){
+    var nombre = $('mp-nombre').value.trim();
+    if (!nombre) { toast('El nombre del producto es obligatorio.', true); return; }
+    var categoria = $('mp-categoria').value.trim();
+    if (!categoria) { toast('La categoría es obligatoria.', true); return; }
+    var precio = numPos($('mp-precio').value, 10000);
+    if (precio === null) { toast('Indica un precio válido mayor o igual a 0.', true); return; }
+    var orden = numPos($('mp-orden').value, 9999);
+    if (orden === null) orden = 0;
+    var img = $('mp-img').value.trim();
+    if (img && !isValidImg(img)) {
+      toast('Ruta de imagen inválida (debe ser assets/img/… o https://)', true); return;
+    }
+
+    var body = {
+      nombre: nombre,
+      categoria: categoria,
+      subgrupo: $('mp-subgrupo').value.trim(),
+      precio: precio,
+      orden: Math.floor(orden),
+      promo_tag: $('mp-tag').value.trim(),
+      imagen_url: img,
+      descripcion: $('mp-desc').value.trim(),
+      disponible: $('mp-disp').checked ? 1 : 0
+    };
+
+    var btn = $('mp-save');
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+    try {
+      await api('/api/admin/productos', { method: 'POST', body: JSON.stringify(body) });
+      $('modal-producto').classList.remove('on');
+      toast('¡Producto "' + nombre + '" creado exitosamente! ✓');
+      await loadProductos();
+    } catch(err) {
+      if (!handleAuth(err)) toast('Error al crear: ' + (err.message || err), true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar Producto';
+    }
+  });
+
+  // Botón Sincronizar con la Web
+  $('sync-cat-btn').addEventListener('click', async function(){
+    if (!confirm('¿Deseas sincronizar todo el menú con la versión oficial de la web?\n\nEsto añadirá cualquier producto faltante (como Masas Congeladas, Pizza, Tenders, etc.) y actualizará datos base sin alterar tus ventas ni clientes.')) return;
+    var btn = $('sync-cat-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sincronizando…';
+    try {
+      var res = await api('/api/admin/productos/sync', { method: 'POST' });
+      var count = (res && res.res && res.res.synced) ? res.res.synced : 63;
+      toast('¡Menú sincronizado exitosamente con la web (' + count + ' productos)! ✓');
+      await loadProductos();
+    } catch(err) {
+      if (!handleAuth(err)) toast('Error al sincronizar: ' + (err.message || err), true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔄 Sincronizar con la Web';
+    }
   });
 
   $('prod-search').addEventListener('input', debounce(function(e){ prodFilter = e.target.value; renderProductos(); }, 180));
@@ -549,7 +884,11 @@ textarea{width:100%;min-height:52px;resize:vertical}
 
   function isInPeriod(dateStr, periodo) {
     if (periodo === 'todos' || !dateStr) return true;
-    var d = new Date(String(dateStr).replace(' ', 'T'));
+    var str = String(dateStr).trim().replace(' ', 'T');
+    if (!str.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(str)) {
+      str += 'Z';
+    }
+    var d = new Date(str);
     if (isNaN(d.getTime())) return true;
     var now = new Date();
 
@@ -559,8 +898,9 @@ textarea{width:100%;min-height:52px;resize:vertical}
              d.getDate() === now.getDate();
     }
     if (periodo === 'semana') {
-      var unaSemanaAtras = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-      return d >= unaSemanaAtras && d <= now;
+      var sieteDiasAtras = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0);
+      var manana = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 23, 59, 59);
+      return d >= sieteDiasAtras && d <= manana;
     }
     if (periodo === 'mes') {
       return d.getFullYear() === now.getFullYear() &&

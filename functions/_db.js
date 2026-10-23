@@ -19,6 +19,30 @@ export function getDb(env) {
 let schemaReady = false;
 export async function ensureSchema(db) {
   if (schemaReady) return;
+
+  // Tabla de productos del menú
+  try {
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS productos (
+        id TEXT PRIMARY KEY,
+        categoria TEXT NOT NULL,
+        subgrupo TEXT,
+        nombre TEXT NOT NULL,
+        descripcion TEXT,
+        precio REAL NOT NULL,
+        promo_tag TEXT,
+        imagen_url TEXT,
+        disponible INTEGER DEFAULT 1,
+        orden INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT (datetime('now')),
+        updated_at TEXT
+      )
+    `);
+    await db.execute("CREATE INDEX IF NOT EXISTS idx_productos_cat_orden ON productos(categoria, orden)");
+  } catch (e) {
+    console.error("ensureSchema productos:", e && e.message);
+  }
+
   const alters = [
     "ALTER TABLE pedidos ADD COLUMN estado TEXT DEFAULT 'pendiente'",
     "ALTER TABLE pedidos ADD COLUMN updated_at TEXT",
@@ -38,12 +62,19 @@ export async function ensureSchema(db) {
     "ALTER TABLE pedidos ADD COLUMN metodo_pago TEXT",
     // Carrito persistente del cliente (sincronizado desde el navegador).
     "ALTER TABLE clientes ADD COLUMN carrito_json TEXT DEFAULT '{}'",
+    // Tabla de productos del menú: columnas para esquemas previos
+    "ALTER TABLE productos ADD COLUMN subgrupo TEXT",
+    "ALTER TABLE productos ADD COLUMN promo_tag TEXT",
+    "ALTER TABLE productos ADD COLUMN imagen_url TEXT",
+    "ALTER TABLE productos ADD COLUMN disponible INTEGER DEFAULT 1",
+    "ALTER TABLE productos ADD COLUMN orden INTEGER DEFAULT 0",
+    "ALTER TABLE productos ADD COLUMN updated_at TEXT",
   ];
   for (const sql of alters) {
     try {
       await db.execute(sql);
     } catch (e) {
-      if (!/duplicate column/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
+      if (!/duplicate column|no such table/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
     }
   }
   // Tabla de administradores: fuente de verdad dinámica del panel. Se crea aquí
@@ -114,8 +145,8 @@ export async function readBody(request, maxBytes = 65536) {
   }
 }
 
-// Validadores comunes
-export const IMG_ALLOWLIST = /^assets\/img\/[\w\-\/]+\.webp$/;
+// Validadores comunes (permite rutas relativas de assets, webp/png/jpg/svg y cache-busters ?v=...)
+export const IMG_ALLOWLIST = /^(\/?assets\/img\/[\w\-\/\.]+\.(webp|png|jpg|jpeg|svg)(\?[\w\=\&\.\-]*)?)$/i;
 
 export function str(v, max = 300) {
   if (v == null) return "";
