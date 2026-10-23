@@ -783,6 +783,22 @@ export async function syncCanonicalCatalog(db, force = false) {
       });
     }
 
+    // Lista de descripciones genéricas antiguas del seed inicial que deben restaurarse
+    const OLD_GENERIC_DESCS = new Set([
+      'Masa maracucha crujiente con relleno generoso',
+      'Guiso casero tradicional bien sazonado',
+      'Café recién colado de alta calidad',
+      '.',
+      'Camarones seleccionados con toque de ajo y queso crema',
+      'Champiñones salteados, tocineta crocante y queso crema',
+      'Pesto artesanal, tomate fresco, mozzarella y jamón serrano',
+      'Mortadela italiana con pistacho, pesto, burrata cremosa, tomate confitado y rúcula',
+      '15 mini pastelitos + 15 tequeños de queso',
+      '30 mini pastelitos + 30 tequeños de queso',
+      '50 mini pastelitos + 25 tequeños de queso + 25 empanaditas',
+      'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y queso cheddar'
+    ]);
+
     // 3. Sincronizar catálogo canónico
     for (const p of CANONICAL_PRODUCTS) {
       const key = p.categoria.trim() + '|' + p.nombre.trim();
@@ -801,12 +817,20 @@ export async function syncCanonicalCatalog(db, force = false) {
           args: [p.categoria, p.subgrupo || '', p.nombre, p.descripcion || '', p.precio, p.promo_tag || '', p.imagen_url || '', p.orden || 0, existing.id]
         });
       } else {
-        // En arranque pasivo, si falta imagen o subgrupo, enriquecer sin pisar precio si fue modificado
-        const needsUpdate = (!existing.imagen_url && p.imagen_url) || (!existing.subgrupo && p.subgrupo);
-        if (needsUpdate) {
+        // En arranque pasivo: si la descripción actual está vacía o es una de las genéricas del seed antiguo,
+        // restaurar la descripción oficial canónica para que coincida exactamente con la web y el admin.
+        const curDesc = (existing.descripcion || '').trim();
+        const needsDescFix = !curDesc || OLD_GENERIC_DESCS.has(curDesc);
+        const needsImg = (!existing.imagen_url && p.imagen_url);
+        const needsSub = (!existing.subgrupo && p.subgrupo);
+
+        if (needsDescFix || needsImg || needsSub) {
+          const newDesc = needsDescFix ? p.descripcion : existing.descripcion;
+          const newImg = existing.imagen_url || p.imagen_url || '';
+          const newSub = existing.subgrupo || p.subgrupo || '';
           stmts.push({
-            sql: "UPDATE productos SET imagen_url = COALESCE(NULLIF(imagen_url, ''), ?), subgrupo = COALESCE(NULLIF(subgrupo, ''), ?), updated_at = datetime('now') WHERE id = ?",
-            args: [p.imagen_url || '', p.subgrupo || '', existing.id]
+            sql: "UPDATE productos SET descripcion = ?, imagen_url = ?, subgrupo = ?, updated_at = datetime('now') WHERE id = ?",
+            args: [newDesc, newImg, newSub, existing.id]
           });
         }
       }
