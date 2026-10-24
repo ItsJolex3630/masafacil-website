@@ -42,21 +42,56 @@ const ZONAS = [
 const norm = (s) =>
   String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
 
-// Nombre base de un ítem: quita el sufijo de sabor (" · Manzana") y el prefijo
-// "Pastelito "/"Panini " para encontrar el precio en la tabla productos.
-const baseOf = (k) =>
-  String(k).split(" · ")[0].replace(/^(Pastelito|Panini)\s+/i, "").trim();
+const ALIAS_NOMBRES = {
+  "cafe latte": "latte",
+  "nestea limon": "nestea",
+  "sandwich criollo": "sandwich criollo",
+  "sandwich diet": "sandwich diet",
+};
+
+// Extrae { catHint, base, sabor } a partir de la llave enviada por el carrito.
+function parseCartKey(rawKey) {
+  const parts = String(rawKey || "").split(" · ");
+  const left = parts[0].trim();
+  const sabor = parts.length > 1 ? parts.slice(1).join(" · ").trim() : "";
+
+  let catHint = null;
+  let base = left;
+  if (/^Pastelito\s+/i.test(left)) {
+    catHint = "Pastelitos";
+    base = left.replace(/^Pastelito\s+/i, "").trim();
+  } else if (/^Panini\s+/i.test(left)) {
+    catHint = "Paninis";
+    base = left.replace(/^Panini\s+/i, "").trim();
+  } else if (sabor) {
+    catHint = "Bebidas";
+  }
+  return { catHint, base, sabor };
+}
 
 const fmt = (n) => "$" + Number(n || 0).toFixed(2).replace(".", ",");
 
-function matchProducto(map, key) {
-  // Coincidencia exacta normalizada, luego sin prefijo "Pastelito "/"Panini ".
-  let k = norm(key);
-  if (map[k]) return map[k];
-  k = k.replace(/^(pastelito|panini)\s+/, "");
-  if (map[k]) return map[k];
-  // "Sandwich Criollo" (BD) vs "Sándwich Criollo" (web): el NFD ya unificó tildes;
-  // queda la variante "sandwich"/"sándwich" resuelta por la normalización.
+function findProductInCatalog(byCatAndName, byName, parsed) {
+  const baseNorm = ALIAS_NOMBRES[norm(parsed.base)] || norm(parsed.base);
+  const inverseNorm = baseNorm === "latte" ? "cafe latte" : baseNorm === "nestea" ? "nestea limon" : baseNorm;
+  if (parsed.catHint) {
+    for (const candidate of [baseNorm, inverseNorm]) {
+      const catKey = norm(parsed.catHint) + "|" + candidate;
+      if (byCatAndName.has(catKey)) return byCatAndName.get(catKey);
+    }
+  }
+  if (byName.has(baseNorm)) return byName.get(baseNorm);
+  if (byName.has(inverseNorm)) return byName.get(inverseNorm);
+  const fallbackKey = PRODUCTOS_NUEVOS[baseNorm] ? baseNorm : (PRODUCTOS_NUEVOS[inverseNorm] ? inverseNorm : null);
+  if (fallbackKey) {
+    return {
+      categoria: parsed.catHint || "",
+      nombre: PRODUCTOS_NUEVOS[fallbackKey].nombre,
+      precio: Number(PRODUCTOS_NUEVOS[fallbackKey].precio),
+      promo_tag: fallbackKey === "pizza" ? "2x$1" : "",
+      disponible: 1,
+    };
+  }
   return null;
 }
 
@@ -76,49 +111,80 @@ export async function buildPedido(db, user, body) {
     const q = Number.isFinite(n) ? Math.min(99, n) : 0;
     if (q >= 1) {
       const key = sanitizePlainText(k, 120);
-      pedido.push({ key, base: baseOf(key), q });
+      const parsed = parseCartKey(key);
+      pedido.push({ key, parsed, base: parsed.base, q });
     }
   }
   if (!pedido.length) throw new HttpError(400, "El pedido está vacío");
 
-  // 1) Precios desde la BD.
-  const ph = pedido.map(() => "?").join(",");
-  const r = await db.execute({
-    sql: `SELECT nombre, precio FROM productos WHERE nombre IN (${ph})`,
-    args: pedido.map((p) => p.base),
-  });
-  const map = {};
-  for (const row of r.rows) map[norm(row.nombre)] = { nombre: row.nombre, precio: Number(row.precio) };
-  for (const p of pedido) {
-    const hit = matchProducto(map, p.base) || matchProducto(PRODUCTOS_NUEVOS, p.base);
-    if (hit) {
-      // Si el cliente eligió un sabor (" · Manzana"), validar contra lista blanca.
-      if (p.key.indexOf(" · ") !== -1) {
-        const rawSabor = p.key.split(" · ")[1] || "";
-        const saborLimpio = sanitizePlainText(rawSabor, 25);
-        if (!SABORES_PERMITIDOS.has(norm(saborLimpio))) {
-          throw new HttpError(400, `Variante o sabor no válido para ${hit.nombre}`);
-        }
-        p.nombre = `${hit.nombre} · ${saborLimpio}`;
-      } else {
-        p.nombre = hit.nombre;
-      }
-      p.u = hit.precio;
-    } else {
-      throw new HttpError(400, `El producto "${p.base}" no existe en el catálogo oficial`);
+  // 1) Precios y disponibilidad desde la BD completa (evita colisiones entre Pastelito Pollo y Panini Pollo).
+  const r = await db.execute(
+    "SELECT categoria, nombre, precio, promo_tag, disponible FROM productos"
+  );
+  const byCatAndName = new Map();
+  const byName = new Map();
+  for (const row of r.rows) {
+    const item = {
+      categoria: row.categoria || "",
+      nombre: row.nombre,
+      precio: Number(row.precio),
+      promo_tag: String(row.promo_tag || "").trim(),
+      disponible: row.disponible != null ? Number(row.disponible) : 1,
+    };
+    const cKey = norm(item.categoria) + "|" + norm(item.nombre);
+    byCatAndName.set(cKey, item);
+    if (!byName.has(norm(item.nombre))) {
+      byName.set(norm(item.nombre), item);
     }
   }
 
-  // 2) Subtotal y promo 2x$1.
-  let subtotalBruto = 0, tradQty = 0, sinPrecio = false;
+  for (const p of pedido) {
+    const hit = findProductInCatalog(byCatAndName, byName, p.parsed);
+    if (!hit) {
+      throw new HttpError(400, `El producto "${p.base}" no existe en el catálogo oficial`);
+    }
+    if (Number(hit.disponible) === 0) {
+      throw new HttpError(400, `El producto "${hit.nombre}" está agotado actualmente`);
+    }
+    const prefix = norm(hit.categoria) === "pastelitos"
+      ? "Pastelito "
+      : norm(hit.categoria) === "paninis"
+      ? "Panini "
+      : "";
+    if (p.parsed.sabor) {
+      const saborLimpio = sanitizePlainText(p.parsed.sabor, 25);
+      if (!SABORES_PERMITIDOS.has(norm(saborLimpio))) {
+        throw new HttpError(400, `Variante o sabor no válido para ${hit.nombre}`);
+      }
+      p.nombre = `${prefix}${hit.nombre} · ${saborLimpio}`;
+    } else {
+      p.nombre = `${prefix}${hit.nombre}`;
+    }
+    p.u = hit.precio;
+    p.isPromo2x1 =
+      norm(hit.categoria) === "pastelitos" &&
+      norm(hit.promo_tag) === "2x$1";
+  }
+
+  // 2) Subtotal y promo 2x$1 dinámica según el precio y etiqueta actual en BD.
+  let subtotalBruto = 0, sinPrecio = false;
+  const promoUnits = [];
   for (const p of pedido) {
     if (p.u == null) { sinPrecio = true; continue; }
     subtotalBruto += p.u * p.q;
-    if (TRAD_NORM.has(norm(p.nombre)) && Math.abs(p.u - TRAD_PRECIO) < 0.001) tradQty += p.q;
+    if (p.isPromo2x1 && p.u > 0.5) {
+      for (let i = 0; i < p.q; i++) promoUnits.push(p.u);
+    }
   }
-  const tradPairs = Math.floor(tradQty / 2);
-  const tradAhorro = Number((tradPairs * TRAD_AHORRO_POR_PAR).toFixed(2));
-  const subtotal = Math.max(0, subtotalBruto - tradAhorro);
+  const tradQty = promoUnits.length;
+  const tradPairs = Math.floor(promoUnits.length / 2);
+  let tradAhorroRaw = 0;
+  for (let i = 0; i < tradPairs * 2; i += 2) {
+    const pairSum = promoUnits[i] + promoUnits[i + 1];
+    if (pairSum > 1.0) tradAhorroRaw += (pairSum - 1.0);
+  }
+  const tradAhorro = Number(tradAhorroRaw.toFixed(2));
+  const subtotal = Math.max(0, Number((subtotalBruto - tradAhorro).toFixed(2)));
 
   // 3) Descuento de fidelidad SOLO desde la BD y SOLO con identidad verificada.
   let descPct = 0, fidelidadAhorro = 0, cliente = null;

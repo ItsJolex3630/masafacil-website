@@ -580,11 +580,22 @@ textarea{width:100%;min-height:52px;resize:vertical}
   var selectedCat = 'Todos';
 
   // ---- Productos ----
+  function notifyCatalogChanged() {
+    try { localStorage.setItem('mf_catalog_updated_at', String(Date.now())); } catch (e) {}
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        var bc = new BroadcastChannel('mf_catalog_sync');
+        bc.postMessage({ updatedAt: Date.now() });
+        bc.close();
+      }
+    } catch (e) {}
+  }
+
   async function loadProductos(){
     var list = $('prod-list');
     list.innerHTML = '<div class="empty">Cargando productos…</div>';
     try{
-      window._productos = await api('/api/admin/productos') || [];
+      window._productos = await api('/api/admin/productos?t=' + Date.now(), { cache: 'no-store' }) || [];
       renderCatPills();
       renderProductos();
     }catch(e){ console.error(e); list.innerHTML = '<div class="empty">Error al cargar productos: '+esc(e.message||e)+'</div>'; }
@@ -734,6 +745,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
         window._productos = (window._productos || []).filter(function(p){ return p.id !== id; });
         renderCatPills();
         renderProductos();
+        notifyCatalogChanged();
         toast('Producto eliminado ✓');
       } catch (err) {
         if (!handleAuth(err)) toast('Error al eliminar: ' + (err.message || err), true);
@@ -785,6 +797,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
       if (prodObj) {
         Object.assign(prodObj, body);
       }
+      notifyCatalogChanged();
       toast('Producto "' + nombre + '" actualizado ✓');
       renderCatPills();
     } catch(err) {
@@ -847,6 +860,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     try {
       await api('/api/admin/productos', { method: 'POST', body: JSON.stringify(body) });
       $('modal-producto').classList.remove('on');
+      notifyCatalogChanged();
       toast('¡Producto "' + nombre + '" creado exitosamente! ✓');
       await loadProductos();
     } catch(err) {
@@ -866,6 +880,7 @@ textarea{width:100%;min-height:52px;resize:vertical}
     try {
       var res = await api('/api/admin/productos/sync', { method: 'POST' });
       var count = (res && res.res && res.res.synced) ? res.res.synced : 63;
+      notifyCatalogChanged();
       toast('¡Menú sincronizado exitosamente con la web (' + count + ' productos)! ✓');
       await loadProductos();
     } catch(err) {

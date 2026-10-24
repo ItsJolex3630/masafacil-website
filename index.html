@@ -1670,9 +1670,9 @@ const M = {
       {
         t: 'Sandwiches & Burger',
         r: [
-          R('Sandwich Criollo', 'Pan clásico con queso amarillo fundido, jamón y salchichón', '$5,50'),
-          R('Sandwich Diet', 'Pan integral, queso paisa bajo en sal, jamón de pavo y vegetales frescos', '$5,00'),
-          R('Burger Crispy', 'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y cheddar', '$6,50', 'Favorito'),
+          R('Sandwich Criollo', 'Pan clásico con queso amarillo fundido, jamón y salchichón', '$2,50'),
+          R('Sandwich Diet', 'Pan integral, queso paisa bajo en sal, jamón de pavo y vegetales frescos', '$2,99'),
+          R('Burger Crispy', 'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y cheddar', '$3,99', 'Favorito'),
           R('Extra Papas Fritas (para Burger)', 'Porción extra de papas fritas crujientes doradas', '$1,00', 'Extra')
         ]
       }
@@ -1792,13 +1792,14 @@ function zigzagHTML(cat, imgs) {
   }).join('');
 }
 function frontHTML(cat, imgs) {
-  const rows = M[cat].g[0].r;
+  const rows = (M[cat] && M[cat].g && M[cat].g[0]) ? M[cat].g[0].r : [];
   const prefix = cat === 'Paninis' ? 'Panini ' : '';
+  if (!rows.length) return '';
 
   // Elementos de la vitrina interactiva
   const plates = rows.map((r, i) => 
     '<div class="front-plate-item' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<img loading="lazy" decoding="async" src="' + imgs[i] + '" alt="' + r.n + '" class="front-plate-img">' +
+      '<img loading="lazy" decoding="async" src="' + (imgs[i] || imgs[0] || '') + '" alt="' + r.n + '" class="front-plate-img">' +
       '<div class="front-plate-meta">' +
         '<span class="front-plate-name">' + r.n + '</span>' +
         '<span class="front-plate-price">' + r.p + '</span>' +
@@ -1807,10 +1808,11 @@ function frontHTML(cat, imgs) {
   ).join('');
 
   const cards = rows.map((r, i) => {
-    const u = parseFloat(r.p.replace(/[^\d,]/g, '').replace(',', '.'));
+    const u = (r.u != null && Number.isFinite(Number(r.u))) ? Number(r.u) : parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.'));
     const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
     const desc = r.d ? '<p class="fc-desc">' + r.d + '</p>' : '';
-    return '<div class="front-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
+    const isAg = !!r.agotado;
+    return '<div class="front-card' + (i === 0 ? ' is-active' : '') + (isAg ? ' agotado' : '') + '" data-idx="' + i + '">' +
       '<div class="fc-head">' +
         '<div class="fc-title-box"><h4 class="fc-name">' + r.n + '</h4>' + tag + '</div>' +
         '<span class="fc-price">' + r.p + '</span>' +
@@ -1818,7 +1820,7 @@ function frontHTML(cat, imgs) {
       desc +
       '<div class="fc-foot">' +
         '<span class="fc-indicator">' + (i === 0 ? '● Seleccionado' : 'Ver plato') + '</span>' +
-        '<button class="pl" data-k="' + prefix + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '" aria-label="Agregar ' + r.n + ' al pedido">+</button>' +
+        '<button class="pl" data-k="' + prefix + r.n + '" data-u="' + (isNaN(u) ? '' : u) + '"' + (isAg ? ' disabled aria-disabled="true"' : '') + ' aria-label="Agregar ' + r.n + ' al pedido">' + (isAg ? '×' : '+') + '</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -1859,13 +1861,14 @@ function diamondHTML(cat, imgs) {
 }
 
 function sandwichesShowcaseHTML(cat, imgs) {
-  const allRows = M[cat].g[0].r;
-  const rows = allRows.filter(r => r.t !== 'Extra');
-  const extraRow = allRows.find(r => r.t === 'Extra');
+  const allRows = (M[cat] && M[cat].g && M[cat].g[0]) ? M[cat].g[0].r : [];
+  const extraRow = allRows.find(r => r.t === 'Extra' || /(extra\s+papas|papas\s+extra)/i.test(r.n));
+  const rows = allRows.filter(r => r !== extraRow);
+  if (!rows.length) return '';
   const navItems = rows.map((r, i) => {
     const tag = r.t ? '<span class="tg">' + r.t + '</span>' : '';
     return '<button type="button" class="sw-nav-card' + (i === 0 ? ' is-active' : '') + '" data-idx="' + i + '">' +
-      '<div class="sw-nav-thumb"><img loading="lazy" decoding="async" src="' + imgs[i] + '" alt="' + r.n + '"></div>' +
+      '<div class="sw-nav-thumb"><img loading="lazy" decoding="async" src="' + (imgs[i] || imgs[0] || '') + '" alt="' + r.n + '"></div>' +
       '<div class="sw-nav-info">' +
         '<div class="sw-nav-title-box"><h4 class="sw-nav-name">' + r.n + '</h4>' + tag + '</div>' +
         '<span class="sw-nav-price">' + r.p + '</span>' +
@@ -1874,11 +1877,12 @@ function sandwichesShowcaseHTML(cat, imgs) {
   }).join('');
 
   const r0 = rows[0];
-  const u0 = parseFloat(r0.p.replace(/[^\d,]/g, '').replace(',', '.'));
+  const u0 = (r0.u != null && Number.isFinite(Number(r0.u))) ? Number(r0.u) : parseFloat(String(r0.p).replace(/[^\d,]/g, '').replace(',', '.'));
   const tag0 = r0.t ? '<span class="tg">' + r0.t + '</span>' : '<span class="badge-sub">Hecho al momento</span>';
-  const uExtra = extraRow ? parseFloat(extraRow.p.replace(/[^\d,]/g, '').replace(',', '.')) : null;
-  const extraLabel = extraRow ? '🍟 Añadir papas extra · ' + extraRow.p : '';
+  const uExtra = extraRow ? ((extraRow.u != null && Number.isFinite(Number(extraRow.u))) ? Number(extraRow.u) : parseFloat(String(extraRow.p).replace(/[^\d,]/g, '').replace(',', '.'))) : null;
+  const extraLabel = extraRow ? '🍟 Añadir papas extra · ' + extraRow.p : '🍟 Añadir papas extra · $1,00';
   const extraBtn = extraRow ? '<button type="button" class="sw-extra-add" id="sw-extra-add" data-k="' + extraRow.n + '" data-u="' + (isNaN(uExtra) ? '' : uExtra) + '" data-label="' + extraLabel + '" aria-label="Agregar ' + extraRow.n + ' al pedido">' + extraLabel + '</button>' : '';
+  const isAg0 = !!r0.agotado;
 
   return '<div class="sandwiches-showcase-layout" id="sandwiches-showcase">' +
     '<div class="sw-nav-col">' +
@@ -1887,7 +1891,7 @@ function sandwichesShowcaseHTML(cat, imgs) {
     '</div>' +
     '<div class="sw-hero-col">' +
       '<div class="sw-hero-stage">' +
-        '<img id="sw-hero-img" class="sw-hero-img" loading="lazy" decoding="async" src="' + imgs[0] + '" alt="' + r0.n + '">' +
+        '<img id="sw-hero-img" class="sw-hero-img" loading="lazy" decoding="async" src="' + (imgs[0] || '') + '" alt="' + r0.n + '">' +
       '</div>' +
       '<div class="sw-hero-card" id="sw-hero-card">' +
         '<div class="sw-card-head">' +
@@ -1898,7 +1902,7 @@ function sandwichesShowcaseHTML(cat, imgs) {
         extraBtn +
         '<div class="sw-card-foot">' +
           '<span class="sw-fresh-badge">Pan artesanal recién horneado</span>' +
-          '<button id="sw-hero-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '" aria-label="Agregar ' + r0.n + ' al pedido">+</button>' +
+          '<button id="sw-hero-add-btn" class="pl" data-k="' + r0.n + '" data-u="' + (isNaN(u0) ? '' : u0) + '"' + (isAg0 ? ' disabled aria-disabled="true"' : '') + ' aria-label="Agregar ' + r0.n + ' al pedido">' + (isAg0 ? '×' : '+') + '</button>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -2148,7 +2152,7 @@ function LB(sel) {
   ];
   let currentPlateIndex = 0;
   let plateWheelAngle = 0;
-  const PLATE_STEP = 360 / PASTELITOS_LIST.length;
+  let PLATE_STEP = 360 / PASTELITOS_LIST.length;
 
   function getDynamicRadius() {
     const wheel = document.getElementById('plate-wheel');
@@ -2310,17 +2314,29 @@ function LB(sel) {
     }
 
     const cur = PASTELITOS_LIST[idx];
+    const allRows = (M['Pastelitos'] && M['Pastelitos'].g) ? M['Pastelitos'].g.reduce((acc, g) => acc.concat(g.r || []), []) : [];
+    const rowObj = allRows.find(x => x.n.toLowerCase() === cur.n.toLowerCase()) || allRows.find(x => cur.n.toLowerCase().includes(x.n.toLowerCase()));
+    const live = rowObj || cur;
+    const liveU = (live.u != null && Number.isFinite(Number(live.u))) ? Number(live.u) : cur.u;
+    const liveP = live.p || cur.p;
+    const livePromo = String(live.t || '').toLowerCase() === '2x$1';
+    const liveCat = rowObj ? (String(rowObj.t || '').toLowerCase() === '2x$1' ? 'Tradicional' : cur.cat) : cur.cat;
+    const isAg = !!live.agotado;
 
     // 1. Mini cuadro en el centro del plato
     const bT = document.getElementById('plate-badge-title'),
           bP = document.getElementById('plate-badge-price'),
           bA = document.getElementById('plate-add-btn');
-    if (bT) bT.textContent = cur.n;
-    if (bP) bP.textContent = cur.p;
+    if (bT) bT.textContent = live.n;
+    if (bP) bP.textContent = liveP;
     if (bA) {
-      bA.dataset.k = 'Pastelito ' + cur.n;
-      bA.dataset.u = cur.u;
-      bA.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
+      bA.dataset.k = 'Pastelito ' + live.n;
+      bA.dataset.u = liveU;
+      bA.disabled = isAg;
+      if (isAg) bA.setAttribute('aria-disabled', 'true');
+      else bA.removeAttribute('aria-disabled');
+      bA.textContent = isAg ? '×' : '+';
+      bA.setAttribute('aria-label', 'Agregar Pastelito ' + live.n + ' al pedido');
     }
 
     // 2. Ficha detallada debajo del plato (móvil)
@@ -2331,27 +2347,25 @@ function LB(sel) {
           dNote = document.querySelector('#plate-detail-card .pd-note'),
           dBtn = document.getElementById('plate-detail-add-btn');
     if (dTag) {
-      dTag.innerHTML = cur.cat.toUpperCase() + (cur.promo ? ' · <span class="badge-promo-tag">PROMO 2X$1</span>' : (cur.cat === 'Especial' && cur.u > 1.5 ? ' · <span class="badge-promo-tag">GOURMET</span>' : ''));
+      dTag.innerHTML = liveCat.toUpperCase() + (livePromo ? ' · <span class="badge-promo-tag">PROMO 2X$1</span>' : (liveCat === 'Especial' && liveU > 1.5 ? ' · <span class="badge-promo-tag">GOURMET</span>' : ''));
     }
-    if (dPrice) dPrice.textContent = cur.p;
-    if (dTitle) dTitle.textContent = 'Pastelito de ' + cur.n;
-    if (dDesc) {
-      const allRows = (M['Pastelitos'].g[0].r.concat(M['Pastelitos'].g[1].r));
-      const rowObj = allRows.find(x => x.n.toLowerCase() === cur.n.toLowerCase() || cur.n.toLowerCase().includes(x.n.toLowerCase()));
-      dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Masa crujiente con relleno generoso y dorado al momento.';
-    }
-    if (dNote) {
-      dNote.textContent = cur.promo ? '¡Promo: 2 Tradicionales por $1,00!' : 'Frito al momento y dorado crujiente';
-    }
+    if (dPrice) dPrice.textContent = liveP;
+    if (dTitle) dTitle.textContent = 'Pastelito de ' + live.n;
+    if (dDesc) dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Masa crujiente con relleno generoso y dorado al momento.';
+    if (dNote) dNote.textContent = livePromo ? '¡Promo: 2 Tradicionales por $1,00!' : 'Frito al momento y dorado crujiente';
     if (dBtn) {
-      dBtn.dataset.k = 'Pastelito ' + cur.n;
-      dBtn.dataset.u = cur.u;
-      dBtn.setAttribute('aria-label', 'Agregar Pastelito ' + cur.n + ' al pedido');
+      dBtn.dataset.k = 'Pastelito ' + live.n;
+      dBtn.dataset.u = liveU;
+      dBtn.disabled = isAg;
+      if (isAg) dBtn.setAttribute('aria-disabled', 'true');
+      else dBtn.removeAttribute('aria-disabled');
+      dBtn.textContent = isAg ? '×' : '+';
+      dBtn.setAttribute('aria-label', 'Agregar Pastelito ' + live.n + ' al pedido');
     }
 
     document.querySelectorAll('#mg-pastelitos .rw').forEach(rw => {
       const nEl = rw.querySelector('.n');
-      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
+      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === live.n.toLowerCase());
     });
     updateCurvedOffsets();
   }
@@ -2372,6 +2386,8 @@ function LB(sel) {
     });
   }
 
+  let currentSandwichIndex = 0;
+
   function initSandwichesShowcase(id) {
     const root = document.getElementById(id);
     if (!root) return;
@@ -2382,18 +2398,31 @@ function LB(sel) {
     const descEl = root.querySelector('#sw-hero-desc');
     const addBtn = root.querySelector('#sw-hero-add-btn');
     const extraBtn = root.querySelector('#sw-extra-add');
-    const rows = M['Sándwich y Burger'].g[0].r.filter(r => r.t !== 'Extra');
-    const imgs = IMGS.sandwiches;
 
     function pick(idx) {
+      const allRows = (M['Sándwich y Burger'] && M['Sándwich y Burger'].g && M['Sándwich y Burger'].g[0]) ? M['Sándwich y Burger'].g[0].r : [];
+      const extraRow = allRows.find(r => r.t === 'Extra' || /(extra\s+papas|papas\s+extra)/i.test(r.n));
+      const rows = allRows.filter(r => r !== extraRow);
       if (idx < 0 || idx >= rows.length) return;
-      cards.forEach((c, i) => c.classList.toggle('is-active', i === idx));
+      currentSandwichIndex = idx;
+      cards.forEach((c, i) => {
+        c.classList.toggle('is-active', i === idx);
+        const row = rows[i];
+        if (!row) return;
+        const navName = c.querySelector('.sw-nav-name');
+        const navPrice = c.querySelector('.sw-nav-price');
+        const navImg = c.querySelector('.sw-nav-thumb img');
+        if (navName) navName.textContent = row.n;
+        if (navPrice) navPrice.textContent = row.p;
+        if (navImg && row.img) navImg.src = row.img;
+      });
       const cur = rows[idx];
       if (imgEl) {
+        const nextImg = cur.img || IMGS.sandwiches[idx] || IMGS.sandwiches[0] || '';
         imgEl.style.opacity = '0';
         imgEl.style.transform = 'scale(0.92)';
         setTimeout(() => {
-          imgEl.src = imgs[idx];
+          imgEl.src = nextImg;
           imgEl.alt = cur.n;
           imgEl.style.opacity = '1';
           imgEl.style.transform = 'scale(1)';
@@ -2403,38 +2432,66 @@ function LB(sel) {
       if (priceEl) priceEl.textContent = cur.p;
       if (descEl) descEl.textContent = cur.d || '';
       if (addBtn) {
-        const u = parseFloat(cur.p.replace(/[^\d,]/g, '').replace(',', '.'));
+        const u = (cur.u != null && Number.isFinite(Number(cur.u))) ? Number(cur.u) : parseFloat(String(cur.p).replace(/[^\d,]/g, '').replace(',', '.'));
         addBtn.dataset.k = cur.n;
         addBtn.dataset.u = isNaN(u) ? '' : u;
         addBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
+        const isAg = !!cur.agotado;
+        addBtn.disabled = isAg;
+        if (isAg) addBtn.setAttribute('aria-disabled', 'true');
+        else addBtn.removeAttribute('aria-disabled');
+        addBtn.textContent = isAg ? '×' : '+';
       }
-      if (extraBtn) extraBtn.classList.toggle('is-visible', cur.n === 'Burger Crispy');
+      if (extraBtn) {
+        const canShowExtra = /burger\s+crispy/i.test(cur.n) && !cur.agotado && extraRow && !extraRow.agotado;
+        extraBtn.classList.toggle('is-visible', !!canShowExtra);
+        if (extraRow) {
+          const eU = (extraRow.u != null && Number.isFinite(Number(extraRow.u))) ? Number(extraRow.u) : parseFloat(String(extraRow.p).replace(/[^\d,]/g, '').replace(',', '.'));
+          const label = '🍟 Añadir papas extra · ' + extraRow.p;
+          extraBtn.dataset.k = extraRow.n;
+          extraBtn.dataset.u = isNaN(eU) ? '' : eU;
+          extraBtn.dataset.label = label;
+          extraBtn.textContent = label;
+        }
+      }
     }
     mfApi.pickSandwich = pick;
 
     if (extraBtn) {
       extraBtn.addEventListener('click', function(){
-        const defaultLabel = this.dataset.label || '🍟 Añadir papas extra · $1,00';
-        const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
-        const currentExtraQty = (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q) ? C[EXTRA_FRIES_KEY].q : 0;
+        const allRows = (M['Sándwich y Burger'] && M['Sándwich y Burger'].g && M['Sándwich y Burger'].g[0]) ? M['Sándwich y Burger'].g[0].r : [];
+        const burgerRow = allRows.find(r => /burger\s+crispy/i.test(r.n)) || allRows[2];
+        const extraRow = allRows.find(r => r.t === 'Extra' || /(extra\s+papas|papas\s+extra)/i.test(r.n));
+        const parseU = r => (r && r.u != null && Number.isFinite(Number(r.u))) ? Number(r.u) : (r && r.p ? parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.')) : 0);
+        const burgerU = parseU(burgerRow) || 3.99;
+        const extraU = parseU(extraRow) || 1.00;
+        const extraPText = extraRow ? extraRow.p : '$1,00';
+        const defaultLabel = '🍟 Añadir papas extra · ' + extraPText;
+        this.dataset.label = defaultLabel;
+
+        if (!extraRow || extraRow.agotado || (burgerRow && burgerRow.agotado)) return;
+        const burgerKey = burgerRow ? burgerRow.n : BURGER_KEY;
+        const extraKey = extraRow ? extraRow.n : EXTRA_FRIES_KEY;
+        const burgerQty = (C[burgerKey] && C[burgerKey].q) ? C[burgerKey].q : 0;
+        const currentExtraQty = (C[extraKey] && C[extraKey].q) ? C[extraKey].q : 0;
 
         if (burgerQty === 0) {
-          mfApi.addToCart(BURGER_KEY, 6.50);
-          mfApi.addToCart(EXTRA_FRIES_KEY, 1.00);
+          mfApi.addToCart(burgerKey, burgerU);
+          mfApi.addToCart(extraKey, extraU);
           this.textContent = '✓ Burger + Papas añadidas';
-          setTimeout(() => { this.textContent = defaultLabel; }, 1600);
+          setTimeout(() => { this.textContent = this.dataset.label || defaultLabel; }, 1600);
           return;
         }
 
         if (currentExtraQty >= burgerQty) {
           this.textContent = '✓ Extra ya incluido (' + currentExtraQty + '/' + burgerQty + ')';
-          setTimeout(() => { this.textContent = defaultLabel; }, 1600);
+          setTimeout(() => { this.textContent = this.dataset.label || defaultLabel; }, 1600);
           return;
         }
 
-        mfApi.addToCart(EXTRA_FRIES_KEY, 1.00);
-        this.textContent = '✓ Papas extra añadidas (+$1,00)';
-        setTimeout(() => { this.textContent = defaultLabel; }, 1600);
+        mfApi.addToCart(extraKey, extraU);
+        this.textContent = '✓ Papas extra añadidas (+' + extraPText + ')';
+        setTimeout(() => { this.textContent = this.dataset.label || defaultLabel; }, 1600);
       });
     }
 
@@ -2445,19 +2502,19 @@ function LB(sel) {
   }
 
   const DRINKS = [
-    { n: 'Café Latte', p: '$2,00', u: 2.00, tag: 'CAFETERÍA', img: 'assets/img/bebidas/cafe_latte.webp' },
+    { n: 'Latte', p: '$2,00', u: 2.00, tag: 'CAFETERÍA', img: 'assets/img/bebidas/cafe_latte.webp' },
     { n: 'Jugo de Parchita', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_parchita.webp' },
     { n: 'Jugo de Mora', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_mora.webp' },
     { n: 'Jugo de Fresa', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_fresa.webp' },
     { n: 'Jugo de Melón', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_melon.webp' },
     { n: 'Jugo de Piña', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_pina.webp' },
     { n: 'Jugo de Lechosa', p: '$3,10', u: 3.10, tag: 'JUGO NATURAL', img: 'assets/img/bebidas/jugo_lechosa.webp' },
-    { n: 'Nestea Limón', p: '$1,20', u: 1.20, tag: 'TÉ FRÍO', img: 'assets/img/bebidas/nestea_limon.webp' },
+    { n: 'Nestea', p: '$1,20', u: 1.20, tag: 'TÉ FRÍO', img: 'assets/img/bebidas/nestea_limon.webp' },
     { n: 'Refresco 500 ml', p: '$2,00', u: 2.00, tag: 'REFRESCO', img: 'assets/img/bebidas/refresco.webp' }
   ];
   let currentDrinkIndex = 0;
   let drinksWheelAngle = 0;
-  const DRINKS_STEP = 360 / DRINKS.length; // 40 grados por ítem
+  let DRINKS_STEP = 360 / DRINKS.length; // 40 grados por ítem
 
   function getDynamicDrinksRadius() {
     const wheel = document.getElementById('drinks-wheel');
@@ -2513,7 +2570,25 @@ function LB(sel) {
       }
     });
 
-    const cur = customData || DRINKS[idx];
+    let cur = customData || DRINKS[idx];
+    const allDrinks = (M['Bebidas'] && M['Bebidas'].g) ? M['Bebidas'].g.reduce((acc, g) => acc.concat(g.r || []), []) : [];
+    const baseName = String(cur.n || '').toLowerCase();
+    const altName = baseName === 'latte' ? 'café latte' : (baseName === 'nestea' ? 'nestea limón' : baseName);
+    const inverseAlt = baseName === 'café latte' ? 'latte' : (baseName === 'nestea limón' ? 'nestea' : baseName);
+    const rowObj = allDrinks.find(x => {
+      const xn = String(x.n || '').toLowerCase();
+      return xn === baseName || xn === altName || xn === inverseAlt;
+    });
+    if (rowObj) {
+      cur = Object.assign({}, cur, {
+        n: rowObj.n,
+        p: rowObj.p,
+        u: rowObj.u,
+        d: rowObj.d,
+        agotado: !!rowObj.agotado
+      });
+    }
+    const isAg = !!cur.agotado;
 
     // 1. Mini cuadro en el centro de la bandeja
     const bT = document.getElementById('drinks-badge-title'),
@@ -2524,6 +2599,10 @@ function LB(sel) {
     if (bA) {
       bA.dataset.k = cur.n;
       bA.dataset.u = cur.u;
+      bA.disabled = isAg;
+      if (isAg) bA.setAttribute('aria-disabled', 'true');
+      else bA.removeAttribute('aria-disabled');
+      bA.textContent = isAg ? '×' : '+';
       bA.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
     }
 
@@ -2536,20 +2615,20 @@ function LB(sel) {
     if (dTag) dTag.textContent = cur.tag || (idx === 0 ? 'CAFETERÍA DE ESPECIALIDAD' : 'BEBIDA FRÍA REFRESCANTE');
     if (dPrice) dPrice.textContent = cur.p;
     if (dTitle) dTitle.textContent = cur.n;
-    if (dDesc) {
-      const allDrinks = M['Bebidas'].g[0].r.concat(M['Bebidas'].g[1].r);
-      const rowObj = allDrinks.find(x => x.n.toLowerCase() === cur.n.toLowerCase());
-      dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Preparado con ingredientes frescos de primera calidad.';
-    }
+    if (dDesc) dDesc.textContent = (rowObj && rowObj.d) ? rowObj.d : 'Preparado con ingredientes frescos de primera calidad.';
     if (dBtn) {
       dBtn.dataset.k = cur.n;
       dBtn.dataset.u = cur.u;
+      dBtn.disabled = isAg;
+      if (isAg) dBtn.setAttribute('aria-disabled', 'true');
+      else dBtn.removeAttribute('aria-disabled');
+      dBtn.textContent = isAg ? '×' : '+';
       dBtn.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
     }
 
     document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
       const nEl = rw.querySelector('.n');
-      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === cur.n.toLowerCase());
+      rw.classList.toggle('plate-focus', !!nEl && nEl.textContent.trim().toLowerCase() === String(cur.n || '').toLowerCase());
     });
     updateCurvedOffsets();
   }
@@ -2557,45 +2636,53 @@ function LB(sel) {
   function hookDrinkRows() {
     document.querySelectorAll('#mg-bebidas .rw').forEach(rw => {
       if (rw.classList.contains('nowheel')) return; // bebidas empacadas: no van en la bandeja
-      const nEl = rw.querySelector('.n');
-      if (!nEl) return;
-      const name = nEl.textContent.trim();
-      const nameLower = name.toLowerCase();
+      const getLiveDrinkData = () => {
+        const nEl = rw.querySelector('.n');
+        const pEl = rw.querySelector('.p');
+        const plEl = rw.querySelector('.pl');
+        const name = nEl ? nEl.textContent.trim() : 'Latte';
+        const nameLower = name.toLowerCase();
+        const priceStr = pEl ? pEl.textContent.trim() : '$2,00';
+        const uVal = (plEl && plEl.dataset.u !== '' && Number.isFinite(Number(plEl.dataset.u)))
+          ? Number(plEl.dataset.u)
+          : (parseFloat(priceStr.replace(/[^\d,]/g, '').replace(',', '.')) || 2.0);
+        const tag = nameLower.includes('jugo') ? 'JUGO NATURAL'
+          : nameLower.includes('nestea') ? 'TÉ FRÍO'
+          : nameLower.includes('refresco') ? 'REFRESCO'
+          : 'CAFETERÍA';
+        const agotado = rw.classList.contains('agotado') || rw.classList.contains('ag');
+        let slotIdx = 0;
+        if (nameLower.includes('jugo')) {
+          if (nameLower.includes('parchita')) slotIdx = 1;
+          else if (nameLower.includes('mora')) slotIdx = 2;
+          else if (nameLower.includes('fresa')) slotIdx = 3;
+          else if (nameLower.includes('melón') || nameLower.includes('melon')) slotIdx = 4;
+          else if (nameLower.includes('piña') || nameLower.includes('pina')) slotIdx = 5;
+          else if (nameLower.includes('lechosa')) slotIdx = 6;
+          else slotIdx = 1;
+        } else if (nameLower.includes('nestea')) {
+          slotIdx = 7;
+        } else if (nameLower.includes('refresco')) {
+          slotIdx = 8;
+        } else {
+          slotIdx = 0;
+        }
+        return { slotIdx, itemData: { n: name, p: priceStr, u: uVal, tag: tag, agotado: agotado } };
+      };
 
-      let slotIdx = 0;
-      const pEl = rw.querySelector('.p');
-      const priceStr = pEl ? pEl.textContent.trim() : '$2,00';
-      const uVal = parseFloat(priceStr.replace(/[^\d,]/g, '').replace(',', '.')) || 2.0;
-      const tag = nameLower.includes('jugo') ? 'JUGO NATURAL'
-        : nameLower.includes('nestea') ? 'TÉ FRÍO'
-        : nameLower.includes('refresco') ? 'REFRESCO'
-        : 'CAFETERÍA';
-      const itemData = { n: name, p: priceStr, u: uVal, tag: tag };
-
-      if (nameLower.includes('jugo')) {
-        if (nameLower.includes('parchita')) slotIdx = 1;
-        else if (nameLower.includes('mora')) slotIdx = 2;
-        else if (nameLower.includes('fresa')) slotIdx = 3;
-        else if (nameLower.includes('melón') || nameLower.includes('melon')) slotIdx = 4;
-        else if (nameLower.includes('piña') || nameLower.includes('pina')) slotIdx = 5;
-        else if (nameLower.includes('lechosa')) slotIdx = 6;
-        else slotIdx = 1;
-      } else if (nameLower.includes('nestea')) {
-        slotIdx = 7;
-      } else if (nameLower.includes('refresco')) {
-        slotIdx = 8;
-      } else {
-        // Toda la Cafetería Caliente (Americano, Cappuccino, etc.) activa el slot 0 (taza de café)
-        slotIdx = 0;
-      }
-
-      rw.addEventListener('mouseenter', () => selectDrink(slotIdx, itemData));
+      rw.addEventListener('mouseenter', () => {
+        const { slotIdx, itemData } = getLiveDrinkData();
+        selectDrink(slotIdx, itemData);
+      });
       rw.addEventListener('click', e => {
         if (e.target.closest('.pl')) return;
+        const { slotIdx, itemData } = getLiveDrinkData();
         selectDrink(slotIdx, itemData);
       });
     });
   }
+
+  let currentPaniniIndex = 0;
 
   function initFrontPlates(id) {
     const root = document.getElementById(id);
@@ -2605,6 +2692,7 @@ function LB(sel) {
 
     const pick = i => {
       if (i < 0 || i >= plates.length) return;
+      currentPaniniIndex = i;
       plates.forEach((p, j) => p.classList.toggle('is-active', j === i));
       cards.forEach((k, j) => {
         const active = j === i;
@@ -2622,6 +2710,8 @@ function LB(sel) {
     }));
   }
 
+  let currentEntradaIndex = 0;
+
   function initDiamondEntradas(id) {
     const c = document.getElementById(id);
     if (!c) return;
@@ -2634,7 +2724,6 @@ function LB(sel) {
     const bPrice = document.getElementById('entradas-badge-price');
     const bAdd = document.getElementById('entradas-add-btn');
 
-    const catData = M['Entradas'].g[0].r;
     const N = items.length;
     const step = 360 / N;
     let currentIdx = 0;
@@ -2678,16 +2767,24 @@ function LB(sel) {
     function selectEntrada(idx) {
       if (idx < 0 || idx >= N) return;
       currentIdx = idx;
+      currentEntradaIndex = idx;
       updateDiamond();
 
+      const catData = (M['Entradas'] && M['Entradas'].g && M['Entradas'].g[0]) ? M['Entradas'].g[0].r : [];
       const cur = catData[idx];
+      if (!cur) return;
+      const u = (cur.u != null && Number.isFinite(Number(cur.u))) ? Number(cur.u) : parseFloat(String(cur.p).replace(/[^\d,]/g, '').replace(',', '.'));
       if (bTitle) bTitle.textContent = cur.n;
       if (bDesc) bDesc.textContent = cur.d || '';
       if (bPrice) bPrice.textContent = cur.p;
       if (bAdd) {
-        const u = parseFloat(cur.p.replace(/[^\d,]/g, '').replace(',', '.'));
         bAdd.dataset.k = cur.n;
         bAdd.dataset.u = isNaN(u) ? '' : u;
+        const isAg = !!cur.agotado;
+        bAdd.disabled = isAg;
+        if (isAg) bAdd.setAttribute('aria-disabled', 'true');
+        else bAdd.removeAttribute('aria-disabled');
+        bAdd.textContent = isAg ? '×' : '+';
         bAdd.setAttribute('aria-label', 'Agregar ' + cur.n + ' al pedido');
       }
       rows.forEach((r, j) => r.classList.toggle('plate-focus', j === idx));
@@ -2750,7 +2847,7 @@ function LB(sel) {
     });
 
     window.updateDiamond = updateDiamond;
-    selectEntrada(0);
+    selectEntrada(Math.min(currentEntradaIndex, Math.max(0, N - 1)));
   }
 
   let plateBuilt = false, drinksBuilt = false;
@@ -2965,18 +3062,125 @@ function LB(sel) {
   const EXTRA_FRIES_KEY = 'Extra Papas Fritas (para Burger)';
   let cartSyncTimer = 0;
 
-  function sanitizeCartDependencies() {
-    const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
+  const normStr = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+
+  // Resuelve cualquier clave del carrito ("Pastelito Queso", "Panini Pollo", "Burger Crispy",
+  // "Yukery 250ml · Manzana", etc.) contra el catálogo vivo M actualizado desde Turso.
+  function resolveLiveProduct(cartKey) {
+    if (!cartKey || typeof M === 'undefined') return null;
+    const parts = String(cartKey).split(' · ');
+    const left = parts[0].trim();
+    let catHint = null;
+    let baseName = left;
+
+    if (/^Pastelito\s+/i.test(left)) {
+      catHint = 'Pastelitos';
+      baseName = left.replace(/^Pastelito\s+/i, '').trim();
+    } else if (/^Panini\s+/i.test(left)) {
+      catHint = 'Paninis';
+      baseName = left.replace(/^Panini\s+/i, '').trim();
+    }
+
+    const baseNorm = normStr(baseName);
+    const aliasNorm = baseNorm === 'cafe latte' ? 'latte' : (baseNorm === 'nestea limon' ? 'nestea' : baseNorm);
+    const inverseAlias = baseNorm === 'latte' ? 'cafe latte' : (baseNorm === 'nestea' ? 'nestea limon' : baseNorm);
+
+    const searchInCat = (cat) => {
+      if (!M[cat] || !M[cat].g) return null;
+      for (const group of M[cat].g) {
+        if (!group.r) continue;
+        for (const r of group.r) {
+          const rn = normStr(r.n);
+          if (rn === baseNorm || rn === aliasNorm || rn === inverseAlias) {
+            const u = (r.u != null && Number.isFinite(Number(r.u)))
+              ? Number(r.u)
+              : parseFloat(String(r.p || '').replace(/[^\d,]/g, '').replace(',', '.'));
+            return {
+              cat: cat,
+              n: r.n,
+              p: r.p,
+              u: Number.isFinite(u) ? u : null,
+              d: r.d || '',
+              t: r.t || '',
+              agotado: !!r.agotado,
+              row: r
+            };
+          }
+        }
+      }
+      return null;
+    };
+
+    if (catHint) {
+      const hit = searchInCat(catHint);
+      if (hit) return hit;
+    }
+    for (const cat of Object.keys(M)) {
+      const hit = searchInCat(cat);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  let catalogLoadedFromServer = false;
+
+  // Sincroniza todos los productos dentro del carrito C con los precios y disponibilidad
+  // actuales del catálogo vivo M. Nunca permite que el carrito tenga un precio distinto al menú.
+  function syncCartWithLiveCatalog() {
     let changed = false;
-    if (burgerQty === 0) {
-      if (C[EXTRA_FRIES_KEY]) {
-        delete C[EXTRA_FRIES_KEY];
+    Object.keys(C).forEach(k => {
+      const live = resolveLiveProduct(k);
+      if (!live) {
+        // Si el catálogo del servidor ya cargó y el producto fue eliminado en el Admin, quitarlo del carrito
+        if (catalogLoadedFromServer) {
+          delete C[k];
+          changed = true;
+        }
+        return;
+      }
+      if (live.agotado) {
+        delete C[k];
+        changed = true;
+        return;
+      }
+      if (live.u != null && Number.isFinite(live.u) && C[k].u !== live.u) {
+        C[k].u = live.u;
         changed = true;
       }
-    } else if (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q > burgerQty) {
-      C[EXTRA_FRIES_KEY].q = burgerQty;
-      changed = true;
-    }
+    });
+    if (changed) persistCartLocal();
+    return changed;
+  }
+
+  function isBurgerCartKey(k) {
+    const live = resolveLiveProduct(k);
+    const name = (live && live.n) || k || '';
+    return k === BURGER_KEY || /burger\s+crispy/i.test(name) || /burger\s+crispy/i.test(k || '');
+  }
+
+  function isExtraFriesCartKey(k) {
+    const live = resolveLiveProduct(k);
+    const name = (live && live.n) || k || '';
+    return k === EXTRA_FRIES_KEY || /(extra\s+papas|papas\s+extra)/i.test(name) || /(extra\s+papas|papas\s+extra)/i.test(k || '');
+  }
+
+  function cartBurgerQty() {
+    return Object.keys(C).filter(isBurgerCartKey).reduce((sum, k) => sum + ((C[k] && C[k].q) || 0), 0);
+  }
+
+  function sanitizeCartDependencies() {
+    const burgerQty = cartBurgerQty();
+    let changed = false;
+    Object.keys(C).forEach(k => {
+      if (!isExtraFriesCartKey(k)) return;
+      if (burgerQty === 0) {
+        delete C[k];
+        changed = true;
+      } else if (C[k].q > burgerQty) {
+        C[k].q = burgerQty;
+        changed = true;
+      }
+    });
     if (changed) persistCart();
     return changed;
   }
@@ -3017,6 +3221,7 @@ function LB(sel) {
   } catch (e) {}
 
   function draw() {
+    syncCartWithLiveCatalog();
     sanitizeCartDependencies();
     syncMetodosPago();
     const ks = Object.keys(C), n = ks.reduce((a, k) => a + C[k].q, 0);
@@ -3024,12 +3229,25 @@ function LB(sel) {
     const un = ks.some(k => C[k].u == null);
 
     let tradQty = 0;
+    const promoUnits = [];
     ks.forEach(k => {
-      if (TRAD_ITEMS.has(k)) tradQty += C[k].q;
+      const live = resolveLiveProduct(k);
+      const isPromo2x1 = live
+        ? (live.cat === 'Pastelitos' && String(live.t || '').toLowerCase() === '2x$1')
+        : TRAD_ITEMS.has(k);
+      if (isPromo2x1 && C[k].u != null && C[k].u > 0.5) {
+        tradQty += C[k].q;
+        for (let i = 0; i < C[k].q; i++) promoUnits.push(C[k].u);
+      }
     });
-    const tradPairs = Math.floor(tradQty / 2);
-    const tradAhorro = tradPairs * 0.30;
-    const subtotal = Math.max(0, subtotalBruto - tradAhorro);
+    const tradPairs = Math.floor(promoUnits.length / 2);
+    let tradAhorroRaw = 0;
+    for (let i = 0; i < tradPairs * 2; i += 2) {
+      const pairSum = promoUnits[i] + promoUnits[i + 1];
+      if (pairSum > 1.0) tradAhorroRaw += (pairSum - 1.0);
+    }
+    const tradAhorro = Number(tradAhorroRaw.toFixed(2));
+    const subtotal = Math.max(0, Number((subtotalBruto - tradAhorro).toFixed(2)));
 
     // Fidelización Club Masafácil (descuento dinámico definido en Turso)
     const cliente = window.CURRENT_CLIENTE;
@@ -3076,10 +3294,11 @@ function LB(sel) {
     if (shHeadCount) shHeadCount.textContent = n + (n === 1 ? ' producto' : ' productos');
 
     $('cli').innerHTML = ks.length ? ks.map(k => {
-      const isTrad = TRAD_ITEMS.has(k);
+      const liveItem = resolveLiveProduct(k);
+      const isTrad = liveItem ? (liveItem.cat === 'Pastelitos' && String(liveItem.t || '').toLowerCase() === '2x$1') : TRAD_ITEMS.has(k);
       const itemTot = C[k].u == null ? 'Consultar' : m(C[k].u * C[k].q);
       const unitHint = (C[k].u != null && C[k].q > 1) ? '<span class="cl-unit">' + m(C[k].u) + ' c/u</span>' : '';
-      const atExtraLimit = k === EXTRA_FRIES_KEY && C[k].q >= ((C[BURGER_KEY] && C[BURGER_KEY].q) || 0);
+      const atExtraLimit = isExtraFriesCartKey(k) && C[k].q >= cartBurgerQty();
       return '<div class="cl">' +
         '<div class="cl-top">' +
           '<div class="cl-name">' + esc(k) + (isTrad ? ' <span class="badge-promo-tag">Promo 2x$1</span>' : '') + '</div>' +
@@ -3150,9 +3369,11 @@ function LB(sel) {
       }
       msg += '------------------------------------\n\n';
     }
-    msg += ks.filter(k => k !== EXTRA_FRIES_KEY).map(k => {
-      if (k === BURGER_KEY && C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q > 0) {
-        const extra = C[EXTRA_FRIES_KEY];
+    const burgerCartKey = ks.find(isBurgerCartKey);
+    const extraCartKey = ks.find(isExtraFriesCartKey);
+    msg += ks.filter(k => !isExtraFriesCartKey(k)).map(k => {
+      if (k === burgerCartKey && extraCartKey && C[extraCartKey] && C[extraCartKey].q > 0) {
+        const extra = C[extraCartKey];
         const burgerTotal = C[k].u == null ? 'consultar precio' : m(C[k].u * C[k].q);
         const extraTotal = extra.u == null ? 'consultar precio' : m(extra.u * extra.q);
         return '• ' + C[k].q + ' x ' + k + ' (' + burgerTotal + ') + ' + (extra.q === 1 ? '' : extra.q + ' x ') + 'Porción de Papas Extra (' + extraTotal + ')';
@@ -3194,12 +3415,16 @@ function LB(sel) {
     const p = e.target.closest('.pl');
     if (p) {
       let k = p.dataset.k;
-      const u = p.dataset.u === '' ? null : parseFloat(p.dataset.u);
       if (p.dataset.opt) {
         const sel = document.getElementById(p.dataset.opt);
         if (sel && sel.value) k = k + ' · ' + sel.value;
       }
-      C[k] = C[k] || { q: 0, u };
+      const live = resolveLiveProduct(k);
+      if (live && live.agotado) return;
+      const parsedU = p.dataset.u === '' ? null : parseFloat(p.dataset.u);
+      const u = (live && live.u != null) ? live.u : (Number.isFinite(parsedU) ? parsedU : null);
+      if (!C[k]) C[k] = { q: 0, u: u };
+      else C[k].u = u;
       C[k].q++;
       buzz(8);
       p.classList.add('ok');
@@ -3235,9 +3460,9 @@ function LB(sel) {
     const b = e.target.closest('#cli button');
     if (b) {
       const k = b.dataset.k, a = b.dataset.a;
-      if (a == '+' && k === EXTRA_FRIES_KEY) {
-        const burgerQty = (C[BURGER_KEY] && C[BURGER_KEY].q) ? C[BURGER_KEY].q : 0;
-        const extraQty = (C[EXTRA_FRIES_KEY] && C[EXTRA_FRIES_KEY].q) ? C[EXTRA_FRIES_KEY].q : 0;
+      if (a == '+' && isExtraFriesCartKey(k)) {
+        const burgerQty = cartBurgerQty();
+        const extraQty = (C[k] && C[k].q) ? C[k].q : 0;
         if (burgerQty < 1 || extraQty >= burgerQty) {
           buzz(8);
           return;
@@ -3495,113 +3720,238 @@ function LB(sel) {
     });
     if (changed) { draw(); persistCartLocal(); }
   };
-  mfApi.applyProductOverrides = function(map){
-    if (!map) return;
+  mfApi.syncCatalogFromRows = function(rowsOrMap) {
+    if (!rowsOrMap) return;
+    const rows = Array.isArray(rowsOrMap)
+      ? rowsOrMap
+      : Object.keys(rowsOrMap).map(k => rowsOrMap[k]).filter(Boolean);
+    if (!rows.length) return;
+
     const fmtP = n => '$' + Number(n).toFixed(2).replace('.', ',');
-    // Solo se aceptan precios numéricos finitos y no negativos desde el servidor;
-    // cualquier otro valor se ignora para no pintar "$NaN" en el catálogo.
     const precioValido = v => v != null && Number.isFinite(Number(v)) && Number(v) >= 0;
-    const get = (cat, n) => map[(cat || '') + '|' + (n || '')];
     const SAFE_IMG = /^(\/?assets\/img\/[\w\-\/\.]+\.(webp|png|jpg|jpeg|svg)(\?[\w\=\&\.\-]*)?)$/i;
 
-    // 1. Sincronizar estructura central M
-    if (window.M || typeof M !== 'undefined') {
-      const targetM = window.M || M;
-      Object.keys(targetM).forEach(cat => {
-        if (!targetM[cat] || !targetM[cat].g) return;
-        targetM[cat].g.forEach(group => {
-          if (!group.r) return;
-          group.r.forEach(r => {
-            const o = get(cat, r.n);
-            if (!o) return;
-            if (precioValido(o.precio)) { r.p = fmtP(o.precio); r.u = Number(o.precio); }
-            if (o.descripcion) r.d = o.descripcion;
-            if (o.promo_tag !== undefined) r.t = o.promo_tag;
-            if (Number(o.disponible) === 0) r.agotado = true;
-            else delete r.agotado;
-          });
+    // Preservar opciones de sabores, banderas nowheel e imágenes de las filas base
+    const optsByCatAndName = {};
+    Object.keys(M).forEach(cat => {
+      if (!M[cat] || !M[cat].g) return;
+      M[cat].g.forEach(g => {
+        (g.r || []).forEach(r => {
+          const key = normStr(cat) + '|' + normStr(r.n);
+          optsByCatAndName[key] = { o: r.o, nw: r.nw, img: r.img };
         });
       });
+    });
+
+    // Agrupar filas que vienen de Turso por categoría y subgrupo respetando su orden
+    const byCat = {};
+    rows.forEach(o => {
+      const cat = String(o.categoria || '').trim();
+      if (!cat || !M[cat]) return;
+      if (!byCat[cat]) byCat[cat] = [];
+      byCat[cat].push(o);
+    });
+
+    Object.keys(byCat).forEach(cat => {
+      const catRows = byCat[cat].slice().sort((a, b) => (Number(a.orden || 0) - Number(b.orden || 0)));
+      const existingGroupTitles = (M[cat].g || []).map(g => g.t);
+      const groupsMap = new Map();
+      existingGroupTitles.forEach(t => groupsMap.set(t, []));
+
+      catRows.forEach(o => {
+        const defaultSub = existingGroupTitles[0] || cat;
+        const sub = String(o.subgrupo || '').trim() || defaultSub;
+        let targetSub = sub;
+        for (const k of groupsMap.keys()) {
+          if (normStr(k) === normStr(sub)) { targetSub = k; break; }
+        }
+        if (!groupsMap.has(targetSub)) groupsMap.set(targetSub, []);
+
+        const metaKey = normStr(cat) + '|' + normStr(o.nombre);
+        const prevMeta = optsByCatAndName[metaKey] || {};
+        const isPackagedDrink = cat === 'Bebidas' && normStr(targetSub).includes('empacadas');
+        const hasFlavorSelect = /yukery\s*250|refresco\s*lata/i.test(o.nombre);
+        const defaultOpts = /yukery/i.test(o.nombre)
+          ? ['Manzana', 'Pera', 'Naranja', 'Durazno']
+          : (/refresco\s*lata/i.test(o.nombre) ? ['Frescolita', 'Chinotto', 'Fanta', 'Colita'] : undefined);
+
+        const uNum = precioValido(o.precio) ? Number(o.precio) : 0;
+        const rowObj = {
+          n: String(o.nombre || '').trim(),
+          p: fmtP(uNum),
+          u: uNum,
+          d: o.descripcion != null ? String(o.descripcion) : '',
+          t: o.promo_tag != null ? String(o.promo_tag) : '',
+          o: prevMeta.o || (hasFlavorSelect ? defaultOpts : undefined),
+          nw: prevMeta.nw || isPackagedDrink || false,
+          img: (o.imagen_url && SAFE_IMG.test(o.imagen_url)) ? o.imagen_url : prevMeta.img,
+          sub: targetSub
+        };
+        if (Number(o.disponible) === 0) rowObj.agotado = true;
+        groupsMap.get(targetSub).push(rowObj);
+      });
+
+      const newGroups = [];
+      for (const [gTitle, gRows] of groupsMap.entries()) {
+        if (gRows.length > 0) newGroups.push({ t: gTitle, r: gRows });
+      }
+      if (newGroups.length > 0) {
+        M[cat].g = newGroups;
+      }
+    });
+
+    // Actualizar IMGS para las vitrinas de Entradas, Paninis, Sándwich y Burger, Combos y Masas
+    if (M['Entradas'] && M['Entradas'].g[0]) {
+      IMGS.entradas = M['Entradas'].g[0].r.map((r, i) => r.img || IMGS.entradas[i] || IMGS.entradas[0]);
+    }
+    if (M['Paninis'] && M['Paninis'].g[0]) {
+      IMGS.paninis = M['Paninis'].g[0].r.map((r, i) => r.img || IMGS.paninis[i] || IMGS.paninis[0]);
+    }
+    if (M['Sándwich y Burger'] && M['Sándwich y Burger'].g[0]) {
+      const swMain = M['Sándwich y Burger'].g[0].r.filter(r => r.t !== 'Extra' && !/(extra\s+papas|papas\s+extra)/i.test(r.n));
+      IMGS.sandwiches = swMain.map((r, i) => r.img || IMGS.sandwiches[i] || IMGS.sandwiches[0]);
+    }
+    if (M['Combos Eventos'] && M['Combos Eventos'].g[0]) {
+      IMGS.combos = M['Combos Eventos'].g[0].r.map((r, i) => r.img || IMGS.combos[i] || IMGS.combos[0]);
+    }
+    if (M['Masas Congeladas'] && M['Masas Congeladas'].g[0]) {
+      IMGS.masas = M['Masas Congeladas'].g[0].r.map((r, i) => r.img || IMGS.masas[i] || IMGS.masas[0]);
     }
 
-    // 2. Sincronizar catálogo circular de Pastelitos
-    PASTELITOS_LIST.forEach(it => {
-      const o = get('Pastelitos', it.n);
-      if (!o) return;
-      if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
-      if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
-      if (Number(o.disponible) === 0) it.agotado = true;
-      else delete it.agotado;
-    });
+    // Reconstruir PASTELITOS_LIST con las filas vivas de M['Pastelitos']
+    if (M['Pastelitos'] && M['Pastelitos'].g) {
+      const allPastelitos = M['Pastelitos'].g.reduce((acc, g) => acc.concat(g.r || []), []);
+      const prevByNorm = new Map(PASTELITOS_LIST.map(it => [normStr(it.n), it]));
+      const rebuilt = allPastelitos.map((r, i) => {
+        const prev = prevByNorm.get(normStr(r.n));
+        const promo = normStr(r.t) === '2x$1';
+        const isTrad = promo || normStr(r.sub || '').includes('tradicional');
+        const u = (r.u != null && Number.isFinite(Number(r.u))) ? Number(r.u) : parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.'));
+        return {
+          id: prev ? prev.id : ('live_' + i + '_' + normStr(r.n).replace(/[^a-z0-9]+/g, '_')),
+          n: r.n,
+          p: r.p,
+          u: Number.isFinite(u) ? u : 0,
+          cat: isTrad ? 'Tradicional' : 'Especial',
+          promo: promo,
+          img: r.img || (prev && prev.img) || 'assets/img/surtido_fritos.webp',
+          agotado: !!r.agotado
+        };
+      });
+      PASTELITOS_LIST.length = 0;
+      rebuilt.forEach(it => PASTELITOS_LIST.push(it));
+      PLATE_STEP = 360 / Math.max(1, PASTELITOS_LIST.length);
+    }
 
-    // 3. Sincronizar bandeja circular de Bebidas
-    DRINKS.forEach(it => {
-      const o = get('Bebidas', it.n);
-      if (!o) return;
-      if (precioValido(o.precio)) { it.p = fmtP(o.precio); it.u = Number(o.precio); }
-      if (o.imagen_url && SAFE_IMG.test(o.imagen_url)) it.img = o.imagen_url;
-      if (Number(o.disponible) === 0) it.agotado = true;
-      else delete it.agotado;
-    });
+    // Sincronizar/actualizar DRINKS con las filas vivas de M['Bebidas']
+    if (M['Bebidas'] && M['Bebidas'].g) {
+      const allBebidas = M['Bebidas'].g.reduce((acc, g) => acc.concat(g.r || []), []);
+      const kept = [];
+      DRINKS.forEach(it => {
+        const itNorm = normStr(it.n);
+        const altNorm = itNorm === 'cafe latte' ? 'latte' : (itNorm === 'nestea limon' ? 'nestea' : itNorm);
+        const inverseAlt = itNorm === 'latte' ? 'cafe latte' : (itNorm === 'nestea' ? 'nestea limon' : itNorm);
+        const match = allBebidas.find(r => {
+          const rn = normStr(r.n);
+          return rn === itNorm || rn === altNorm || rn === inverseAlt;
+        });
+        if (!match) return;
+        it.n = match.n;
+        it.p = match.p;
+        it.u = match.u;
+        it.d = match.d;
+        if (match.img && SAFE_IMG.test(match.img)) it.img = match.img;
+        if (match.agotado) it.agotado = true;
+        else delete it.agotado;
+        kept.push(it);
+      });
+      const represented = new Set(kept.map(it => normStr(it.n)));
+      allBebidas.forEach(r => {
+        const rn = normStr(r.n);
+        if (!r.nw && /(jugo|nestea|refresco)/i.test(r.n) && !represented.has(rn)) {
+          const u = (r.u != null && Number.isFinite(Number(r.u))) ? Number(r.u) : parseFloat(String(r.p).replace(/[^\d,]/g, '').replace(',', '.'));
+          const nameLower = String(r.n || '').toLowerCase();
+          kept.push({
+            n: r.n,
+            p: r.p,
+            u: Number.isFinite(u) ? u : 0,
+            tag: nameLower.includes('jugo') ? 'JUGO NATURAL' : nameLower.includes('nestea') ? 'TÉ FRÍO' : 'REFRESCO',
+            img: r.img || 'assets/img/bebidas/refresco.webp',
+            agotado: !!r.agotado
+          });
+          represented.add(rn);
+        }
+      });
+      DRINKS.length = 0;
+      kept.forEach(it => DRINKS.push(it));
+      DRINKS_STEP = 360 / Math.max(1, DRINKS.length);
+    }
 
-    // 4. Sincronizar filas del menú en todas las categorías
+    // Re-renderizar todo el menú y re-hidratar botones y vitrinas interactivas
+    const savedPlateIdx = currentPlateIndex;
+    const savedDrinkIdx = currentDrinkIndex;
+    const savedEntradaIdx = typeof currentEntradaIndex === 'number' ? currentEntradaIndex : 0;
+    const savedPaniniIdx = typeof currentPaniniIndex === 'number' ? currentPaniniIndex : 0;
+    const savedSandwichIdx = typeof currentSandwichIndex === 'number' ? currentSandwichIndex : 0;
+
+    buildMenu();
+    E();
+
     document.querySelectorAll('#menu .rw').forEach(rw => {
       const cat = rw.dataset.cat || '';
-      const nEl = rw.querySelector('.n'); if (!nEl) return;
-      const o = get(cat, nEl.textContent.trim()); if (!o) return;
-
-      if (precioValido(o.precio)) {
-        const pEl = rw.querySelector('.p');
-        if (pEl) pEl.textContent = fmtP(o.precio);
-      }
+      const nEl = rw.querySelector('.n');
+      if (!nEl) return;
+      const live = resolveLiveProduct(cat === 'Pastelitos' ? ('Pastelito ' + nEl.textContent.trim()) : nEl.textContent.trim());
       const addBtn = rw.querySelector('.pl');
-      if (addBtn && precioValido(o.precio)) addBtn.dataset.u = o.precio;
-
-      if (o.promo_tag !== undefined) {
-        let tg = rw.querySelector('.tg');
-        if (o.promo_tag) {
-          if (!tg) {
-            tg = document.createElement('span');
-            tg.className = 'tg';
-            nEl.after(tg);
-          }
-          tg.textContent = o.promo_tag;
-        } else if (tg) {
-          tg.remove();
-        }
-      }
-
-      if (o.descripcion) {
-        const descEl = rw.querySelector('i');
-        if (descEl) descEl.textContent = o.descripcion;
-      }
-
-      if (Number(o.disponible) === 0) {
+      if (live && live.agotado) {
         rw.classList.add('agotado');
         if (addBtn) {
           addBtn.disabled = true;
           addBtn.setAttribute('aria-disabled', 'true');
           addBtn.textContent = '×';
         }
-      } else {
-        rw.classList.remove('agotado');
-        if (addBtn && addBtn.textContent === '×') {
-          addBtn.disabled = false;
-          addBtn.removeAttribute('aria-disabled');
-          addBtn.textContent = '+';
-        }
       }
     });
 
-    // 5. Refrescar vitrinas interactivas
-    try { if (document.querySelector('#plate-slots .plate-item')) selectPastelito(currentPlateIndex); } catch (e) {}
-    try { if (document.querySelector('#drinks-slots .drink-item')) selectDrink(currentDrinkIndex); } catch (e) {}
-    try { if (typeof mfApi.pickSandwich === 'function') mfApi.pickSandwich(0); } catch (e) {}
+    initPlateSlots();
+    hookMenuRowsToPlate();
+    selectPastelito(Math.min(savedPlateIdx, Math.max(0, PASTELITOS_LIST.length - 1)));
+    plateBuilt = true;
+
+    initDrinkSlots();
+    hookDrinkRows();
+    selectDrink(Math.min(savedDrinkIdx, Math.max(0, DRINKS.length - 1)));
+    drinksBuilt = true;
+
+    initFrontPlates('content-paninis');
+    if (typeof mfApi.pickPanini === 'function') mfApi.pickPanini(Math.min(savedPaniniIdx, Math.max(0, M['Paninis'].g[0].r.length - 1)));
+
+    initSandwichesShowcase('content-sandwiches');
+    if (typeof mfApi.pickSandwich === 'function') {
+      const swMain = M['Sándwich y Burger'].g[0].r.filter(r => r.t !== 'Extra' && !/(extra\s+papas|papas\s+extra)/i.test(r.n));
+      mfApi.pickSandwich(Math.min(savedSandwichIdx, Math.max(0, swMain.length - 1)));
+    }
+
+    initDiamondEntradas('content-entradas');
+    if (typeof mfApi.selectEntrada === 'function') {
+      mfApi.selectEntrada(Math.min(savedEntradaIdx, Math.max(0, M['Entradas'].g[0].r.length - 1)));
+    }
+
+    // Marcar catálogo cargado y sincronizar el carrito inmediatamente
+    catalogLoadedFromServer = true;
+    syncCartWithLiveCatalog();
+    draw();
   };
+
+  mfApi.applyProductOverrides = mfApi.syncCatalogFromRows;
   mfApi.buzz = buzz;
   mfApi.addToCart = function (k, u) {
     if (!k) return;
-    C[k] = C[k] || { q: 0, u: (u === '' || u == null ? null : u) };
+    const live = resolveLiveProduct(k);
+    if (live && live.agotado) return;
+    const resolvedU = (live && live.u != null) ? live.u : (u === '' || u == null ? null : Number(u));
+    if (!C[k]) C[k] = { q: 0, u: resolvedU };
+    else C[k].u = resolvedU;
     C[k].q++;
     draw();
     persistCart();
@@ -4027,22 +4377,37 @@ function LB(sel) {
     btn.style.display = isAdmin ? '' : 'none';
   }
 
-  // ==== Catálogo dinámico (precios/disponibilidad desde el servidor) ====
-  function aplicarCatalogoTurso() {
-    if (!window.MFapi || !window.MFapi.applyProductOverrides) return;
-    api('/api/productos').then(function(rows){
-      if (!rows || !rows.length) return;
-      var map = {};
-      rows.forEach(function(p) { map[(p.categoria || '') + '|' + (p.nombre || '')] = p; });
-      window.MFapi.applyProductOverrides(map);
-    }).catch(function(e) { console.warn('No se pudo cargar productos:', e); });
+  // ==== Catálogo dinámico (sincronización en tiempo real con Turso y Admin Panel) ====
+  var lastCatalogFetch = 0;
+  function aplicarCatalogoTurso(forceNow) {
+    if (!window.MFapi || !window.MFapi.syncCatalogFromRows) return;
+    var now = Date.now();
+    if (!forceNow && (now - lastCatalogFetch < 1500)) return;
+    lastCatalogFetch = now;
+    fetch('/api/productos?t=' + now, { cache: 'no-store' })
+      .then(function(r) { return r.ok ? r.json() : null; })
+      .then(function(rows) {
+        if (!rows || !Array.isArray(rows) || !rows.length) return;
+        window.MFapi.syncCatalogFromRows(rows);
+      })
+      .catch(function(e) { console.warn('No se pudo cargar productos:', e); });
   }
 
-  if (document.readyState === 'complete') {
-    aplicarCatalogoTurso();
-  } else {
-    window.addEventListener('load', aplicarCatalogoTurso, { once: true });
-  }
+  aplicarCatalogoTurso(true);
+
+  window.addEventListener('focus', function() { aplicarCatalogoTurso(false); });
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') aplicarCatalogoTurso(false);
+  });
+  window.addEventListener('storage', function(e) {
+    if (e && e.key === 'mf_catalog_updated_at') aplicarCatalogoTurso(true);
+  });
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      var bc = new BroadcastChannel('mf_catalog_sync');
+      bc.onmessage = function() { aplicarCatalogoTurso(true); };
+    }
+  } catch (e) {}
 
   // ==== Interfaz: logout y modales legales / de transparencia ====
   function abrirModalLegal(id) {

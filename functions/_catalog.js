@@ -294,7 +294,7 @@ export const CANONICAL_PRODUCTS = [
     "subgrupo": "Sandwiches & Burger",
     "nombre": "Sandwich Criollo",
     "descripcion": "Pan clásico con queso amarillo fundido, jamón y salchichón",
-    "precio": 5.5,
+    "precio": 2.5,
     "promo_tag": "",
     "disponible": 1,
     "orden": 24,
@@ -306,7 +306,7 @@ export const CANONICAL_PRODUCTS = [
     "subgrupo": "Sandwiches & Burger",
     "nombre": "Sandwich Diet",
     "descripcion": "Pan integral, queso paisa bajo en sal, jamón de pavo y vegetales frescos",
-    "precio": 5,
+    "precio": 2.99,
     "promo_tag": "",
     "disponible": 1,
     "orden": 25,
@@ -318,7 +318,7 @@ export const CANONICAL_PRODUCTS = [
     "subgrupo": "Sandwiches & Burger",
     "nombre": "Burger Crispy",
     "descripcion": "Pollo crispy extra crujiente, salsa especial, lechuga, tomate y cheddar",
-    "precio": 6.5,
+    "precio": 3.99,
     "promo_tag": "Favorito",
     "disponible": 1,
     "orden": 26,
@@ -760,79 +760,87 @@ export const CANONICAL_PRODUCTS = [
 
 export async function syncCanonicalCatalog(db, force = false) {
   try {
-    // 1. Obtener los productos actuales en la base de datos
-    const cur = await db.execute('SELECT id, categoria, nombre, precio, disponible, promo_tag, imagen_url, subgrupo, descripcion FROM productos');
-    const dbMap = new Map();
-    for (const r of cur.rows) {
-      dbMap.set((r.categoria || '').trim() + '|' + (r.nombre || '').trim(), r);
-      if (r.id) dbMap.set(r.id, r);
+    const cur = await db.execute(
+      'SELECT id, categoria, subgrupo, nombre, descripcion, precio, promo_tag, imagen_url, disponible, orden FROM productos'
+    );
+
+    // Si NO es sincronización forzada y la tabla ya está poblada, respetar al 100%
+    // todos los cambios, precios, nombres y eliminaciones hechas desde el Panel de Admin.
+    if (!force && cur.rows && cur.rows.length > 0) {
+      const ita = cur.rows.find((r) => r.id === 'paninis-italiano' && Number(r.orden) === 3);
+      if (ita) {
+        await db.execute({ sql: "UPDATE productos SET orden = 23 WHERE id = 'paninis-italiano' AND orden = 3", args: [] });
+      }
+      return { ok: true, synced: cur.rows.length, applied: ita ? 1 : 0, passiveSkipped: true };
+    }
+
+    const normKey = (s) =>
+      String(s || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const dbByKey = new Map();
+    const dbById = new Map();
+    const obsoleteIds = [];
+
+    for (const row of cur.rows) {
+      const nLower = (row.nombre || '').toLowerCase();
+      if (nLower.includes('nugget') || nLower.includes('choco-avellana') || nLower.includes('choco avellana')) {
+        obsoleteIds.push(row.id);
+        continue;
+      }
+      const key = normKey(row.categoria) + '|' + normKey(row.nombre);
+      dbByKey.set(key, row);
+      dbById.set(String(row.id), row);
     }
 
     const stmts = [];
 
-    // 2. Limpieza de productos obsoletos / renombrados
-    const OBSOLETOS = [
-      'entradas-racion_nuggets_con_papas',
-      'entradas-racion_6_tequenos_de_chocolate',
-      'bebidas-jugos_naturales'
-    ];
-    for (const obsId of OBSOLETOS) {
+    for (const obsId of obsoleteIds) {
       stmts.push({
         sql: 'DELETE FROM productos WHERE id = ?',
-        args: [obsId]
+        args: [obsId],
       });
     }
 
-    // Lista de descripciones genéricas antiguas del seed inicial que deben restaurarse
-    const OLD_GENERIC_DESCS = new Set([
-      'Masa maracucha crujiente con relleno generoso',
-      'Guiso casero tradicional bien sazonado',
-      'Café recién colado de alta calidad',
-      '.',
-      'Camarones seleccionados con toque de ajo y queso crema',
-      'Champiñones salteados, tocineta crocante y queso crema',
-      'Pesto artesanal, tomate fresco, mozzarella y jamón serrano',
-      'Mortadela italiana con pistacho, pesto, burrata cremosa, tomate confitado y rúcula',
-      '15 mini pastelitos + 15 tequeños de queso',
-      '30 mini pastelitos + 30 tequeños de queso',
-      '50 mini pastelitos + 25 tequeños de queso + 25 empanaditas',
-      'Pollo crispy extra crujiente, salsa especial, lechuga, tomate y queso cheddar'
-    ]);
-
-    // 3. Sincronizar catálogo canónico
     for (const p of CANONICAL_PRODUCTS) {
-      const key = p.categoria.trim() + '|' + p.nombre.trim();
-      const existing = dbMap.get(key) || dbMap.get(p.id);
+      const key = normKey(p.categoria) + '|' + normKey(p.nombre);
+      const existing = dbById.get(String(p.id)) || dbByKey.get(key);
 
       if (!existing) {
-        // Producto nuevo: insertar completamente
         stmts.push({
           sql: 'INSERT INTO productos (id, categoria, subgrupo, nombre, descripcion, precio, promo_tag, imagen_url, disponible, orden) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-          args: [p.id, p.categoria, p.subgrupo || '', p.nombre, p.descripcion || '', p.precio, p.promo_tag || '', p.imagen_url || '', p.disponible !== undefined ? p.disponible : 1, p.orden || 0]
+          args: [
+            p.id,
+            p.categoria,
+            p.subgrupo || '',
+            p.nombre,
+            p.descripcion || '',
+            p.precio,
+            p.promo_tag || '',
+            p.imagen_url || '',
+            p.disponible !== undefined ? p.disponible : 1,
+            p.orden || 0,
+          ],
         });
       } else if (force) {
-        // Sincronización forzada (botón del admin): actualizar catálogo base
         stmts.push({
           sql: "UPDATE productos SET categoria = ?, subgrupo = ?, nombre = ?, descripcion = ?, precio = ?, promo_tag = ?, imagen_url = ?, orden = ?, updated_at = datetime('now') WHERE id = ?",
-          args: [p.categoria, p.subgrupo || '', p.nombre, p.descripcion || '', p.precio, p.promo_tag || '', p.imagen_url || '', p.orden || 0, existing.id]
+          args: [
+            p.categoria,
+            p.subgrupo || '',
+            p.nombre,
+            p.descripcion || '',
+            p.precio,
+            p.promo_tag || '',
+            p.imagen_url || '',
+            p.orden || 0,
+            existing.id,
+          ],
         });
-      } else {
-        // En arranque pasivo: si la descripción actual está vacía o es una de las genéricas del seed antiguo,
-        // restaurar la descripción oficial canónica para que coincida exactamente con la web y el admin.
-        const curDesc = (existing.descripcion || '').trim();
-        const needsDescFix = !curDesc || OLD_GENERIC_DESCS.has(curDesc);
-        const needsImg = (!existing.imagen_url && p.imagen_url);
-        const needsSub = (!existing.subgrupo && p.subgrupo);
-
-        if (needsDescFix || needsImg || needsSub) {
-          const newDesc = needsDescFix ? p.descripcion : existing.descripcion;
-          const newImg = existing.imagen_url || p.imagen_url || '';
-          const newSub = existing.subgrupo || p.subgrupo || '';
-          stmts.push({
-            sql: "UPDATE productos SET descripcion = ?, imagen_url = ?, subgrupo = ?, updated_at = datetime('now') WHERE id = ?",
-            args: [newDesc, newImg, newSub, existing.id]
-          });
-        }
       }
     }
 
