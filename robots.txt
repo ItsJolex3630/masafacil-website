@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://masafacil-website.pages.dev/sitemap.xml
