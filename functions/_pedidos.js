@@ -29,13 +29,19 @@ const SABORES_PERMITIDOS = new Set([
 // Zonas de entrega (espejo de ZONAS_DELIVERY en index.html).
 const ZONAS = [
   { n: "Retiro en local (Pick Up) - La Esmeralda", p: 0 },
-  { n: "La Esmeralda (1 km)", p: 1.0 },
-  { n: "Urb. El Morro I y II (2 km)", p: 2.0 },
-  { n: "Los Jarales (3 km)", p: 3.0 },
-  { n: "El Remanso / Sansur (4 km)", p: 4.0 },
-  { n: "Campo Solo / Magallanes (5 km)", p: 5.0 },
-  { n: "Valle Verde / Los Tulipanes (6 km)", p: 6.0 },
-  { n: "Yagual / Ciudad Alianza (7 km)", p: 7.0 },
+  { n: "La Esmeralda", p: 1.0 },
+  { n: "El Morro", p: 1.5 },
+  { n: "Valle Verde", p: 1.5 },
+  { n: "El Remanso", p: 2.0 },
+  { n: "El Pueblo de San Diego ($2 - $3)", p: 2.0, c: true },
+  { n: "Los Tulipanes", p: 3.0 },
+  { n: "Big Low", p: 3.0 },
+  { n: "Campo Solo / Los Jarales", p: 3.0 },
+  { n: "Valle Topacio y Paso Real", p: 3.0 },
+  { n: "Las Morochas", p: 4.0 },
+  { n: "Lomas de la Hacienda", p: 4.0 },
+  { n: "Cumaca", p: 4.0 },
+  { n: "Valencia (desde $5 según zona)", p: 5.0, c: true },
   { n: "Otra zona (consultar tarifa exacta)", p: 0, c: true },
 ];
 
@@ -221,7 +227,7 @@ export async function buildPedido(db, user, body) {
   // 4) Entrega: la zona la dictaminan las tarifas del servidor.
   const zonaNombre = sanitizePlainText(body.zona, 120) || ZONAS[0].n;
   const zona = ZONAS.find((z) => z.n === zonaNombre) || ZONAS[0];
-  const deliveryCosto = zona.c ? 0 : zona.p;
+  const deliveryCosto = Number(zona.p || 0);
   const subtotalFinal = Math.max(0, subtotal - fidelidadAhorro - descuentoTokens);
   const total = Number((subtotalFinal + deliveryCosto).toFixed(2));
 
