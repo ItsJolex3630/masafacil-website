@@ -433,6 +433,8 @@ textarea{width:100%;min-height:52px;resize:vertical}
     verifyAdmin();
   };
 
+  window.verifyAdminRetry = function(){ verifyAdmin(); };
+
   async function verifyAdmin(){
     setGate('<img class="gate-logo" src="assets/img/logo_masafacil_nuevo.webp" alt="Masafácil"><h2>Verificando acceso…</h2><p>Conectando con la base de datos de Masa Fácil…</p>');
     var me;
@@ -460,7 +462,17 @@ textarea{width:100%;min-height:52px;resize:vertical}
         );
         return;
       }
-      setGate('<img class="gate-logo" src="assets/img/logo_masafacil_nuevo.webp" alt="Masafácil"><h2>Sin conexión</h2><p>No se pudo conectar con la base de datos en este momento.</p><button class="btn sm" onclick="location.reload()" style="margin-top:12px">Reintentar</button>');
+      // 503/500 = fallo de servicio (Turso/Cloudflare): reintento manual sin
+      // perder la credencial ni quedar en pantalla ciega.
+      setGate(
+        '<img class="gate-logo" src="assets/img/logo_masafacil_nuevo.webp" alt="Masafácil">' +
+        '<h2>Servicio temporalmente no disponible</h2>' +
+        '<p>Error temporal de conexión con Turso/Cloudflare.<br><small>' + esc((e && e.message) || 'HTTP ' + (e && e.status)) + '</small></p>' +
+        '<div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap">' +
+          '<button class="btn sm" onclick="verifyAdminRetry()">Reintentar conexión</button>' +
+          '<a class="btn ghost sm" href="index.html">Volver a la web</a>' +
+        '</div>'
+      );
       return;
     }
     adminEmail = me.email || adminEmail;

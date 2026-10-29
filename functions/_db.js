@@ -5,17 +5,19 @@ let client = null;
 
 export function getDb(env) {
   if (!client) {
-    if (!env.TURSO_URL || !env.TURSO_AUTH_TOKEN) {
+    const url = env.TURSO_URL || env.TURSO_DATABASE_URL;
+    const authToken = env.TURSO_AUTH_TOKEN || env.TURSO_TOKEN;
+    if (!url || !authToken) {
       throw new HttpError(500, "Base de datos no configurada en el servidor");
     }
-    client = createClient({ url: env.TURSO_URL, authToken: env.TURSO_AUTH_TOKEN });
+    client = createClient({ url, authToken });
   }
   return client;
 }
 
-// Migración defensiva e idempotente: asegura las columnas que el código
-// exige pero que el esquema original de Turso podría no tener. Los ALTER
-// duplicados fallan con "duplicate column" y se ignoran.
+// Solo crea tablas e índices si faltan (CREATE IF NOT EXISTS, sin ALTER).
+// El esquema de Turso ya está en su versión final; correr ALTER en cada cold
+// start adquiría bloqueos DDL y saturaba la base (quota/latencia).
 let schemaReady = false;
 export async function ensureSchema(db) {
   if (schemaReady) return;
@@ -43,40 +45,6 @@ export async function ensureSchema(db) {
     console.error("ensureSchema productos:", e && e.message);
   }
 
-  const alters = [
-    "ALTER TABLE pedidos ADD COLUMN estado TEXT DEFAULT 'pendiente'",
-    "ALTER TABLE pedidos ADD COLUMN updated_at TEXT",
-    "ALTER TABLE clientes ADD COLUMN updated_at TEXT",
-    // Fidelización por tokens (Club Masafácil)
-    "ALTER TABLE clientes ADD COLUMN tokens_saldo INTEGER DEFAULT 0",
-    "ALTER TABLE clientes ADD COLUMN perfil_completo INTEGER DEFAULT 0",
-    "ALTER TABLE clientes ADD COLUMN nombre TEXT",
-    "ALTER TABLE clientes ADD COLUMN avatar_url TEXT",
-    "ALTER TABLE clientes ADD COLUMN telefono_whatsapp TEXT",
-    "ALTER TABLE clientes ADD COLUMN total_pedidos INTEGER DEFAULT 0",
-    "ALTER TABLE clientes ADD COLUMN total_gastado REAL DEFAULT 0",
-    "ALTER TABLE clientes ADD COLUMN porcentaje_descuento REAL DEFAULT 0",
-    "ALTER TABLE clientes ADD COLUMN nivel_fidelizacion TEXT DEFAULT 'Nuevo'",
-    "ALTER TABLE pedidos ADD COLUMN tokens_canjeados INTEGER DEFAULT 0",
-    "ALTER TABLE pedidos ADD COLUMN tokens_ganados INTEGER DEFAULT 0",
-    "ALTER TABLE pedidos ADD COLUMN metodo_pago TEXT",
-    // Carrito persistente del cliente (sincronizado desde el navegador).
-    "ALTER TABLE clientes ADD COLUMN carrito_json TEXT DEFAULT '{}'",
-    // Tabla de productos del menú: columnas para esquemas previos
-    "ALTER TABLE productos ADD COLUMN subgrupo TEXT",
-    "ALTER TABLE productos ADD COLUMN promo_tag TEXT",
-    "ALTER TABLE productos ADD COLUMN imagen_url TEXT",
-    "ALTER TABLE productos ADD COLUMN disponible INTEGER DEFAULT 1",
-    "ALTER TABLE productos ADD COLUMN orden INTEGER DEFAULT 0",
-    "ALTER TABLE productos ADD COLUMN updated_at TEXT",
-  ];
-  for (const sql of alters) {
-    try {
-      await db.execute(sql);
-    } catch (e) {
-      if (!/duplicate column|no such table/i.test(String(e && e.message))) console.error("ensureSchema:", sql, e && e.message);
-    }
-  }
   // Tabla de administradores: fuente de verdad dinámica del panel. Se crea aquí
   // para que requireAdmin nunca falle con 500 si la tabla no existe todavía.
   try {

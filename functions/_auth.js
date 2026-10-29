@@ -8,8 +8,9 @@ import { HttpError } from "./_db.js";
 const JWKS = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
 
 function getSecretKey(env) {
-  // Clave secreta para firmar sesiones locales de administrador
-  const secret = env.ADMIN_SECRET_KEY || env.TURSO_AUTH_TOKEN || "masafacil-secret-key-fallback-2026";
+  // Sin clave no se firma ni verifica nada: mejor 500 que un JWT autofirmable.
+  const secret = env.JWT_SECRET || env.ADMIN_SECRET_KEY || env.TURSO_AUTH_TOKEN;
+  if (!secret) throw new HttpError(500, "Clave de firma de sesiones no configurada en el servidor");
   return new TextEncoder().encode(secret);
 }
 
@@ -72,7 +73,9 @@ async function verify(request, env) {
       issuer: "masafacil-auth"
     });
     if (payload && payload.email) return payload;
-  } catch (_) {
+  } catch (e) {
+    // Sin clave de firma configurada es un error del servidor, no un token inválido.
+    if (e instanceof HttpError) throw e;
     // Si falla, probar como token de Google (RS256)
   }
 

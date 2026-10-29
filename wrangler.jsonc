@@ -2,5 +2,12 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "masafacil-website",
   "compatibility_date": "2024-11-01",
-  "pages_build_output_dir": "."
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": ".",
+  "vars": {
+    "TURSO_URL": "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io",
+    "TURSO_DATABASE_URL": "libsql://masafacil-itsjolex3630.aws-us-east-1.turso.io",
+    "GOOGLE_CLIENT_ID": "589629831378-quob4rn9tsrakbic150m4soedkek4tvk.apps.googleusercontent.com",
+    "ADMIN_SEEDS": "jolex3630@gmail.com:Administrador Principal,masafacilelmaracucho@gmail.com:Masa Fácil Maracucho,somosvendo.ve@gmail.com:Somos Vendo,masafaciladminweb@gmail.com:Masa Fácil Admin Web,maryorycastellano31@gmail.com:Maryory Castellano"
+  }
 }

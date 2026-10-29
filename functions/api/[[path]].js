@@ -101,12 +101,31 @@ function parseCarrito(carritoJson) {
   }
 }
 
+// Comparación de PIN en tiempo constante (anti timing attack).
+async function pinMatches(input, expected) {
+  const a = new TextEncoder().encode(input);
+  const b = new TextEncoder().encode(expected);
+  if (a.length !== b.length) return false;
+  return crypto.subtle.timingSafeEqual(a, b);
+}
+
 export async function onRequest(context) {
   const { request, env, params } = context;
   const route = "/" + (params.path || []).join("/");
   const method = request.method;
-  const db = getDb(env);
-  await ensureSchema(db);
+
+  let db;
+  try {
+    db = getDb(env);
+    await ensureSchema(db);
+  } catch (e) {
+    // Sin BD disponible se responde 503 estructurado, no un error 1101 de plataforma.
+    console.error("DB init error:", route, e && e.message);
+    return json(
+      { ok: false, error: "Servicio de datos temporalmente no disponible", code: "DATABASE_UNAVAILABLE" },
+      503
+    );
+  }
 
   try {
     // Siembra los administradores base ANTES de cualquier verificación:
@@ -119,7 +138,7 @@ export async function onRequest(context) {
     }
 
     if (route === "/productos" && method === "GET") {
-      try { await syncCanonicalCatalog(db, false); } catch(e) { console.warn("syncCanonicalCatalog error:", e); }
+      // Sola lectura: la sincronización del catálogo solo corre vía /admin/productos/sync.
       const r = await db.execute(
         "SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre"
       );
@@ -308,11 +327,14 @@ export async function onRequest(context) {
         return json({ error: "Introduce el PIN de administrador." }, 400);
       }
 
-      // PIN maestro de administradores: configurable en env.ADMIN_ACCESS_PIN
-      // Valor por defecto estándar si no está configurada la variable en Cloudflare:
-      const adminPinMaster = env.ADMIN_ACCESS_PIN || "240996";
+      // PIN maestro solo desde env.ADMIN_ACCESS_PIN; sin ella el login por PIN
+      // queda deshabilitado (no hay valor por defecto en el código).
+      const adminPinMaster = env.ADMIN_ACCESS_PIN;
+      if (!adminPinMaster) {
+        return json({ error: "Autenticación por PIN no disponible: falta configurar ADMIN_ACCESS_PIN." }, 503);
+      }
 
-      if (pin !== adminPinMaster) {
+      if (!(await pinMatches(pin, adminPinMaster))) {
         return json({ error: "PIN de administrador incorrecto." }, 401);
       }
 
@@ -437,7 +459,6 @@ export async function onRequest(context) {
 
     if (route === "/admin/productos" && method === "GET") {
       await requireAdmin(request, env);
-      try { await syncCanonicalCatalog(db, false); } catch(e) { console.warn("syncCanonicalCatalog admin error:", e); }
       const r = await db.execute(
         "SELECT id,categoria,subgrupo,nombre,descripcion,precio,promo_tag,imagen_url,disponible,orden FROM productos ORDER BY categoria, orden, nombre"
       );
